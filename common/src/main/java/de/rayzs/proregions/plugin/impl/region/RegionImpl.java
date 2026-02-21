@@ -1,0 +1,295 @@
+package de.rayzs.proregions.plugin.impl.region;
+
+import de.rayzs.proregions.api.region.Region;
+import de.rayzs.proregions.api.region.RegionEnums;
+import de.rayzs.proregions.api.response.Response;
+import de.rayzs.proregions.api.world.Environment;
+import de.rayzs.proregions.api.world.TinyLocation;
+import de.rayzs.proregions.plugin.impl.response.ResponseImpl;
+import de.rayzs.proregions.plugin.impl.world.TinyLocationImpl;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class RegionImpl implements Region {
+
+    private final String name, worldName;
+
+    private final Map<RegionEnums.Flags, RegionEnums.FlagState> flags;
+    private final Map<RegionEnums.Flags, Response> responses;
+
+    private final Response defaultResponse;
+
+    private final TinyLocation centerLocation;
+    private final Environment environment;
+
+    private final int minX, minY, minZ;
+    private final int maxX, maxY, maxZ;
+
+    private RegionEnums.FlagState defaultFlagState;
+    private boolean ignoreY;
+
+    public RegionImpl(
+            final String name,
+            final String worldName,
+            final boolean ignoreY,
+            final Response defaultResponse,
+            final Map<RegionEnums.Flags, Response> responses,
+            final RegionEnums.FlagState defaultFlagState,
+            final Map<RegionEnums.Flags, RegionEnums.FlagState> flags,
+            final TinyLocation firstLocation,
+            final TinyLocation secondLocation
+    ) {
+        this(Environment.getEnvironmentByWorld(Bukkit.getWorld(worldName)).getId(),
+                name,
+                worldName,
+                ignoreY,
+                defaultResponse,
+                responses,
+                defaultFlagState,
+                flags,
+                firstLocation,
+                secondLocation
+        );
+    }
+
+    public RegionImpl(
+            final int environmentId,
+            final String name,
+            final String worldName,
+            final boolean ignoreY,
+            final Response defaultResponse,
+            final Map<RegionEnums.Flags, Response> responses,
+            final RegionEnums.FlagState defaultFlagState,
+            final Map<RegionEnums.Flags, RegionEnums.FlagState> flags,
+            final TinyLocation firstLocation,
+            final TinyLocation secondLocation
+    ) {
+        this.environment = Environment.getEnvironmentById(environmentId);
+        this.name = name;
+        this.worldName = worldName;
+
+        this.ignoreY = ignoreY;
+
+        this.defaultFlagState = defaultFlagState;
+        this.flags = flags;
+
+        this.defaultResponse = defaultResponse;
+        this.responses = responses;
+
+        this.minX = Math.min(firstLocation.x(), secondLocation.x());
+        this.minY = Math.min(firstLocation.y(), secondLocation.y());
+        this.minZ = Math.min(firstLocation.z(), secondLocation.z());
+
+        this.maxX = Math.max(firstLocation.x(), secondLocation.x());
+        this.maxY = Math.max(firstLocation.y(), secondLocation.y());
+        this.maxZ = Math.max(firstLocation.z(), secondLocation.z());
+
+
+        final int halfX = (maxX - minX) / 2;
+        final int halfY = (maxY - minY) / 2;
+        final int halfZ = (maxZ - minZ) / 2;
+
+
+        this.centerLocation = new TinyLocationImpl(
+                name,
+                minX + halfX,
+                minY + halfY,
+                minZ + halfZ
+        );
+    }
+
+    @Override
+    public boolean contains(final Block block) {
+        return contains(block.getLocation());
+    }
+
+    @Override
+    public boolean contains(final Entity entity) {
+        return !entity.isDead() && contains(entity.getLocation());
+    }
+
+    @Override
+    public boolean contains(final Location location) {
+        final World world = location.getWorld();
+
+        if (world == null) {
+            return false;
+        }
+
+        if (!this.environment.isSame(world) || !this.worldName.equalsIgnoreCase(world.getName())) {
+            return false;
+        }
+
+        final int x = location.getBlockX();
+        final int y = location.getBlockY();
+        final int z = location.getBlockZ();
+
+        return x >= minX && x <= maxX
+                && (ignoreY || y >= minY && y <= maxY)
+                && z >= minZ && z <= maxZ;
+    }
+
+    @Override
+    public Response getDefaultResponse() {
+        return this.defaultResponse;
+    }
+
+    @Override
+    public Response getResponse(RegionEnums.Flags flag) {
+        return this.responses.getOrDefault(flag, this.defaultResponse);
+    }
+
+    public Response getOrCreateResponse(RegionEnums.Flags flag) {
+        Response response = this.responses.get(flag);
+
+        if (response == null) {
+            response = new ResponseImpl();
+            responses.put(flag, response);
+        }
+
+        return response;
+    }
+
+    public Response removeResponse(RegionEnums.Flags flag) {
+        return this.responses.remove(flag);
+    }
+
+    @Override
+    public void unsetFlag(RegionEnums.Flags flag) {
+        this.flags.remove(flag);
+    }
+
+    @Override
+    public void setFlag(RegionEnums.Flags flag, RegionEnums.FlagState state) {
+        this.flags.put(flag, state);
+    }
+
+    @Override
+    public void setDefaultFlagState(RegionEnums.FlagState defaultFlagState) {
+        this.defaultFlagState = defaultFlagState;
+    }
+
+    @Override
+    public RegionEnums.FlagState getFlagState(RegionEnums.Flags flag) {
+        return this.flags.getOrDefault(flag, this.defaultFlagState);
+    }
+
+    @Override
+    public void setIgnoreY(boolean ignoreY) {
+        this.ignoreY = ignoreY;
+    }
+
+    @Override
+    public boolean doesIgnoreY() {
+        return this.ignoreY;
+    }
+
+    @Override
+    public TinyLocation getCenter() {
+        return this.centerLocation;
+    }
+
+    @Override
+    public Map<String, Object> serialize() {
+
+        final Map<String, Object> map = new HashMap<>();
+
+        map.put("name", name);
+        map.put("environment-id", environment.getId());
+        map.put("default-flag-state", defaultFlagState.name());
+        map.put("ignore-y", ignoreY);
+
+        map.put("area.world", worldName);
+
+        map.put("area.min.x", minX);
+        map.put("area.min.y", minY);
+        map.put("area.min.z", minZ);
+
+        map.put("area.max.x", maxX);
+        map.put("area.max.y", maxY);
+        map.put("area.max.z", maxZ);
+
+        map.put("flags", flags.entrySet().stream().collect(
+                java.util.stream.Collectors.toMap(
+                        entry -> entry.getKey().name(),
+                        entry -> entry.getValue().name()
+                )
+        ));
+
+        map.put("default-response", defaultResponse);
+
+        map.put("responses", responses.entrySet().stream().collect(
+                java.util.stream.Collectors.toMap(
+                        entry -> entry.getKey().name(),
+                        entry -> entry.getValue()
+                )
+        ));
+
+        return map;
+    }
+
+    public static RegionImpl deserialize(Map<String, Object> map) {
+        final String name = (String) map.get("name");
+        final int environmentId = (int) map.get("environment-id");
+
+        final String defaultFlagStateStr = (String) map.get("default-flag-state");
+        final RegionEnums.FlagState defaultFlagState = RegionEnums.FlagState.valueOf(defaultFlagStateStr);
+
+        final boolean ignoreY = (boolean) map.get("ignore-y");
+
+        final String worldName = (String) map.get("area.world");
+        final int minX = (int) map.get("area.min.x");
+        final int minY = (int) map.get("area.min.y");
+        final int minZ = (int) map.get("area.min.z");
+        
+        final int maxX = (int) map.get("area.max.x");
+        final int maxY = (int) map.get("area.max.y");
+        final int maxZ = (int) map.get("area.max.z");
+
+        final Map<RegionEnums.Flags, RegionEnums.FlagState> flags = new HashMap<>();
+        final Map<String, String> flagsMap = (Map<String, String>) map.get("flags");
+
+        for (Map.Entry<String, String> entry : flagsMap.entrySet()) {
+            final RegionEnums.Flags flag = RegionEnums.Flags.valueOf(entry.getKey());
+            final RegionEnums.FlagState state = RegionEnums.FlagState.valueOf(entry.getValue());
+
+            flags.put(flag, state);
+        }
+
+        final Response defaultResponse = (Response) map.get("default-response");
+
+        final Map<RegionEnums.Flags, Response> responses = new HashMap<>();
+        final Map<String, Response> responsesMap = (Map<String, Response>) map.get("responses");
+
+        for (Map.Entry<String, Response> entry : responsesMap.entrySet()) {
+            final RegionEnums.Flags flag = RegionEnums.Flags.valueOf(entry.getKey());
+            final Response response = entry.getValue();
+
+            responses.put(flag, response);
+        }
+
+        return new RegionImpl(
+                environmentId, name, worldName, ignoreY,
+                defaultResponse, responses,
+                defaultFlagState, flags,
+                new TinyLocationImpl(name, minX, minY, minZ),
+                new TinyLocationImpl(name, maxX, maxY, maxZ)
+        );
+    }
+
+    @Override
+    public String getRegionName() {
+        return this.name;
+    }
+
+    @Override
+    public Environment getEnvironment() {
+        return this.environment;
+    }
+}

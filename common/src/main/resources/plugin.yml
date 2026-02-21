@@ -1,0 +1,14 @@
+name: ProRegions
+description: Small and simple region plugin similar to WorldGuard.
+author: Rayzs_YT
+
+main: de.rayzs.proregions.plugin.ProRegionsLoader
+
+version: 1.0.0
+api-version: 1.13
+
+commands:
+  proregions:
+    aliases: [region, regions, rg]
+    description: Main command for ProRegions.
+    permission: proregions.use
