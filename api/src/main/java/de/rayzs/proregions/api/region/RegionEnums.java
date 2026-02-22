@@ -10,7 +10,7 @@ public class RegionEnums {
     }
 
     public enum FlagTargetType {
-        BLOCK, ENTITY, CHAT, NONE
+        BLOCK, ENTITY, PROJECTILE, CHAT, NONE
     }
 
     public enum Flags {
@@ -23,9 +23,18 @@ public class RegionEnums {
         INTERACT_BLOCK           (FlagTargetType.BLOCK, true),
         TRAMPLE_CROPS            (FlagTargetType.BLOCK, false),
 
+        PROJECTILE               (FlagTargetType.PROJECTILE, true),
+
+        BUCKET_FILL              (FlagTargetType.BLOCK, false),
+        BUCKET_EMPTY             (FlagTargetType.BLOCK, false),
+        BUCKET_MILK              (FlagTargetType.ENTITY, false),
+
+        HUNGER                   (FlagTargetType.ENTITY, false),
         PVP                      (FlagTargetType.ENTITY, false),
         PVE                      (FlagTargetType.ENTITY, true),
         INTERACT_ENTITY          (FlagTargetType.ENTITY, true),
+        DROP                     (FlagTargetType.ENTITY, true),
+        PICKUP                   (FlagTargetType.ENTITY, true),
 
         FALLING_BLOCK_DAMAGE     (FlagTargetType.ENTITY, false),
         FALL_DAMAGE              (FlagTargetType.ENTITY, false),

@@ -6,9 +6,13 @@ import de.rayzs.proregions.api.region.Region;
 import de.rayzs.proregions.api.region.RegionEnums;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.AbstractArrow;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.ThrowableProjectile;
 import org.jspecify.annotations.NonNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -123,7 +127,8 @@ public class FlagCommand extends Command {
                 if (material.isBlock()) {
                     type = material.name().toLowerCase();
                 }
-            } catch (IllegalArgumentException ignored) {}
+            } catch (IllegalArgumentException ignored) {
+            }
 
             if (type == null) {
                 final String invalidMaterialMessage = api.getMessageProvider().get(
@@ -134,6 +139,31 @@ public class FlagCommand extends Command {
                 api.getMessageProvider().send(sender, invalidMaterialMessage);
                 return true;
             }
+        } else if (flag.getTargetType() == RegionEnums.FlagTargetType.PROJECTILE) {
+            try {
+                final EntityType projectile = EntityType.valueOf(args[3].toUpperCase());
+
+                if (flag == RegionEnums.Flags.PROJECTILE) {
+
+                    if (projectile == null || Arrays.stream(projectile.getEntityClass().getInterfaces()).anyMatch(i ->
+                            !(i.equals(Projectile.class)
+                                    || i.equals(ThrowableProjectile.class)
+                                    || i.equals(AbstractArrow.class)
+                            )
+                    )){
+
+                        final String invalidProjectileMessage = api.getMessageProvider().get(
+                                "flag.specification.invalid-projectile",
+                                "&cInvalid projectile! (Example: arrow)"
+                        );
+
+                        api.getMessageProvider().send(sender, invalidProjectileMessage);
+                        return true;
+                    }
+                }
+
+                type = projectile.name().toLowerCase();
+            } catch (IllegalArgumentException ignored) {}
 
         } else if (flag.getTargetType() == RegionEnums.FlagTargetType.ENTITY) {
             try {
@@ -198,10 +228,34 @@ public class FlagCommand extends Command {
                         return List.of("lava", "water");
                     }
 
+                    if (flag == RegionEnums.Flags.BUCKET_EMPTY || flag == RegionEnums.Flags.BUCKET_FILL) {
+                        return List.of("powder_snow", "lava", "water");
+                    }
+
                     if (flag.getTargetType() == RegionEnums.FlagTargetType.BLOCK) {
-                        return Arrays.stream(Material.values()).filter(Material::isBlock).map(type -> type.name().toLowerCase()).toList();
-                    } else if (flag.getTargetType() == RegionEnums.FlagTargetType.ENTITY) {
-                        return Arrays.stream(EntityType.values()).map(type -> type.name().toLowerCase()).toList();
+                        return Arrays.stream(Material.values()).filter(Material::isBlock)
+                                .map(type -> type.name().toLowerCase()).toList();
+                    }
+
+                    if (flag.getTargetType() == RegionEnums.FlagTargetType.ENTITY) {
+                        return Arrays.stream(EntityType.values())
+                                .map(type -> type.name().toLowerCase()).toList();
+                    }
+
+                    if (flag.getTargetType() == RegionEnums.FlagTargetType.PROJECTILE) {
+                        return Arrays.stream(EntityType.values())
+                                .filter(type -> {
+                                    if (type.getEntityClass() == null) {
+                                        return false;
+                                    }
+
+                                    return Arrays.stream(type.getEntityClass().getInterfaces()).anyMatch(i ->
+                                            i.equals(Projectile.class)
+                                                    || i.equals(ThrowableProjectile.class)
+                                                    || i.equals(AbstractArrow.class)
+                                    );
+
+                                }).map(type -> type.name().toLowerCase()).toList();
                     }
 
                 }

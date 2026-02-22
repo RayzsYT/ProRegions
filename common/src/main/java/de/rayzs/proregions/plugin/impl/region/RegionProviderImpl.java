@@ -3,18 +3,12 @@ package de.rayzs.proregions.plugin.impl.region;
 import de.rayzs.proregions.api.ProRegionAPI;
 import de.rayzs.proregions.api.clipboard.Clipboard;
 import de.rayzs.proregions.api.configuration.Config;
-import de.rayzs.proregions.api.region.Region;
-import de.rayzs.proregions.api.region.RegionEnums;
-import de.rayzs.proregions.api.region.RegionProvider;
-import de.rayzs.proregions.api.response.Response;
+import de.rayzs.proregions.api.region.*;
+import de.rayzs.proregions.api.region.context.ContextEval;
 import de.rayzs.proregions.api.world.Environment;
 import de.rayzs.proregions.plugin.impl.response.ResponseImpl;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -111,152 +105,30 @@ public class RegionProviderImpl implements RegionProvider {
     }
 
     @Override
-    public boolean isAllowed(
-            final Block block,
-            final RegionEnums.Flags flag
+    public <A,B,C,D> boolean isAllowed(
+            final ContextEval<A,B,C,D> context,
+            final Location location,
+            final RegionEnums.Flags flag,
+            final A a, final B b,
+            final C c, final D d
     ) {
-        final Location location = block.getLocation();
         final World world = location.getWorld();
-
         if (world == null) {
             return true;
         }
 
         for (final Region region : getRegions(world)) {
-            if (region.contains(block) && region.getFlagState(flag, block.getType().name()) == RegionEnums.FlagState.DENY) {
+            if (!region.contains(location)) {
+                continue;
+            }
+
+            final RegionEnums.FlagState evaluation = context.evaluate(
+                    region, flag,
+                    a, b, c, d
+            );
+
+            if (evaluation == RegionEnums.FlagState.DENY) {
                 return false;
-            }
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean isAllowed(
-            final Entity entity,
-            final Block block,
-            final RegionEnums.Flags flag
-    ) {
-        final World world = block.getWorld();
-
-        if (world == null) {
-            return true;
-        }
-
-        final Player player = entity instanceof Player p ? p : null;
-        if (player != null && player.hasPermission("proregion.bypass." + flag.name().toLowerCase())) {
-            return true;
-        }
-
-        for (final Region region : getRegions(world)) {
-            if (region.contains(block)) {
-                if (region.getFlagState(flag, block.getType().name()) == RegionEnums.FlagState.DENY) {
-
-                    if (player == null) {
-                        return false;
-                    }
-
-                    region.getResponse(flag).send(player);
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean isAllowed(
-            final Entity entity,
-            final Block block,
-            final Material material,
-            final RegionEnums.Flags flag
-    ) {
-        final World world = block.getWorld();
-
-        if (world == null) {
-            return true;
-        }
-
-        final Player player = entity instanceof Player p ? p : null;
-        if (player != null && player.hasPermission("proregion.bypass." + flag.name().toLowerCase())) {
-            return true;
-        }
-
-        for (final Region region : getRegions(world)) {
-            if (region.contains(block)) {
-                if (region.getFlagState(flag, material.name()) == RegionEnums.FlagState.DENY) {
-
-                    if (player == null) {
-                        return false;
-                    }
-
-                    region.getResponse(flag).send(player);
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean isAllowed(
-            final Entity entity,
-            final RegionEnums.Flags flag
-    ) {
-        final World world = entity.getLocation().getWorld();
-
-        if (world == null) {
-            return true;
-        }
-
-        final Player player = entity instanceof Player p ? p : null;
-        if (player != null && player.hasPermission("proregion.bypass." + flag.name().toLowerCase())) {
-            return true;
-        }
-
-        for (final Region region : getRegions(world)) {
-            if (region.contains(entity)) {
-                if (region.getFlagState(flag, entity.getType().name()) == RegionEnums.FlagState.DENY) {
-
-                    if (player == null) {
-                        return false;
-                    }
-
-                    region.getResponse(flag).send(player);
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean isAllowed(final Entity executor, final Entity target, final RegionEnums.Flags flag) {
-        final World world = target.getLocation().getWorld();
-
-        if (world == null) {
-            return true;
-        }
-
-        final Player player = executor instanceof Player p ? p : null;
-        if (player != null && player.hasPermission("proregion.bypass." + flag.name().toLowerCase())) {
-            return true;
-        }
-
-        for (final Region region : getRegions(world)) {
-            if (region.contains(target)) {
-                if (region.getFlagState(flag, target.getType().name()) == RegionEnums.FlagState.DENY) {
-
-                    if (player == null) {
-                        return false;
-                    }
-
-                    region.getResponse(flag).send(player);
-                    return false;
-                }
             }
         }
 

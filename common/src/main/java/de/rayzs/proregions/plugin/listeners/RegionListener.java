@@ -3,22 +3,17 @@ package de.rayzs.proregions.plugin.listeners;
 import de.rayzs.proregions.api.ProRegionAPI;
 import de.rayzs.proregions.api.region.RegionEnums;
 import de.rayzs.proregions.api.region.RegionProvider;
+import de.rayzs.proregions.api.region.context.Contexts;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Monster;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerBucketFillEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.entity.*;
+import org.bukkit.event.player.*;
 
 public class RegionListener implements Listener {
 
@@ -33,8 +28,35 @@ public class RegionListener implements Listener {
     @EventHandler(
             priority = org.bukkit.event.EventPriority.LOWEST
     )
+    public void onHunger(final FoodLevelChangeEvent event) {
+        if (! (event.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        if (!provider.isAllowed(
+                Contexts.PLAYER,
+                player.getLocation(),
+                RegionEnums.Flags.PLACE,
+                player,
+                null, null, null
+        )) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(
+            priority = org.bukkit.event.EventPriority.LOWEST
+    )
     public void onBlockPlace(final BlockPlaceEvent event) {
-        if (!provider.isAllowed(event.getPlayer(), event.getBlock(), RegionEnums.Flags.PLACE)) {
+
+        if (!provider.isAllowed(
+                Contexts.PLAYER_BLOCK,
+                event.getBlock().getLocation(),
+                RegionEnums.Flags.PLACE,
+                event.getPlayer(),
+                event.getBlock(),
+                null, null
+        )) {
             event.setCancelled(true);
         }
     }
@@ -43,7 +65,14 @@ public class RegionListener implements Listener {
             priority = org.bukkit.event.EventPriority.LOWEST
     )
     public void onBlockBreak(final BlockBreakEvent event) {
-        if (!provider.isAllowed(event.getPlayer(), event.getBlock(), RegionEnums.Flags.BREAK)) {
+        if (!provider.isAllowed(
+                Contexts.PLAYER_BLOCK,
+                event.getBlock().getLocation(),
+                RegionEnums.Flags.BREAK,
+                event.getPlayer(),
+                event.getBlock(),
+                null, null
+        )) {
             event.setCancelled(true);
         }
     }
@@ -52,17 +81,31 @@ public class RegionListener implements Listener {
             priority = org.bukkit.event.EventPriority.LOWEST
     )
     public void onBlockFlow(final BlockFromToEvent event) {
+        final Block block = event.getBlock();
+        final Block toBlock = event.getToBlock();
 
         if (!event.getBlock().isLiquid() && !event.getToBlock().isLiquid()) {
             return;
         }
 
-        if (!provider.isAllowed(event.getBlock(), RegionEnums.Flags.FLOW)) {
+        if (!provider.isAllowed(
+                Contexts.BLOCK_CHANGE,
+                event.getBlock().getLocation(),
+                RegionEnums.Flags.FLOW,
+                block,
+                null, null, null
+        )) {
             event.setCancelled(true);
             return;
         }
 
-        if (!provider.isAllowed(event.getToBlock(), RegionEnums.Flags.FLOW)) {
+        if (!provider.isAllowed(
+                Contexts.BLOCK_CHANGE,
+                event.getBlock().getLocation(),
+                RegionEnums.Flags.FLOW,
+                toBlock,
+                null, null, null
+        )) {
             event.setCancelled(true);
         }
     }
@@ -79,7 +122,13 @@ public class RegionListener implements Listener {
             return;
         }
 
-        if (!provider.isAllowed(event.getBlock(), RegionEnums.Flags.FIRE_SPREAD)) {
+        if (!provider.isAllowed(
+                Contexts.BLOCK_CHANGE,
+                event.getBlock().getLocation(),
+                RegionEnums.Flags.FIRE_SPREAD,
+                event.getBlock(),
+                null, null, null
+        )) {
             event.setCancelled(true);
         }
     }
@@ -88,12 +137,27 @@ public class RegionListener implements Listener {
             priority = org.bukkit.event.EventPriority.LOWEST
     )
     public void onExplosion(final EntityExplodeEvent event) {
-        if (!provider.isAllowed(event.getLocation().getBlock(), RegionEnums.Flags.EXPLODE_BLOCKS)) {
+
+        if (!provider.isAllowed(
+                Contexts.BLOCK_CHANGE,
+                event.getLocation(),
+                RegionEnums.Flags.EXPLODE_BLOCKS,
+                event.getLocation().getBlock(),
+                null, null, null
+        )) {
             event.setCancelled(true);
             return;
         }
 
-        event.blockList().removeIf(block -> !provider.isAllowed(event.getEntity(), block, RegionEnums.Flags.EXPLODE_BLOCKS));
+        event.blockList().removeIf(block -> {
+            return !provider.isAllowed(
+                    Contexts.BLOCK_CHANGE,
+                    block.getLocation(),
+                    RegionEnums.Flags.EXPLODE_BLOCKS,
+                    block,
+                    null, null, null
+            );
+        });
     }
 
     @EventHandler(
@@ -107,11 +171,29 @@ public class RegionListener implements Listener {
         final Block block = event.getClickedBlock();
 
         if (block.getType().isInteractable()) {
-            if (!provider.isAllowed(event.getPlayer(), event.getClickedBlock(), RegionEnums.Flags.INTERACT_BLOCK)) {
+            if (!provider.isAllowed(
+                    Contexts.PLAYER_BLOCK,
+                    block.getLocation(),
+                    RegionEnums.Flags.INTERACT_BLOCK,
+                    event.getPlayer(),
+                    block,
+                    null, null
+            )) {
                 event.setCancelled(true);
             }
-        } else if (event.getAction() == Action.PHYSICAL) {
-            if (!provider.isAllowed(event.getPlayer(), event.getClickedBlock(), RegionEnums.Flags.TRAMPLE_CROPS)) {
+
+            return;
+        }
+
+        if (event.getAction() == Action.PHYSICAL) {
+            if (!provider.isAllowed(
+                    Contexts.PLAYER_BLOCK,
+                    block.getLocation(),
+                    RegionEnums.Flags.TRAMPLE_CROPS,
+                    event.getPlayer(),
+                    block,
+                    null, null
+            )) {
                 event.setCancelled(true);
             }
         }
@@ -121,17 +203,21 @@ public class RegionListener implements Listener {
             priority = EventPriority.LOWEST
     )
     public void onPlayerBucketEmpty(final PlayerBucketEmptyEvent event) {
-        final Material item = event.getBlock().getType();
+        final Material item = event.getBucket();
         if (item != Material.LAVA_BUCKET && item != Material.WATER_BUCKET) {
             return;
         }
-
+    
         final Material material = item == Material.LAVA_BUCKET ? Material.LAVA : Material.WATER;
+
         if (!provider.isAllowed(
+                Contexts.PLAYER_BUCKET_BLOCK,
+                event.getBlock().getLocation(),
+                RegionEnums.Flags.BUCKET_EMPTY,
                 event.getPlayer(),
-                event.getBlock(),
                 material,
-                RegionEnums.Flags.PLACE)) {
+                null, null
+        )) {
             event.setCancelled(true);
         }
     }
@@ -140,7 +226,15 @@ public class RegionListener implements Listener {
             priority = EventPriority.LOWEST
     )
     public void onPlayerBucketFill(final PlayerBucketFillEvent event) {
-        if (!provider.isAllowed(event.getPlayer(), event.getBlockClicked(), RegionEnums.Flags.BREAK)) {
+
+        if (!provider.isAllowed(
+                Contexts.PLAYER_BUCKET_BLOCK,
+                event.getBlockClicked().getLocation(),
+                RegionEnums.Flags.BUCKET_FILL,
+                event.getPlayer(),
+                event.getBlockClicked().getType(),
+                null, null
+        )) {
             event.setCancelled(true);
         }
     }
@@ -149,7 +243,33 @@ public class RegionListener implements Listener {
             priority = EventPriority.LOWEST
     )
     public void onEntityInteract(final PlayerInteractEntityEvent event) {
-        if (!provider.isAllowed(event.getPlayer(), event.getRightClicked(), RegionEnums.Flags.INTERACT_ENTITY)) {
+        final Player player = event.getPlayer();
+        final Entity entity = event.getRightClicked();
+
+        final Material itemInHand = player.getInventory().getItemInMainHand().getType();
+
+        if (itemInHand == Material.BUCKET && (entity.getType() == EntityType.GOAT || entity.getType() == EntityType.COW)) {
+            if (!provider.isAllowed(
+                    Contexts.PLAYER_BUCKET_ENTITY,
+                    entity.getLocation(),
+                    RegionEnums.Flags.BUCKET_MILK,
+                    player, entity,
+                    null, null
+            )) {
+                event.setCancelled(true);
+            }
+
+            return;
+        }
+
+        if (!provider.isAllowed(
+                Contexts.PLAYER_ENTITY,
+                entity.getLocation(),
+                RegionEnums.Flags.INTERACT_ENTITY,
+                event.getPlayer(),
+                entity,
+                null, null
+        )) {
             event.setCancelled(true);
         }
     }
@@ -162,12 +282,26 @@ public class RegionListener implements Listener {
         if (event.getDamager() instanceof Player damager) {
             final Player player = event.getEntity() instanceof Player p ? p : null;
 
-            if (!provider.isAllowed(
-                    damager,
-                    player == null ? event.getEntity() : player,
-                    player == null ? RegionEnums.Flags.PVE : RegionEnums.Flags.PVP
-            )) {
-                event.setCancelled(true);
+            if (player != null) {
+                if (!provider.isAllowed(
+                        Contexts.PLAYER_PLAYER,
+                        event.getEntity().getLocation(),
+                        RegionEnums.Flags.PVP,
+                        damager, player,
+                        null, null
+                )) {
+                    event.setCancelled(true);
+                }
+            } else {
+                if (!provider.isAllowed(
+                        Contexts.PLAYER_ENTITY,
+                        event.getEntity().getLocation(),
+                        RegionEnums.Flags.PVE,
+                        damager, event.getEntity(),
+                        null, null
+                )) {
+                    event.setCancelled(true);
+                }
             }
 
             return;
@@ -175,9 +309,11 @@ public class RegionListener implements Listener {
 
         if (event.getEntity() instanceof Player victim) {
             if (!provider.isAllowed(
-                    event.getDamager(),
-                    victim,
-                    RegionEnums.Flags.PVE
+                    Contexts.PLAYER_ENTITY,
+                    event.getEntity().getLocation(),
+                    RegionEnums.Flags.PVE,
+                    victim, event.getDamager(),
+                    null, null
             )) {
                 event.setCancelled(true);
             }
@@ -188,34 +324,57 @@ public class RegionListener implements Listener {
             priority = EventPriority.LOWEST
     )
     public void onPlayerDamage(final EntityDamageEvent event) {
-        if (! (event.getEntity() instanceof Player)) {
-            return;
-        }
+        final Entity entity = event.getEntity();
+        final Location location = entity.getLocation();
 
         switch (event.getCause()) {
             case LAVA: case FIRE:
-                if (!provider.isAllowed(event.getEntity(), RegionEnums.Flags.BURN_DAMAGE)) {
+                if (!provider.isAllowed(
+                        Contexts.ENTITY,
+                        location,
+                        RegionEnums.Flags.BURN_DAMAGE,
+                        entity,
+                        null, null, null
+                )) {
                     event.setCancelled(true);
                 }
 
                 return;
 
             case FALL:
-                if (!provider.isAllowed(event.getEntity(), RegionEnums.Flags.FALL_DAMAGE)) {
+                if (!provider.isAllowed(
+                        Contexts.ENTITY,
+                        location,
+                        RegionEnums.Flags.FALL_DAMAGE,
+                        entity,
+                        null, null, null
+                )) {
                     event.setCancelled(true);
                 }
 
                 return;
 
                 case FALLING_BLOCK:
-                if (!provider.isAllowed(event.getEntity(), RegionEnums.Flags.FALLING_BLOCK_DAMAGE)) {
-                    event.setCancelled(true);
-                }
+                    if (!provider.isAllowed(
+                            Contexts.ENTITY,
+                            location,
+                            RegionEnums.Flags.FALLING_BLOCK_DAMAGE,
+                            entity,
+                            null, null, null
+                    )) {
+                        event.setCancelled(true);
+                    }
 
                 return;
 
             case DROWNING:
-                if (!provider.isAllowed(event.getEntity(), RegionEnums.Flags.DROWNING_DAMAGE)) {
+                if (!provider.isAllowed(
+                        Contexts.ENTITY,
+                        location,
+                        RegionEnums.Flags.DROWNING_DAMAGE,
+                        entity,
+                        null, null, null
+                )) {
                     event.setCancelled(true);
                 }
 
@@ -228,17 +387,167 @@ public class RegionListener implements Listener {
     @EventHandler(
             priority = EventPriority.LOWEST
     )
+    public void onProjectileHit(final ProjectileHitEvent event) {
+        final Projectile projectile = event.getEntity();
+
+        if (projectile.getShooter() instanceof Player player) {
+            if (player.hasPermission("proregions.bypass")) {
+                return;
+            }
+        }
+
+        if (!provider.isAllowed(
+                Contexts.ENTITY,
+                projectile.getLocation(),
+                RegionEnums.Flags.PROJECTILE,
+                projectile,
+                null, null, null
+        )) {
+            event.setCancelled(true);
+            event.getEntity().remove();
+        }
+    }
+
+    @EventHandler(
+            priority = EventPriority.LOWEST
+    )
+    public void onProjectileLaunch(final ProjectileLaunchEvent event) {
+        final Projectile projectile = event.getEntity();
+
+        if (projectile.getShooter() instanceof Player player) {
+            if (player.hasPermission("proregions.bypass")) {
+                return;
+            }
+        }
+
+        if (!provider.isAllowed(
+                Contexts.ENTITY,
+                projectile.getLocation(),
+                RegionEnums.Flags.PROJECTILE,
+                projectile,
+                null, null, null
+        )) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(
+            priority = EventPriority.LOWEST
+    )
+    public void onPlayerPickup(final PlayerPickupItemEvent event) {
+        final Player player = event.getPlayer();
+        final Material material = event.getItem().getItemStack().getType();
+
+        if (!provider.isAllowed(
+                Contexts.PLAYER_ITEM,
+                player.getLocation(),
+                RegionEnums.Flags.PICKUP,
+                player, material,
+                null, null
+        )) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(
+            priority = EventPriority.LOWEST
+    )
+    public void onPlayerPickup(final PlayerPickupArrowEvent event) {
+        final Player player = event.getPlayer();
+        final Material material = event.getItem().getItemStack().getType();
+
+        if (!provider.isAllowed(
+                Contexts.PLAYER_ITEM,
+                player.getLocation(),
+                RegionEnums.Flags.PICKUP,
+                player, material,
+                null, null
+        )) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(
+            priority = EventPriority.LOWEST
+    )
+    public void onEntityDrop(final EntityDropItemEvent event) {
+        final Entity entity = event.getEntity();
+        final Material material = event.getItemDrop().getItemStack().getType();
+
+        if (!provider.isAllowed(
+                Contexts.ENTITY_ITEM,
+                entity.getLocation(),
+                RegionEnums.Flags.DROP,
+                entity, material,
+                null, null
+        )) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(
+            priority = EventPriority.LOWEST
+    )
+    public void onPlayerDrop(final PlayerDropItemEvent event) {
+        final Player player = event.getPlayer();
+        final Material material = event.getItemDrop().getItemStack().getType();
+
+        if (!provider.isAllowed(
+                Contexts.PLAYER_ITEM,
+                player.getLocation(),
+                RegionEnums.Flags.DROP,
+                player, material,
+                null, null
+        )) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(
+            priority = EventPriority.LOWEST
+    )
+    public void onEntityPickup(final EntityPickupItemEvent event) {
+        final Entity entity = event.getEntity();
+        final Material material = event.getItem().getItemStack().getType();
+
+        if (!provider.isAllowed(
+                Contexts.ENTITY_ITEM,
+                entity.getLocation(),
+                RegionEnums.Flags.PICKUP,
+                entity, material,
+                null, null
+        )) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(
+            priority = EventPriority.LOWEST
+    )
     public void onPistonExtend(final BlockPistonExtendEvent event) {
         for (Block block : event.getBlocks()) {
 
-            if (!provider.isAllowed(block.getRelative(event.getDirection()), RegionEnums.Flags.PISTON)) {
+            if (!provider.isAllowed(
+                    Contexts.BLOCK_CHANGE,
+                    block.getLocation(),
+                    RegionEnums.Flags.PISTON,
+                    block,
+                    null, null, null
+            )) {
                 event.setCancelled(true);
                 return;
             }
 
-            if (!provider.isAllowed(block, RegionEnums.Flags.PISTON)) {
+            final Block nextBlock = block.getRelative(event.getDirection());
+
+            if (!provider.isAllowed(
+                    Contexts.BLOCK_CHANGE,
+                    nextBlock.getLocation(),
+                    RegionEnums.Flags.PISTON,
+                    nextBlock,
+                    null, null, null
+            )) {
                 event.setCancelled(true);
-                return;
             }
         }
     }
@@ -251,10 +560,17 @@ public class RegionListener implements Listener {
             return;
         }
 
+        final Entity entity = event.getEntity();
+        final Location location = entity.getLocation();
+
         if (!provider.isAllowed(
-                event.getLocation().getBlock(),
+                Contexts.ENTITY,
+                location,
                 event.getEntity() instanceof Monster
-                        ? RegionEnums.Flags.MONSTER_SPAWN : RegionEnums.Flags.ANIMAL_SPAWN
+                        ? RegionEnums.Flags.MONSTER_SPAWN
+                        : RegionEnums.Flags.ANIMAL_SPAWN,
+                entity,
+                null, null, null
         )) {
             event.setCancelled(true);
         }
