@@ -14,7 +14,7 @@ public class IgnoreYCommand extends Command {
         super(api,
                 "ignore-y",
                 "ignore-y",
-                "<region>"
+                "<region> <true/false>"
         );
     }
 

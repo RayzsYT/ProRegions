@@ -126,6 +126,10 @@ public class ResponseCommand extends Command {
 
         if (type == ResponseType.SOUND) {
 
+            if (args.length != 7) {
+                return false;
+            }
+
             Sound sound;
             try {
                 sound = Sound.valueOf(args[4].toUpperCase());
@@ -158,7 +162,7 @@ public class ResponseCommand extends Command {
             } catch (NumberFormatException e) {
                 final String invalidMessage = api.getMessageProvider().get(
                         "response.sound.invalid-pitch",
-                        "&cInvalid volume! (0.0 - 2.0)"
+                        "&cInvalid pitch! (0.0 - 2.0)"
                 );
 
                 api.getMessageProvider().send(sender, invalidMessage);
