@@ -9,12 +9,16 @@ import de.rayzs.proregions.plugin.impl.response.ResponseImpl;
 import de.rayzs.proregions.plugin.impl.world.TinyLocationImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class RegionImpl implements Region {
 
@@ -22,6 +26,8 @@ public class RegionImpl implements Region {
 
     private final Map<RegionEnums.Flags, RegionEnums.FlagState> flags;
     private final Map<RegionEnums.Flags, Response> responses;
+
+    private final Map<RegionEnums.Flags, Map<String, RegionEnums.FlagState>> specificFlags;
 
     private final Response defaultResponse;
 
@@ -42,6 +48,7 @@ public class RegionImpl implements Region {
             final Map<RegionEnums.Flags, Response> responses,
             final RegionEnums.FlagState defaultFlagState,
             final Map<RegionEnums.Flags, RegionEnums.FlagState> flags,
+            final Map<RegionEnums.Flags, Map<String, RegionEnums.FlagState>> specificFlags,
             final TinyLocation firstLocation,
             final TinyLocation secondLocation
     ) {
@@ -53,6 +60,7 @@ public class RegionImpl implements Region {
                 responses,
                 defaultFlagState,
                 flags,
+                specificFlags,
                 firstLocation,
                 secondLocation
         );
@@ -67,6 +75,7 @@ public class RegionImpl implements Region {
             final Map<RegionEnums.Flags, Response> responses,
             final RegionEnums.FlagState defaultFlagState,
             final Map<RegionEnums.Flags, RegionEnums.FlagState> flags,
+            final Map<RegionEnums.Flags, Map<String, RegionEnums.FlagState>> specificFlags,
             final TinyLocation firstLocation,
             final TinyLocation secondLocation
     ) {
@@ -81,6 +90,7 @@ public class RegionImpl implements Region {
 
         this.defaultResponse = defaultResponse;
         this.responses = responses;
+        this.specificFlags = specificFlags;
 
         this.minX = Math.min(firstLocation.x(), secondLocation.x());
         this.minY = Math.min(firstLocation.y(), secondLocation.y());
@@ -166,8 +176,28 @@ public class RegionImpl implements Region {
     }
 
     @Override
+    public void unsetFlag(RegionEnums.Flags flag, String entityType) {
+        final Map<String, RegionEnums.FlagState> flagStates = specificFlags.getOrDefault(flag, new HashMap<>());
+        flagStates.remove(entityType.toUpperCase());
+
+        if (flagStates.isEmpty()) {
+            specificFlags.remove(flag);
+        } else {
+            specificFlags.put(flag, flagStates);
+        }
+    }
+
+    @Override
     public void setFlag(RegionEnums.Flags flag, RegionEnums.FlagState state) {
         this.flags.put(flag, state);
+    }
+
+    @Override
+    public void setFlag(RegionEnums.Flags flag, RegionEnums.FlagState state, String entityType) {
+        final Map<String, RegionEnums.FlagState> flagStates = specificFlags.getOrDefault(flag, new HashMap<>());
+        flagStates.put(entityType.toUpperCase(), state);
+
+        specificFlags.put(flag, flagStates);
     }
 
     @Override
@@ -178,6 +208,17 @@ public class RegionImpl implements Region {
     @Override
     public RegionEnums.FlagState getFlagState(RegionEnums.Flags flag) {
         return this.flags.getOrDefault(flag, this.defaultFlagState);
+    }
+
+    @Override
+    public RegionEnums.FlagState getFlagState(RegionEnums.Flags flag, String typeName) {
+        final Map<String, RegionEnums.FlagState> flagStates = specificFlags.get(flag);
+
+        if (flagStates != null) {
+            return flagStates.getOrDefault(typeName.toUpperCase(), defaultFlagState);
+        }
+
+        return getFlagState(flag);
     }
 
     @Override
@@ -222,8 +263,22 @@ public class RegionImpl implements Region {
                 )
         ));
 
-        map.put("default-response", defaultResponse);
 
+        map.put("specific-flags",
+                specificFlags.entrySet().stream().collect(
+                        java.util.stream.Collectors.toMap(
+                                outer -> outer.getKey().name(),
+                                outer -> outer.getValue().entrySet().stream().collect(
+                                        java.util.stream.Collectors.toMap(
+                                                inner -> inner.getKey(),
+                                                inner -> inner.getValue().name()
+                                        )
+                                )
+                        )
+                )
+        );
+
+        map.put("default-response", defaultResponse);
         map.put("responses", responses.entrySet().stream().collect(
                 java.util.stream.Collectors.toMap(
                         entry -> entry.getKey().name(),
@@ -274,10 +329,27 @@ public class RegionImpl implements Region {
             responses.put(flag, response);
         }
 
+        final Map<RegionEnums.Flags, Map<String, RegionEnums.FlagState>> specificFlags = new HashMap<>();
+        final Map<String, Map<String, String>> specificFlagsMap = (Map<String, Map<String, String>>) map.get("specific-flags");
+
+        for (Map.Entry<String, Map<String, String>> outerEntry : specificFlagsMap.entrySet()) {
+            final RegionEnums.Flags flag = RegionEnums.Flags.valueOf(outerEntry.getKey());
+            final Map<String, RegionEnums.FlagState> innerMap = new HashMap<>();
+
+            for (Map.Entry<String, String> innerEntry : outerEntry.getValue().entrySet()) {
+                final String type = innerEntry.getKey();
+                final RegionEnums.FlagState state = RegionEnums.FlagState.valueOf(innerEntry.getValue());
+
+                innerMap.put(type, state);
+            }
+
+            specificFlags.put(flag, innerMap);
+        }
+
         return new RegionImpl(
                 environmentId, name, worldName, ignoreY,
                 defaultResponse, responses,
-                defaultFlagState, flags,
+                defaultFlagState, flags, specificFlags,
                 new TinyLocationImpl(name, minX, minY, minZ),
                 new TinyLocationImpl(name, maxX, maxY, maxZ)
         );
@@ -286,6 +358,11 @@ public class RegionImpl implements Region {
     @Override
     public String getRegionName() {
         return this.name;
+    }
+
+    @Override
+    public String getWorldName() {
+        return this.worldName;
     }
 
     @Override

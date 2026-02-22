@@ -25,9 +25,6 @@ import java.util.concurrent.TimeUnit;
 
 public class ProRegionsLoader extends JavaPlugin {
 
-    private final ExpireCache<UUID, Location> storedFirstPositions = new ExpireCache<>(10, TimeUnit.MINUTES);
-    private final ExpireCache<UUID, Location> storedSecondPositions = new ExpireCache<>(10, TimeUnit.MINUTES);
-
     @Override
     public void onEnable() {
         final long startTime = System.currentTimeMillis();
@@ -44,10 +41,10 @@ public class ProRegionsLoader extends JavaPlugin {
 
         final PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new RegionListener(api), this);
-        pluginManager.registerEvents(new WandListener(storedFirstPositions, storedSecondPositions), this);
+        pluginManager.registerEvents(new WandListener(api), this);
 
 
-        final ProRegionCommand proRegionCommand = new ProRegionCommand(api, storedFirstPositions, storedSecondPositions);
+        final ProRegionCommand proRegionCommand = new ProRegionCommand(api);
         final PluginCommand pluginCommand = getCommand("proregions");
 
         pluginCommand.setExecutor(proRegionCommand);

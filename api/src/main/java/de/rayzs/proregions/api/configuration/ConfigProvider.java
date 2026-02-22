@@ -2,6 +2,8 @@ package de.rayzs.proregions.api.configuration;
 
 public interface ConfigProvider {
 
+    void reload();
+
     /**
      * Gets an already existing Config instance or creates a new one.
      *

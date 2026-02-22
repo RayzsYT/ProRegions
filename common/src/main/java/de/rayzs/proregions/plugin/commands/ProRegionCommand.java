@@ -5,7 +5,6 @@ import de.rayzs.proregions.api.region.Region;
 import de.rayzs.proregions.api.region.RegionEnums;
 import de.rayzs.proregions.api.region.RegionProvider;
 import de.rayzs.proregions.api.utils.ExpireCache;
-import de.rayzs.proregions.plugin.impl.region.RegionImpl;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.command.Command;
@@ -22,22 +21,9 @@ import java.util.stream.Collectors;
 public class ProRegionCommand implements CommandExecutor, TabExecutor {
 
     private final ProRegionAPI api;
-    private final RegionProvider provider;
 
-    private final ExpireCache<UUID, Location> storedFirstPositions;
-    private final ExpireCache<UUID, Location> storedSecondPositions;
-
-    public ProRegionCommand(
-            final ProRegionAPI api,
-            final ExpireCache<UUID, Location> storedFirstPositions,
-            final ExpireCache<UUID, Location> storedSecondPositions
-        ) {
-
+    public ProRegionCommand(final ProRegionAPI api) {
         this.api = api;
-        this.provider = api.getRegionProvider();
-
-        this.storedFirstPositions = storedFirstPositions;
-        this.storedSecondPositions = storedSecondPositions;
     }
 
     @Override
@@ -47,7 +33,9 @@ public class ProRegionCommand implements CommandExecutor, TabExecutor {
             @NonNull final String label,
             @NonNull final String[] args
     ) {
-
+        api.getCommandProvider().handleExecution(sender, label, args);
+        return true;
+        /*
         for (int i = 0; i < args.length; i++)
             args[i] = args[i].toLowerCase();
 
@@ -398,6 +386,8 @@ public class ProRegionCommand implements CommandExecutor, TabExecutor {
         sender.sendMessage("/" + label + " response <region> <flag/default> <type> <value>");
 
         return true;
+
+         */
     }
 
     @Override
@@ -407,10 +397,10 @@ public class ProRegionCommand implements CommandExecutor, TabExecutor {
             @NonNull final String label,
             @NonNull final String[] args) {
 
-        final List<String> suggestions = new ArrayList<>();
+        final List<String> suggestions = api.getCommandProvider().handleTabCompletion(sender, args);
         final int length = args.length;
 
-
+        /*
         if (length <= 1) {
             suggestions.add("reload");
             suggestions.add("list");
@@ -473,7 +463,7 @@ public class ProRegionCommand implements CommandExecutor, TabExecutor {
                 suggestions.add("1.0");
             }
         }
-
+        */
 
         return suggestions.stream().filter(suggestion -> suggestion.toLowerCase().contains(args[Math.max(0, length - 1)].toLowerCase())).collect(Collectors.toList());
     }

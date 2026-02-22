@@ -1,5 +1,7 @@
 package de.rayzs.proregions.plugin.listeners;
 
+import de.rayzs.proregions.api.ProRegionAPI;
+import de.rayzs.proregions.api.clipboard.Clipboard;
 import de.rayzs.proregions.api.utils.ExpireCache;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -12,15 +14,10 @@ import java.util.UUID;
 
 public class WandListener implements Listener {
 
-    private final ExpireCache<UUID, Location> storedFirstPositions;
-    private final ExpireCache<UUID, Location> storedSecondPositions;
+    private final ProRegionAPI api;
 
-    public WandListener(
-            final ExpireCache<UUID, Location> storedFirstPositions,
-            final ExpireCache<UUID, Location> storedSecondPositions
-    ) {
-        this.storedFirstPositions = storedFirstPositions;
-        this.storedSecondPositions = storedSecondPositions;
+    public WandListener(final ProRegionAPI api) {
+        this.api = api;
     }
 
     @EventHandler
@@ -40,14 +37,15 @@ public class WandListener implements Listener {
             return;
         }
 
+        final Clipboard clipboard = api.getClipboardProvider().getClipboard(player.getUniqueId());
         final Location location = event.getClickedBlock().getLocation();
 
         if (event.getAction().name().contains("LEFT")) {
-            storedFirstPositions.put(uuid, location);
+            clipboard.setFirstLocation(location);
             player.sendMessage("§aFirst position!");
             event.setCancelled(true);
         } else if (event.getAction().name().contains("RIGHT")) {
-            storedSecondPositions.put(uuid, location);
+            clipboard.setSecondLocation(location);
             player.sendMessage("§aSecond position set!");
             event.setCancelled(true);
         }

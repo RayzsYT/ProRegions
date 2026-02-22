@@ -1,0 +1,51 @@
+package de.rayzs.proregions.plugin.impl.command.commands;
+
+import de.rayzs.proregions.api.ProRegionAPI;
+import de.rayzs.proregions.api.command.Command;
+import de.rayzs.proregions.api.region.Region;
+import org.bukkit.command.CommandSender;
+import org.jspecify.annotations.NonNull;
+
+import java.util.Iterator;
+import java.util.List;
+
+public class ReloadCommand extends Command {
+
+    public ReloadCommand(final ProRegionAPI api) {
+        super(api,
+                "reload",
+                "reload",
+                ""
+        );
+    }
+
+    @Override
+    public boolean onExecute(@NonNull CommandSender sender, @NonNull String label, @NonNull String[] args) {
+        final String loadingMessage = api.getMessageProvider().get(
+                "reload.loading",
+                "&eReloading..."
+        );
+
+        final String completedMessage = api.getMessageProvider().get(
+                "reload.completed",
+                "&aReload completed!"
+        );
+
+        api.getMessageProvider().send(
+                sender, loadingMessage
+        );
+
+        api.reload();
+
+        api.getMessageProvider().send(
+                sender, completedMessage
+        );
+
+        return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(@NonNull CommandSender sender, @NonNull String[] args) {
+        return List.of();
+    }
+}

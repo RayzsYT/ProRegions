@@ -25,6 +25,11 @@ public class ConfigProviderImpl implements ConfigProvider {
     }
 
     @Override
+    public void reload() {
+        configs.values().forEach(Config::reload);
+    }
+
+    @Override
     public Config getOrCreate(final String fileName) {
         return getOrCreate(null, fileName);
     }

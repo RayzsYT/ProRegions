@@ -3,6 +3,7 @@ package de.rayzs.proregions.plugin.listeners;
 import de.rayzs.proregions.api.ProRegionAPI;
 import de.rayzs.proregions.api.region.RegionEnums;
 import de.rayzs.proregions.api.region.RegionProvider;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
@@ -14,6 +15,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -111,6 +114,34 @@ public class RegionListener implements Listener {
             if (!provider.isAllowed(event.getPlayer(), event.getClickedBlock(), RegionEnums.Flags.TRAMPLE_CROPS)) {
                 event.setCancelled(true);
             }
+        }
+    }
+
+    @EventHandler(
+            priority = EventPriority.LOWEST
+    )
+    public void onPlayerBucketEmpty(final PlayerBucketEmptyEvent event) {
+        final Material item = event.getBlock().getType();
+        if (item != Material.LAVA_BUCKET && item != Material.WATER_BUCKET) {
+            return;
+        }
+
+        final Material material = item == Material.LAVA_BUCKET ? Material.LAVA : Material.WATER;
+        if (!provider.isAllowed(
+                event.getPlayer(),
+                event.getBlock(),
+                material,
+                RegionEnums.Flags.PLACE)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(
+            priority = EventPriority.LOWEST
+    )
+    public void onPlayerBucketFill(final PlayerBucketFillEvent event) {
+        if (!provider.isAllowed(event.getPlayer(), event.getBlockClicked(), RegionEnums.Flags.BREAK)) {
+            event.setCancelled(true);
         }
     }
 

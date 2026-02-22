@@ -1,6 +1,7 @@
 package de.rayzs.proregions.plugin.impl.region;
 
 import de.rayzs.proregions.api.ProRegionAPI;
+import de.rayzs.proregions.api.clipboard.Clipboard;
 import de.rayzs.proregions.api.configuration.Config;
 import de.rayzs.proregions.api.region.Region;
 import de.rayzs.proregions.api.region.RegionEnums;
@@ -9,6 +10,7 @@ import de.rayzs.proregions.api.response.Response;
 import de.rayzs.proregions.api.world.Environment;
 import de.rayzs.proregions.plugin.impl.response.ResponseImpl;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -104,7 +106,7 @@ public class RegionProviderImpl implements RegionProvider {
         }
 
         for (final Region region : getRegions(world)) {
-            if (region.contains(block) && region.getFlagState(flag) == RegionEnums.FlagState.DENY) {
+            if (region.contains(block) && region.getFlagState(flag, block.getType().name()) == RegionEnums.FlagState.DENY) {
                 return false;
             }
         }
@@ -131,7 +133,42 @@ public class RegionProviderImpl implements RegionProvider {
 
         for (final Region region : getRegions(world)) {
             if (region.contains(block)) {
-                if (region.getFlagState(flag) == RegionEnums.FlagState.DENY) {
+                if (region.getFlagState(flag, block.getType().name()) == RegionEnums.FlagState.DENY) {
+
+                    if (player == null) {
+                        return false;
+                    }
+
+                    region.getResponse(flag).send(player);
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean isAllowed(
+            final Entity entity,
+            final Block block,
+            final Material material,
+            final RegionEnums.Flags flag
+    ) {
+        final World world = block.getWorld();
+
+        if (world == null) {
+            return true;
+        }
+
+        final Player player = entity instanceof Player p ? p : null;
+        if (player != null && player.hasPermission("proregion.bypass." + flag.name().toLowerCase())) {
+            return true;
+        }
+
+        for (final Region region : getRegions(world)) {
+            if (region.contains(block)) {
+                if (region.getFlagState(flag, material.name()) == RegionEnums.FlagState.DENY) {
 
                     if (player == null) {
                         return false;
@@ -164,7 +201,7 @@ public class RegionProviderImpl implements RegionProvider {
 
         for (final Region region : getRegions(world)) {
             if (region.contains(entity)) {
-                if (region.getFlagState(flag) == RegionEnums.FlagState.DENY) {
+                if (region.getFlagState(flag, entity.getType().name()) == RegionEnums.FlagState.DENY) {
 
                     if (player == null) {
                         return false;
@@ -194,7 +231,7 @@ public class RegionProviderImpl implements RegionProvider {
 
         for (final Region region : getRegions(world)) {
             if (region.contains(target)) {
-                if (region.getFlagState(flag) == RegionEnums.FlagState.DENY) {
+                if (region.getFlagState(flag, target.getType().name()) == RegionEnums.FlagState.DENY) {
 
                     if (player == null) {
                         return false;
@@ -218,10 +255,9 @@ public class RegionProviderImpl implements RegionProvider {
     public boolean createRegion(
             final String name,
             final boolean ignoreY,
-            final Location firstLocation,
-            final Location secondLocation
+            final Clipboard clipboard
     ) {
-        final World world = firstLocation.getWorld();
+        final World world = clipboard.getFirstLocation().getWorld();
         final int environmentId = Environment.getEnvironmentByWorld(world).getId();
 
         if (regions.get(environmentId).containsKey(name)) {
@@ -241,8 +277,9 @@ public class RegionProviderImpl implements RegionProvider {
                 new HashMap<>(),
                 RegionEnums.FlagState.DENY,
                 flags,
-                api.toTinyLocation(firstLocation),
-                api.toTinyLocation(secondLocation)
+                new HashMap<>(),
+                api.toTinyLocation(clipboard.getFirstLocation()),
+                api.toTinyLocation(clipboard.getSecondLocation())
         );
 
         regions.get(environmentId).put(name, region);
