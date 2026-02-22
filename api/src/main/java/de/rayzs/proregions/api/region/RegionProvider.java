@@ -14,6 +14,7 @@ public interface RegionProvider {
     void reload();
 
     Region getRegion(final String name);
+    Region getRegion(final Location location);
 
     Collection<Region> getRegions();
     Collection<Region> getRegions(World world);

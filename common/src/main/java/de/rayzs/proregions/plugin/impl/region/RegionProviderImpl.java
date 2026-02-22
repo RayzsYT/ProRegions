@@ -94,6 +94,23 @@ public class RegionProviderImpl implements RegionProvider {
     }
 
     @Override
+    public Region getRegion(Location location) {
+        final World world = location.getWorld();
+
+        if (world == null) {
+            return null;
+        }
+
+        for (final Region region : getRegions(world)) {
+            if (region.contains(location)) {
+                return region;
+            }
+        }
+
+        return null;
+    }
+
+    @Override
     public boolean isAllowed(
             final Block block,
             final RegionEnums.Flags flag

@@ -5,6 +5,7 @@ import de.rayzs.proregions.api.command.Command;
 import de.rayzs.proregions.api.region.Region;
 import de.rayzs.proregions.api.region.RegionEnums;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
@@ -24,17 +25,35 @@ public class InfoCommand extends Command {
     @Override
     public boolean onExecute(@NonNull CommandSender sender, @NonNull String label, @NonNull String[] args) {
 
-        if (args.length != 1) {
+        if (args.length > 1) {
             return false;
         }
 
-        final String regionName = args[0].toLowerCase();
-        final Region region = api.getRegionProvider().getRegion(regionName);
+        Region region = null;
+        if (args.length == 1) {
+            region = api.getRegionProvider().getRegion(args[0].toLowerCase());
+
+            if (region == null) {
+                final String doesNotExistMessage = api.getMessageProvider().get(
+                        "info.unknown-region",
+                        "&cRegion not found!"
+                );
+
+                api.getMessageProvider().send(
+                        sender,
+                        doesNotExistMessage
+                );
+
+                return true;
+            }
+        } else if (sender instanceof Player player) {
+            region = api.getRegionProvider().getRegion(player.getLocation());
+        }
 
         if (region == null) {
             final String doesNotExistMessage = api.getMessageProvider().get(
-                    "info.unknown-region",
-                    "&cThere's no region with that name!"
+                    "info.no-region-here",
+                    "&cYou are not in a region!"
             );
 
             api.getMessageProvider().send(
@@ -45,6 +64,7 @@ public class InfoCommand extends Command {
             return true;
         }
 
+        final String regionName = region.getRegionName();
         final String world = region.getWorldName();
 
         final List<RegionEnums.Flags> allowedFlags = new ArrayList<>();
