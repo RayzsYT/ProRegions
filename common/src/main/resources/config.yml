@@ -39,7 +39,7 @@ messages:
       &7Region: &e%region%
       &7World: &e%world%
       &7Allowed flags: &a%allowed%
-      &7Disallowed flags: &c%disallowed%
+      &7Denied flags: &c%denied%
 
   list:
     message: "&7Regions: &e%regions%"
