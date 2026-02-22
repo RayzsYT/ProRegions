@@ -109,7 +109,18 @@ public class FlagCommand extends Command {
             try {
                 final Material material = Material.valueOf(args[3].toUpperCase());
 
-                if (!material.isItem()) {
+                if (flag == RegionEnums.Flags.FLOW && material != Material.LAVA && material != Material.WATER) {
+                    final String invalidLiquidMessage = api.getMessageProvider().get(
+                            "flag.specification.invalid-liquid",
+                            "&cInvalid liquid! (Example: lava/water)"
+                    );
+
+                    api.getMessageProvider().send(sender, invalidLiquidMessage);
+
+                    return true;
+                }
+
+                if (material.isBlock()) {
                     type = material.name().toLowerCase();
                 }
             } catch (IllegalArgumentException ignored) {}
@@ -183,8 +194,12 @@ public class FlagCommand extends Command {
 
                 if (flag.isExcludable()) {
 
+                    if (flag == RegionEnums.Flags.FLOW) {
+                        return List.of("lava", "water");
+                    }
+
                     if (flag.getTargetType() == RegionEnums.FlagTargetType.BLOCK) {
-                        return Arrays.stream(Material.values()).filter(type -> !type.isItem()).map(type -> type.name().toLowerCase()).toList();
+                        return Arrays.stream(Material.values()).filter(Material::isBlock).map(type -> type.name().toLowerCase()).toList();
                     } else if (flag.getTargetType() == RegionEnums.FlagTargetType.ENTITY) {
                         return Arrays.stream(EntityType.values()).map(type -> type.name().toLowerCase()).toList();
                     }
