@@ -30,8 +30,9 @@ public class ProRegionsLoader extends JavaPlugin {
         final long startTime = System.currentTimeMillis();
 
 
-        saveResource("config.yml", false);
-
+        if (!getDataFolder().exists()) {
+            saveResource("config.yml", false);
+        }
 
         ConfigurationSerialization.registerClass(TinyLocationImpl.class);
         ConfigurationSerialization.registerClass(RegionImpl.class);
