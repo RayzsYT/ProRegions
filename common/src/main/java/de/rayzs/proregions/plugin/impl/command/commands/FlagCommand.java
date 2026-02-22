@@ -35,7 +35,7 @@ public class FlagCommand extends Command {
 
         if (region == null) {
             final String doesNotExistMessage = api.getMessageProvider().get(
-                    "flag.does-not-exist",
+                    "flag.unknown-region",
                     "&cThere's no region with that name!"
             );
 

@@ -30,7 +30,7 @@ public class IgnoreYCommand extends Command {
 
         if (region == null) {
             final String doesNotExistMessage = api.getMessageProvider().get(
-                    "ignore-y.does-not-exist",
+                    "ignore-y.unknown-region",
                     "&cThere's no region with that name!"
             );
 

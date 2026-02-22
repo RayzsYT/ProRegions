@@ -33,7 +33,7 @@ public class InfoCommand extends Command {
 
         if (region == null) {
             final String doesNotExistMessage = api.getMessageProvider().get(
-                    "info.does-not-exist",
+                    "info.unknown-region",
                     "&cThere's no region with that name!"
             );
 

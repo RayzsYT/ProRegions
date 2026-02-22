@@ -32,7 +32,7 @@ public class DeleteCommand extends Command {
 
         if (!api.getRegionProvider().deleteRegion(regionName)) {
             final String doesNotExistMessage = api.getMessageProvider().get(
-                    "delete.does-not-exist",
+                    "delete.unknown-region",
                     "&cThere's no region with that name!"
             );
 
