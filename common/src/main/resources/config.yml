@@ -2,6 +2,7 @@ messages:
 
   help: |
     &7Available commmands are: &f/%label%...
+      &freload &7to reload all files and regions.
       &fcreate <region> &7to create a region.
       &fdelete <region> &7to delete a region.
       &fflag ... &7to set a flag.
