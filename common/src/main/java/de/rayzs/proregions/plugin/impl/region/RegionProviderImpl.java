@@ -5,10 +5,12 @@ import de.rayzs.proregions.api.clipboard.Clipboard;
 import de.rayzs.proregions.api.configuration.Config;
 import de.rayzs.proregions.api.region.*;
 import de.rayzs.proregions.api.region.context.ContextEval;
+import de.rayzs.proregions.api.response.Response;
 import de.rayzs.proregions.api.world.Environment;
 import de.rayzs.proregions.plugin.impl.response.ResponseImpl;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -128,6 +130,11 @@ public class RegionProviderImpl implements RegionProvider {
             );
 
             if (evaluation == RegionEnums.FlagState.DENY) {
+                final Response response = region.getResponse(flag);
+
+                if (a instanceof Player player)
+                    response.send(player);
+
                 return false;
             }
         }
