@@ -63,12 +63,12 @@ public class IgnoreYCommand extends Command {
 
         final String enabledMessage = api.getMessageProvider().get(
                 "ignore-y.enabled",
-                "Region %region% will now ignore the Y-axis for its area."
+                "&aRegion &e%region% &awill now ignore the Y-axis for its area."
         );
 
         final String disabledMessage = api.getMessageProvider().get(
                 "ignore-y.disabled",
-                "Region %region% will now include the Y-axis for its area."
+                "&aRegion 6e%region% &awill now include the Y-axis for its area."
         );
 
         api.getMessageProvider().send(
