@@ -25,6 +25,9 @@ public class MessageProviderImpl implements MessageProvider {
     private final HashMap<String, String> hashedDefaultMessages = new HashMap<>();
 
 
+    private final String defaultPath = "messages.";
+
+
     @Override
     public void reload() {
         config.reload();
@@ -32,12 +35,12 @@ public class MessageProviderImpl implements MessageProvider {
         final Set<String> keys = hashedMessages.keySet();
         hashedMessages.clear();
 
-        keys.forEach(path -> get(path, hashedDefaultMessages.get(path)));
+        keys.forEach(path -> get(path.substring(defaultPath.length()), hashedDefaultMessages.get(path)));
     }
 
     @Override
     public String get(String path, final String defaultMessage) {
-        path = "messages." + path;
+        path = defaultPath + path;
 
         String message = hashedMessages.get(path);
 
