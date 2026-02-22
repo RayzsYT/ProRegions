@@ -6,6 +6,8 @@ messages:
       &fdelete <region> &7to delete a region.
       &fflag ... &7to set a flag.
       &fresponse ... &7to set a response.
+      &flist &7to see all existing regions.
+      &finfo &7to view region information.
       &fignore-y
 
   unknown-command: "&cCommand not found! Please use '/%label%'' to receive a list of all available commands."
