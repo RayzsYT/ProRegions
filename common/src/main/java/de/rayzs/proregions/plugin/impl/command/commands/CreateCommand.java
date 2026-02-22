@@ -76,6 +76,8 @@ public class CreateCommand extends Command {
             return true;
         }
 
+        clipboard.reset();
+
         final String successMessage = api.getMessageProvider().get(
                 "create.success",
                 "&aSuccessfully created the region %region%!"
