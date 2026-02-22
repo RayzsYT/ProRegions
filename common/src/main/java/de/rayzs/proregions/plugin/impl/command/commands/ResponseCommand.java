@@ -256,8 +256,12 @@ public class ResponseCommand extends Command {
                     return Arrays.stream(Sound.values()).map(sound -> sound.name().toLowerCase()).toList();
                 }
 
-                if (args.length < 8) {
-                    return List.of("1.0");
+                if (args.length == 6) {
+                    return List.of("1.0", "10.0");
+                }
+
+                if (args.length == 7) {
+                    return List.of("1.0", "2.0");
                 }
             }
 

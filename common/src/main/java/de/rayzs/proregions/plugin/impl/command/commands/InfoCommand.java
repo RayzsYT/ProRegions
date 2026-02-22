@@ -107,7 +107,7 @@ public class InfoCommand extends Command {
         }
 
         final String successMessage = api.getMessageProvider().get(
-                "messages.info.message",
+                "info.message",
                 "&7Name: %region%"
         );
 
