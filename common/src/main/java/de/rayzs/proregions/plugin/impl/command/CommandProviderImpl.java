@@ -34,7 +34,8 @@ public class CommandProviderImpl implements CommandProvider {
                 new ListCommand(api),
                 new InfoCommand(api),
                 new ReloadCommand(api),
-                new IgnoreYCommand(api)
+                new IgnoreYCommand(api),
+                new ResponseCommand(api)
         );
     }
 
