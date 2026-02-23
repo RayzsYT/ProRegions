@@ -1,6 +1,7 @@
 package de.rayzs.proregions.plugin;
 
 import de.rayzs.proregions.api.ProRegion;
+import de.rayzs.proregions.api.utils.VersionHelper;
 import de.rayzs.proregions.plugin.commands.ProRegionCommand;
 import de.rayzs.proregions.plugin.impl.ProRegionImpl;
 import de.rayzs.proregions.plugin.impl.region.RegionImpl;
@@ -14,16 +15,21 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+
 public class ProRegionsLoader extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        final long startTime = System.currentTimeMillis();
-
-
-        if (!getDataFolder().exists()) {
-            saveResource("config.yml", false);
+        if (!VersionHelper.isSupported()) {
+            getLogger().info("Plugin does not support this version of Minecraft! Please upgrade your server to at least " + VersionHelper.getMinSupportedVersion() + "!");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
         }
+
+
+        final long startTime = System.currentTimeMillis();
+        loadDefaultConfig();
 
 
         ConfigurationSerialization.registerClass(TinyLocationImpl.class);
@@ -54,5 +60,13 @@ public class ProRegionsLoader extends JavaPlugin {
     @Override
     public void onDisable() {
         HandlerList.unregisterAll(this);
+    }
+
+    private void loadDefaultConfig() {
+        final File configFile = new File(getDataFolder(), "config.yml");
+
+        if (!configFile.exists()) {
+            saveResource(configFile.getName(), false);
+        }
     }
 }
