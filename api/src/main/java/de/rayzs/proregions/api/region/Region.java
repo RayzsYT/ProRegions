@@ -3,13 +3,10 @@ package de.rayzs.proregions.api.region;
 import de.rayzs.proregions.api.response.Response;
 import de.rayzs.proregions.api.world.Environment;
 import de.rayzs.proregions.api.world.TinyLocation;
-import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 
 public interface Region extends ConfigurationSerializable {
 
