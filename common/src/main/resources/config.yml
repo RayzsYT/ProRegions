@@ -11,28 +11,43 @@ messages:
       &finfo &7to view region information.
       &fignore-y
 
-  unknown-command: "&cCommand not found! Please use '/%label%'' to receive a list of all available commands."
+  unknown-command: "&cCommand not found! Please use '/%label%' to receive a list of all available commands."
   wrong-usage: "&cWronge usage! /%label% %usage%"
   missing-permission: "&cMissing permission %permission%!"
 
+
   create:
     success: "&aSuccessfully created the region %region%!"
+    already-exists: "&cThere's already a region with that name!"
     no-clipboard: "&cYou need to select an area first! Use a stone axe to select an area."
 
+
   delete:
-    unknown-region: "&cThere's no region with that name!"
     success: "&aSuccessfully deleted the region %region%!"
+    unknown-region: "&cThere's no region with that name!"
+
 
   flag:
+    success: "&aSuccessfully set &e%flag% &afor &e%region% &ato &e%state%&a!"
+    unknown-region: "&cThere's no region with that name!"
+    invalid-state: "&cInvalid state! (Example: allow/deny)"
+
     specification:
+      success: "&aSuccessfully set &e%flag% &afor &e%region% &aand the type &e%type% &ato &e%state%&a!"
       no-specification: "&cThis flag does not contain any specification values!"
+
       invalid-liquid: "&cInvalid liquid! (Example: lava/water)"
       invalid-projectile: "&cInvalid projectile! (Example: arrow)"
-      success: "&aSuccessfully set &e%flag% &afor &e%region% &aand the type &e%type% &ato &e%state%&a!"
+      invalid-item: "&cInvalid item! (Example: lava_bucket)"
+
 
   ignore-y:
     enabled: "&aRegion &e%region% &awill now ignore the Y-axis for its area."
     disabled: "&aRegion 6e%region% &awill now include the Y-axis for its area."
+
+    unknown-region: "&cThere's no region with that name!"
+    invalid-bool: "&cInvalid value for ignoreY. (possible: true/false)"
+
 
   info:
     unknown-region: "&cRegion not found!"
@@ -43,13 +58,19 @@ messages:
       &7Allowed flags: &a%allowed%
       &7Denied flags: &c%denied%
 
+
   list:
     message: "&7Regions: &e%regions%"
     empty: "&cNo regions!"
 
+
   response:
     success: "&aSet %response% for &e%flag% &aof region &e%region%&a."
     reset: "&aReset %response% response for &e%flag% &aof region &e%region%&a."
+
+    unknown-region: "&cThere's no region with that name!"
+    invalid-flag: "&cInvalid flag! (Example: default/break/interact...)"
+    invalid-type: "&cInvalid response type! (Example: chat/title...)"
 
     sound:
       success: "&aSet sound for &e%flag% &aof region &e%region% &awith volume &e%volume% and pitch &e%pitch%&a."

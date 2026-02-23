@@ -50,8 +50,8 @@ public class IgnoreYCommand extends Command {
             ignoreY = false;
         } else {
             final String invalidValueMessage = api.getMessageProvider().get(
-                    "ignore-y.invalid",
-                    "&cInvalid value for ignoreY. (possible values: true/false)"
+                    "ignore-y.invalid-bool",
+                    "&cInvalid boolean for ignoreY. (possible: true/false)"
             );
 
             api.getMessageProvider().send(sender, invalidValueMessage);
