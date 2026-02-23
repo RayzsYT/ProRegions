@@ -12,9 +12,12 @@ messages:
       &fignore-y
 
   unknown-command: "&cCommand not found! Please use '/%label%' to receive a list of all available commands."
+
   wrong-usage: "&cWronge usage! /%label% %usage%"
   missing-permission: "&cMissing permission %permission%!"
 
+  first-position-set: "&aFirst position set!"
+  second-position-set: "&aSecond position set!"
 
   create:
     success: "&aSuccessfully created the region %region%!"

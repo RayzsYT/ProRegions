@@ -42,12 +42,31 @@ public class WandListener implements Listener {
 
         if (event.getAction().name().contains("LEFT")) {
             clipboard.setFirstLocation(location);
-            player.sendMessage("§aFirst position!");
             event.setCancelled(true);
+
+            final String positionSetMessage = api.getMessageProvider().get(
+                    "first-position-set",
+                    "&aFirst position set!"
+            );
+
+            api.getMessageProvider().send(
+                    player,
+                    positionSetMessage
+            );
+
         } else if (event.getAction().name().contains("RIGHT")) {
             clipboard.setSecondLocation(location);
-            player.sendMessage("§aSecond position set!");
             event.setCancelled(true);
+
+            final String positionSetMessage = api.getMessageProvider().get(
+                    "second-position-set",
+                    "&aSecond position set!"
+            );
+
+            api.getMessageProvider().send(
+                    player,
+                    positionSetMessage
+            );
         }
     }
 }
