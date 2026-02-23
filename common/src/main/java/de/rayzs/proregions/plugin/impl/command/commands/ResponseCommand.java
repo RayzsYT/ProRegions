@@ -219,7 +219,7 @@ public class ResponseCommand extends Command {
 
         api.getMessageProvider().send(sender, successMessage,
                 "%region%", regionName,
-                "%flag%", flag.name().toLowerCase(),
+                "%flag%", flag != null ? flag.name().toLowerCase() : "default",
                 "%response%", type != null ? type.name().toLowerCase() : "default"
         );
 
