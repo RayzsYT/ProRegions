@@ -7,6 +7,7 @@ import de.rayzs.proregions.api.region.context.Contexts;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -101,7 +102,7 @@ public class RegionListener implements Listener {
 
         if (!provider.isAllowed(
                 Contexts.BLOCK_CHANGE,
-                event.getBlock().getLocation(),
+                event.getToBlock().getLocation(),
                 RegionEnums.Flags.FLOW,
                 toBlock,
                 null, null, null
@@ -113,20 +114,20 @@ public class RegionListener implements Listener {
     @EventHandler(
             priority = org.bukkit.event.EventPriority.LOWEST
     )
-    public void onFireSpread(final BlockFromToEvent event) {
+    public void onFireSpread(final BlockSpreadEvent event) {
+        final Block fireBlock = event.getSource();
+
         if (event.getBlock().getType() != org.bukkit.Material.FIRE) {
             return;
         }
 
-        if (!event.getToBlock().getType().isFlammable()) {
-            return;
-        }
+        final Block blockBelow = fireBlock.getRelative(BlockFace.DOWN);
 
         if (!provider.isAllowed(
                 Contexts.BLOCK_CHANGE,
                 event.getBlock().getLocation(),
                 RegionEnums.Flags.FIRE_SPREAD,
-                event.getBlock(),
+                blockBelow,
                 null, null, null
         )) {
             event.setCancelled(true);
@@ -252,7 +253,7 @@ public class RegionListener implements Listener {
             if (!provider.isAllowed(
                     Contexts.PLAYER_BUCKET_ENTITY,
                     entity.getLocation(),
-                    RegionEnums.Flags.BUCKET_MILK,
+                    RegionEnums.Flags.MILK_ENTITY,
                     player, entity,
                     null, null
             )) {
@@ -328,7 +329,7 @@ public class RegionListener implements Listener {
         final Location location = entity.getLocation();
 
         switch (event.getCause()) {
-            case LAVA: case FIRE:
+            case LAVA: case FIRE: case FIRE_TICK: case CAMPFIRE:
                 if (!provider.isAllowed(
                         Contexts.ENTITY,
                         location,
