@@ -12,10 +12,8 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.ThrowableProjectile;
 import org.jspecify.annotations.NonNull;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class FlagCommand extends Command {
 
@@ -109,26 +107,50 @@ public class FlagCommand extends Command {
 
         String type = null;
 
-        if (flag.getTargetType() == RegionEnums.FlagTargetType.BLOCK) {
+        if (flag.getTargetType() == RegionEnums.FlagTargetType.LIQUID) {
             try {
                 final Material material = Material.valueOf(args[3].toUpperCase());
 
-                if (flag == RegionEnums.Flags.FLOW && material != Material.LAVA && material != Material.WATER) {
+                if (material != Material.LAVA && material != Material.WATER) {
                     final String invalidLiquidMessage = api.getMessageProvider().get(
                             "flag.specification.invalid-liquid",
                             "&cInvalid liquid! (Example: lava/water)"
                     );
 
                     api.getMessageProvider().send(sender, invalidLiquidMessage);
-
                     return true;
                 }
+
+                type = material.name().toLowerCase();
+            } catch (IllegalArgumentException ignored) {}
+
+        } else if (flag.getTargetType() == RegionEnums.FlagTargetType.ITEM) {
+            try {
+                final Material material = Material.valueOf(args[3].toUpperCase());
+
+                if (material.isItem()) {
+                    type = material.name().toLowerCase();
+                }
+            } catch (IllegalArgumentException ignored) {}
+
+            if (type == null) {
+                final String invalidMaterialMessage = api.getMessageProvider().get(
+                        "flag.specification.invalid-item",
+                        "&cInvalid item!"
+                );
+
+                api.getMessageProvider().send(sender, invalidMaterialMessage);
+                return true;
+            }
+
+        } else if (flag.getTargetType() == RegionEnums.FlagTargetType.BLOCK) {
+            try {
+                final Material material = Material.valueOf(args[3].toUpperCase());
 
                 if (material.isBlock()) {
                     type = material.name().toLowerCase();
                 }
-            } catch (IllegalArgumentException ignored) {
-            }
+            } catch (IllegalArgumentException ignored) {}
 
             if (type == null) {
                 final String invalidMaterialMessage = api.getMessageProvider().get(
@@ -234,6 +256,11 @@ public class FlagCommand extends Command {
 
                     if (flag.getTargetType() == RegionEnums.FlagTargetType.BLOCK) {
                         return Arrays.stream(Material.values()).filter(Material::isBlock)
+                                .map(type -> type.name().toLowerCase()).toList();
+                    }
+
+                    if (flag.getTargetType() == RegionEnums.FlagTargetType.ITEM) {
+                        return Arrays.stream(Material.values()).filter(Material::isItem)
                                 .map(type -> type.name().toLowerCase()).toList();
                     }
 
