@@ -67,7 +67,13 @@ public class ProRegionsLoader extends JavaPlugin {
 
         final long endTime = System.currentTimeMillis() - startTime;
         final int loadedRegions = api.getRegionProvider().getRegions().size();
-        getLogger().info("Loaded " + loadedRegions + " region" + ( loadedRegions > 1 ? "s" : "") + " in " + endTime + "ms.");
+
+        final String loadedRegionsInfo = loadedRegions == 0
+                ? "no regions" : loadedRegions == 1
+                ? "1 region"
+                : loadedRegions + " regions";
+
+        getLogger().info("Loaded " + loadedRegionsInfo + " in " + endTime + "ms.");
     }
 
     @Override
