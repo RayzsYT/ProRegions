@@ -45,7 +45,7 @@ public class ResponseCommand extends Command {
                     "&cThere's no region with that name!"
             );
 
-            api.getMessageProvider().send(
+            api.getMessageProvider().sendMessage(
                     sender,
                     doesNotExistMessage
             );
@@ -69,7 +69,7 @@ public class ResponseCommand extends Command {
                     "&cInvalid flag! (Example: break/place/interact...)"
             );
 
-            api.getMessageProvider().send(sender, invalidFlagMessage);
+            api.getMessageProvider().sendMessage(sender, invalidFlagMessage);
             return true;
         }
 
@@ -83,7 +83,7 @@ public class ResponseCommand extends Command {
                     "&cInvalid response type! (Example: chat/title...)"
             );
 
-            api.getMessageProvider().send(sender, invalidTypeMessage);
+            api.getMessageProvider().sendMessage(sender, invalidTypeMessage);
             return true;
         }
 
@@ -115,7 +115,7 @@ public class ResponseCommand extends Command {
                     "&aReset %response% response for &e%flag% &aof region &e%region%&a."
             );
 
-            api.getMessageProvider().send(sender, successMessage,
+            api.getMessageProvider().sendMessage(sender, successMessage,
                     "%region%", regionName,
                     "%flag%", flag != null ? flag.name().toLowerCase() : "default",
                     "%response%", type.name().toLowerCase()
@@ -139,7 +139,7 @@ public class ResponseCommand extends Command {
                         "&cInvalid sound!"
                 );
 
-                api.getMessageProvider().send(sender, invalidMessage);
+                api.getMessageProvider().sendMessage(sender, invalidMessage);
                 return true;
             }
 
@@ -152,7 +152,7 @@ public class ResponseCommand extends Command {
                         "&cInvalid volume! (0.0 - 10.0)"
                 );
 
-                api.getMessageProvider().send(sender, invalidMessage);
+                api.getMessageProvider().sendMessage(sender, invalidMessage);
                 return true;
             }
 
@@ -165,7 +165,7 @@ public class ResponseCommand extends Command {
                         "&cInvalid pitch! (0.0 - 2.0)"
                 );
 
-                api.getMessageProvider().send(sender, invalidMessage);
+                api.getMessageProvider().sendMessage(sender, invalidMessage);
                 return true;
             }
 
@@ -177,7 +177,7 @@ public class ResponseCommand extends Command {
                     "&aSet sound for &e%flag% &aof region &e%region% &awith volume &e%volume% and pitch &e%pitch%&a."
             );
 
-            api.getMessageProvider().send(sender, successMessage,
+            api.getMessageProvider().sendMessage(sender, successMessage,
                     "%region%", regionName,
                     "%flag%", flag != null ? flag.name().toLowerCase() : "default",
                     "%volume%", String.valueOf(volume),
@@ -217,7 +217,7 @@ public class ResponseCommand extends Command {
                 "&aSet %response% for &e%flag% &aof region &e%region%&a."
         );
 
-        api.getMessageProvider().send(sender, successMessage,
+        api.getMessageProvider().sendMessage(sender, successMessage,
                 "%region%", regionName,
                 "%flag%", flag != null ? flag.name().toLowerCase() : "default",
                 "%response%", type != null ? type.name().toLowerCase() : "default"

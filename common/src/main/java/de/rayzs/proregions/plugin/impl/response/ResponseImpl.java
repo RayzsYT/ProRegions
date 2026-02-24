@@ -1,9 +1,7 @@
 package de.rayzs.proregions.plugin.impl.response;
 
+import de.rayzs.proregions.api.ProRegion;
 import de.rayzs.proregions.api.response.Response;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.Nullable;
@@ -63,26 +61,17 @@ public class ResponseImpl implements Response {
     @Override
     public void send(Player player) {
         if (chatMessage != null) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', chatMessage));
+            ProRegion.get().getMessageProvider().sendMessage(player, chatMessage);
         }
 
         if (actionbarMessage != null && !actionbarMessage.isEmpty()) {
-            player.spigot().sendMessage(
-                    ChatMessageType.ACTION_BAR,
-                    TextComponent.fromLegacy(
-                            ChatColor.translateAlternateColorCodes('&', actionbarMessage)
-                    )
-            );
+            ProRegion.get().getMessageProvider().sendActionbar(player, actionbarMessage);
         }
 
-        if (title != null && !title.isEmpty() || subtitle != null && !subtitle.isEmpty()) {
-            player.sendTitle(
-                    ChatColor.translateAlternateColorCodes('&',
-                        Objects.requireNonNullElse(title, "")
-                    ),
-                    ChatColor.translateAlternateColorCodes('&',
-                        Objects.requireNonNullElse(subtitle, "")
-                    )
+        if (title != null || subtitle != null) {
+            ProRegion.get().getMessageProvider().sendTitle(player,
+                    Objects.requireNonNullElse(title, ""),
+                    Objects.requireNonNullElse(subtitle, "")
             );
         }
 

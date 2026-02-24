@@ -32,7 +32,7 @@ public class ListCommand extends Command {
                     "&cNo regions!"
             );
 
-            api.getMessageProvider().send(
+            api.getMessageProvider().sendMessage(
                     sender,
                     emptyListMessage
             );
@@ -57,7 +57,7 @@ public class ListCommand extends Command {
             }
         }
 
-        api.getMessageProvider().send(
+        api.getMessageProvider().sendMessage(
                 sender, listMessage,
                 "%regions%", listBuilder.toString()
         );

@@ -73,7 +73,7 @@ public class CommandProviderImpl implements CommandProvider {
         );
 
         if (length == 0) {
-            this.messageProvider.send(
+            this.messageProvider.sendMessage(
                     sender, helpMessage,
                     "%label%", label
             );
@@ -85,7 +85,7 @@ public class CommandProviderImpl implements CommandProvider {
         final Command command = getCommand(commandStr);
 
         if (command == null) {
-            this.messageProvider.send(
+            this.messageProvider.sendMessage(
                     sender, unknownCommandMessage,
                     "%label%", label
             );
@@ -95,7 +95,7 @@ public class CommandProviderImpl implements CommandProvider {
 
         final String permission = command.getPermission();
         if (!sender.hasPermission(permission)) {
-            this.messageProvider.send(
+            this.messageProvider.sendMessage(
                     sender, missingPermission,
                     "%permission%", permission
             );
@@ -107,7 +107,7 @@ public class CommandProviderImpl implements CommandProvider {
         System.arraycopy(args, 1, newArgs, 0, newArgs.length);
 
         if (!command.onExecute(sender, label, newArgs)) {
-            this.messageProvider.send(
+            this.messageProvider.sendMessage(
                     sender, wrongUsage,
                     "%label%", label,
                     "%usage%", commandStr + (commandStr.isEmpty() ? "" : " " + command.getUsage())

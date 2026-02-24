@@ -34,7 +34,7 @@ public class IgnoreYCommand extends Command {
                     "&cThere's no region with that name!"
             );
 
-            api.getMessageProvider().send(
+            api.getMessageProvider().sendMessage(
                     sender,
                     doesNotExistMessage
             );
@@ -54,7 +54,7 @@ public class IgnoreYCommand extends Command {
                     "&cInvalid boolean for ignoreY. (possible: true/false)"
             );
 
-            api.getMessageProvider().send(sender, invalidValueMessage);
+            api.getMessageProvider().sendMessage(sender, invalidValueMessage);
             return true;
         }
 
@@ -71,7 +71,7 @@ public class IgnoreYCommand extends Command {
                 "&aRegion 6e%region% &awill now include the Y-axis for its area."
         );
 
-        api.getMessageProvider().send(
+        api.getMessageProvider().sendMessage(
                 sender, ignoreY ? enabledMessage : disabledMessage,
                 "%region%", regionName
         );

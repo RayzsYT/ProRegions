@@ -11,7 +11,8 @@ import de.rayzs.proregions.api.world.TinyLocation;
 import de.rayzs.proregions.plugin.impl.clipboard.ClipboardProviderImpl;
 import de.rayzs.proregions.plugin.impl.command.CommandProviderImpl;
 import de.rayzs.proregions.plugin.impl.configuration.ConfigProviderImpl;
-import de.rayzs.proregions.plugin.impl.message.MessageProviderImpl;
+import de.rayzs.proregions.plugin.impl.message.BukkitMessageProviderImpl;
+import de.rayzs.proregions.plugin.impl.message.PaperMessageProviderImpl;
 import de.rayzs.proregions.plugin.impl.region.RegionProviderImpl;
 import de.rayzs.proregions.plugin.impl.world.TinyLocationImpl;
 import org.bukkit.Location;
@@ -41,7 +42,17 @@ public class ProRegionImpl implements ProRegionAPI {
         final Config config = this.configProvider.getOrCreate("config");
 
 
-        this.messageProvider = new MessageProviderImpl(this, config);
+        boolean supportMiniMessage = false;
+        try {
+            Class.forName("net.kyori.adventure.text.minimessage.MiniMessage");
+            supportMiniMessage = true;
+        } catch (ClassNotFoundException ignored) { }
+
+
+        this.messageProvider = supportMiniMessage
+                ? new PaperMessageProviderImpl(this, config)
+                : new BukkitMessageProviderImpl(this, config);
+
         this.clipboardProvider = new ClipboardProviderImpl();
         this.commandProvider = new CommandProviderImpl(this, config);
         this.regionProvider = new RegionProviderImpl(this, regionsConfig);

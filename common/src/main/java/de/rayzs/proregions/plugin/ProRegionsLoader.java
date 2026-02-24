@@ -3,6 +3,7 @@ package de.rayzs.proregions.plugin;
 import de.rayzs.proregions.api.ProRegion;
 import de.rayzs.proregions.api.utils.VersionHelper;
 import de.rayzs.proregions.plugin.commands.ProRegionCommand;
+import de.rayzs.proregions.plugin.hook.PluginHooks;
 import de.rayzs.proregions.plugin.impl.ProRegionImpl;
 import de.rayzs.proregions.plugin.impl.region.RegionImpl;
 import de.rayzs.proregions.plugin.impl.response.ResponseImpl;
@@ -29,23 +30,34 @@ public class ProRegionsLoader extends JavaPlugin {
 
 
         final long startTime = System.currentTimeMillis();
+
+
+        // Creating default configuration file if there's none.
         loadDefaultConfig();
 
 
+        // Registers serializable class-objects for easier work around.
         ConfigurationSerialization.registerClass(TinyLocationImpl.class);
         ConfigurationSerialization.registerClass(RegionImpl.class);
         ConfigurationSerialization.registerClass(ResponseImpl.class);
 
 
+        // Sets API implementation.
         final ProRegionImpl api = new ProRegionImpl(this);
         ProRegion.set(api);
 
 
+        // Implements all hooks automatically.
+        PluginHooks.values();
+
+
+        // Registers listeners.
         final PluginManager pluginManager = getServer().getPluginManager();
         pluginManager.registerEvents(new RegionListener(api), this);
         pluginManager.registerEvents(new WandListener(api), this);
 
 
+        // Registers main command.
         final ProRegionCommand proRegionCommand = new ProRegionCommand(api);
         final PluginCommand pluginCommand = getCommand("proregions");
 

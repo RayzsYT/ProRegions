@@ -32,7 +32,7 @@ public class CreateCommand extends Command {
                     "&cOnly players can execute this command!"
             );
 
-            api.getMessageProvider().send(
+            api.getMessageProvider().sendMessage(
                     sender,
                     onlyPlayersMessage
             );
@@ -48,7 +48,7 @@ public class CreateCommand extends Command {
                     "&cYou need to select an area first! Use a stone axe to select an area."
             );
 
-            api.getMessageProvider().send(
+            api.getMessageProvider().sendMessage(
                     sender,
                     noClipboardMessage
             );
@@ -68,7 +68,7 @@ public class CreateCommand extends Command {
                     "&cThere's already a region with that name!"
             );
 
-            api.getMessageProvider().send(
+            api.getMessageProvider().sendMessage(
                     sender,
                     alreadyExistMessage
             );
@@ -83,7 +83,7 @@ public class CreateCommand extends Command {
                 "&aSuccessfully created the region %region%!"
         );
 
-        api.getMessageProvider().send(
+        api.getMessageProvider().sendMessage(
                 sender, successMessage,
                 "%region%", regionName
         );

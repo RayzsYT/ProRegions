@@ -10,56 +10,69 @@ public class RegionEnums {
     }
 
     public enum FlagTargetType {
-        LIQUID, BLOCK, ENTITY, PROJECTILE, CHAT, ITEM, NONE
+        LIQUID, BLOCK, ITEM,
+        ENTITY, PROJECTILE,
+        CHAT, MOVE,
+        NONE
     }
 
     public enum Flags {
-        PLACE                    (FlagTargetType.BLOCK, true),
-        BREAK                    (FlagTargetType.BLOCK, true),
-        PISTON                   (FlagTargetType.BLOCK, true),
-        EXPLODE_BLOCKS           (FlagTargetType.BLOCK, true),
-        FIRE_SPREAD              (FlagTargetType.BLOCK, false),
-        INTERACT_BLOCK           (FlagTargetType.BLOCK, true),
-        TRAMPLE_CROPS            (FlagTargetType.BLOCK, false),
 
-        FLOW                     (FlagTargetType.LIQUID, true),
+        ENTER                    (FlagTargetType.MOVE, FlagState.ALLOW, false),
+        LEAVE                    (FlagTargetType.MOVE, FlagState.ALLOW, false),
 
-        PROJECTILE               (FlagTargetType.PROJECTILE, true),
+        PLACE                    (FlagTargetType.BLOCK, FlagState.DENY, true),
+        BREAK                    (FlagTargetType.BLOCK, FlagState.DENY, true),
+        PISTON                   (FlagTargetType.BLOCK, FlagState.DENY, true),
+        EXPLODE_BLOCKS           (FlagTargetType.BLOCK, FlagState.DENY, true),
+        FIRE_SPREAD              (FlagTargetType.BLOCK, FlagState.DENY, false),
+        INTERACT_BLOCK           (FlagTargetType.BLOCK, FlagState.DENY, true),
+        TRAMPLE_CROPS            (FlagTargetType.BLOCK, FlagState.DENY, false),
 
-        BUCKET_FILL              (FlagTargetType.BLOCK, false),
-        BUCKET_EMPTY             (FlagTargetType.BLOCK, false),
+        FLOW                     (FlagTargetType.LIQUID, FlagState.DENY, true),
 
-        MILK_ENTITY              (FlagTargetType.ENTITY, false),
-        HUNGER                   (FlagTargetType.ENTITY, false),
-        PVP                      (FlagTargetType.ENTITY, false),
-        PVE                      (FlagTargetType.ENTITY, true),
-        INTERACT_ENTITY          (FlagTargetType.ENTITY, true),
+        PROJECTILE               (FlagTargetType.PROJECTILE, FlagState.DENY, true),
 
-        DROP                     (FlagTargetType.ITEM, true),
-        PICKUP                   (FlagTargetType.ITEM, true),
+        BUCKET_FILL              (FlagTargetType.BLOCK, FlagState.DENY, false),
+        BUCKET_EMPTY             (FlagTargetType.BLOCK, FlagState.DENY, false),
 
-        FALLING_BLOCK_DAMAGE     (FlagTargetType.ENTITY, false),
-        FALL_DAMAGE              (FlagTargetType.ENTITY, false),
-        BURN_DAMAGE              (FlagTargetType.ENTITY, false),
-        DROWNING_DAMAGE          (FlagTargetType.ENTITY, false),
+        MILK_ENTITY              (FlagTargetType.ENTITY, FlagState.DENY, false),
+        HUNGER                   (FlagTargetType.ENTITY, FlagState.DENY, false),
+        PVP                      (FlagTargetType.ENTITY, FlagState.DENY, false),
+        PVE                      (FlagTargetType.ENTITY, FlagState.DENY, true),
+        INTERACT_ENTITY          (FlagTargetType.ENTITY, FlagState.DENY, true),
 
-        MONSTER_SPAWN            (FlagTargetType.ENTITY, true),
-        ANIMAL_SPAWN             (FlagTargetType.ENTITY, true),;
+        DROP                     (FlagTargetType.ITEM, FlagState.DENY, true),
+        PICKUP                   (FlagTargetType.ITEM, FlagState.DENY, true),
+
+        FALLING_BLOCK_DAMAGE     (FlagTargetType.ENTITY, FlagState.DENY, false),
+        FALL_DAMAGE              (FlagTargetType.ENTITY, FlagState.DENY, false),
+        BURN_DAMAGE              (FlagTargetType.ENTITY, FlagState.DENY, false),
+        DROWNING_DAMAGE          (FlagTargetType.ENTITY, FlagState.DENY, false),
+
+        MONSTER_SPAWN            (FlagTargetType.ENTITY, FlagState.DENY, true),
+        ANIMAL_SPAWN             (FlagTargetType.ENTITY, FlagState.DENY, true),;
 
         private final FlagTargetType targetType;
-        private final boolean excludable;
+        private final FlagState defaultState;
+        private final boolean specifiable;
 
-        Flags (final FlagTargetType targetType, final boolean excludable) {
+        Flags (final FlagTargetType targetType, final FlagState defaultState, final boolean specifiable) {
             this.targetType = targetType;
-            this.excludable = excludable;
+            this.specifiable = specifiable;
+            this.defaultState = defaultState;
         }
 
-        public boolean isExcludable() {
-            return excludable;
+        public boolean isSpecifiable() {
+            return this.specifiable;
+        }
+
+        public FlagState getDefaultState() {
+            return defaultState;
         }
 
         public FlagTargetType getTargetType() {
-            return targetType;
+            return this.targetType;
         }
     }
 

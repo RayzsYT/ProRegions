@@ -311,10 +311,15 @@ public class RegionImpl implements Region {
         final Map<String, String> flagsMap = (Map<String, String>) map.get("flags");
 
         for (Map.Entry<String, String> entry : flagsMap.entrySet()) {
-            final RegionEnums.Flags flag = RegionEnums.Flags.valueOf(entry.getKey());
-            final RegionEnums.FlagState state = RegionEnums.FlagState.valueOf(entry.getValue());
 
-            flags.put(flag, state);
+            // In case a flag does not exist anymore or is invalid.
+            // Instead of throwing an exception, it will just skip that flag.
+            try {
+                final RegionEnums.Flags flag = RegionEnums.Flags.valueOf(entry.getKey());
+                final RegionEnums.FlagState state = RegionEnums.FlagState.valueOf(entry.getValue());
+
+                flags.put(flag, state);
+            } catch (IllegalArgumentException ignored) { }
         }
 
         final Response defaultResponse = (Response) map.get("default-response");

@@ -49,7 +49,7 @@ public class WandListener implements Listener {
                     "&aFirst position set!"
             );
 
-            api.getMessageProvider().send(
+            api.getMessageProvider().sendMessage(
                     player,
                     positionSetMessage
             );
@@ -63,7 +63,7 @@ public class WandListener implements Listener {
                     "&aSecond position set!"
             );
 
-            api.getMessageProvider().send(
+            api.getMessageProvider().sendMessage(
                     player,
                     positionSetMessage
             );

@@ -31,13 +31,13 @@ public class ReloadCommand extends Command {
                 "&aReload completed!"
         );
 
-        api.getMessageProvider().send(
+        api.getMessageProvider().sendMessage(
                 sender, loadingMessage
         );
 
         api.reload();
 
-        api.getMessageProvider().send(
+        api.getMessageProvider().sendMessage(
                 sender, completedMessage
         );
 

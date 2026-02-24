@@ -39,7 +39,7 @@ public class InfoCommand extends Command {
                         "&cRegion not found!"
                 );
 
-                api.getMessageProvider().send(
+                api.getMessageProvider().sendMessage(
                         sender,
                         doesNotExistMessage
                 );
@@ -56,7 +56,7 @@ public class InfoCommand extends Command {
                     "&cYou are not in a region!"
             );
 
-            api.getMessageProvider().send(
+            api.getMessageProvider().sendMessage(
                     sender,
                     doesNotExistMessage
             );
@@ -111,7 +111,7 @@ public class InfoCommand extends Command {
                 "&7Name: %region%"
         );
 
-        api.getMessageProvider().send(
+        api.getMessageProvider().sendMessage(
                 sender, successMessage,
                 "%region%", regionName,
                 "%allowed%", allowedFlagsText.toString(),

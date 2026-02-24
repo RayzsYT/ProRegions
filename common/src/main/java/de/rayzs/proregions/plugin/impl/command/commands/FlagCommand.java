@@ -41,7 +41,7 @@ public class FlagCommand extends Command {
                     "&cThere's no region with that name!"
             );
 
-            api.getMessageProvider().send(
+            api.getMessageProvider().sendMessage(
                     sender,
                     doesNotExistMessage
             );
@@ -58,7 +58,7 @@ public class FlagCommand extends Command {
                     "&cInvalid flag! (Example: break/place/interact...)"
             );
 
-            api.getMessageProvider().send(sender, invalidFlagMessage);
+            api.getMessageProvider().sendMessage(sender, invalidFlagMessage);
             return true;
         }
 
@@ -71,7 +71,7 @@ public class FlagCommand extends Command {
                     "&cInvalid state! (Example: allow/deny)"
             );
 
-            api.getMessageProvider().send(sender, invalidStateMessage);
+            api.getMessageProvider().sendMessage(sender, invalidStateMessage);
             return true;
         }
 
@@ -85,7 +85,7 @@ public class FlagCommand extends Command {
                     "&aSuccessfully set &e%flag% &afor &e%region% &ato &e%state%&a!"
             );
 
-            api.getMessageProvider().send(
+            api.getMessageProvider().sendMessage(
                     sender, successMessage,
                     "%region%", regionName,
                     "%flag%", flag.name().toLowerCase(),
@@ -100,8 +100,8 @@ public class FlagCommand extends Command {
                 "&cThis flag does not contain any specification values!"
         );
 
-        if (!flag.isExcludable()) {
-            api.getMessageProvider().send(sender, doesNotHaveSpecificationMessage);
+        if (!flag.isSpecifiable()) {
+            api.getMessageProvider().sendMessage(sender, doesNotHaveSpecificationMessage);
             return true;
         }
 
@@ -117,7 +117,7 @@ public class FlagCommand extends Command {
                             "&cInvalid liquid! (Example: lava/water)"
                     );
 
-                    api.getMessageProvider().send(sender, invalidLiquidMessage);
+                    api.getMessageProvider().sendMessage(sender, invalidLiquidMessage);
                     return true;
                 }
 
@@ -139,7 +139,7 @@ public class FlagCommand extends Command {
                         "&cInvalid item!"
                 );
 
-                api.getMessageProvider().send(sender, invalidMaterialMessage);
+                api.getMessageProvider().sendMessage(sender, invalidMaterialMessage);
                 return true;
             }
 
@@ -158,7 +158,7 @@ public class FlagCommand extends Command {
                         "&cInvalid material!"
                 );
 
-                api.getMessageProvider().send(sender, invalidMaterialMessage);
+                api.getMessageProvider().sendMessage(sender, invalidMaterialMessage);
                 return true;
             }
         } else if (flag.getTargetType() == RegionEnums.FlagTargetType.PROJECTILE) {
@@ -179,7 +179,7 @@ public class FlagCommand extends Command {
                                 "&cInvalid projectile! (Example: arrow)"
                         );
 
-                        api.getMessageProvider().send(sender, invalidProjectileMessage);
+                        api.getMessageProvider().sendMessage(sender, invalidProjectileMessage);
                         return true;
                     }
                 }
@@ -198,7 +198,7 @@ public class FlagCommand extends Command {
                         "&cInvalid entity!"
                 );
 
-                api.getMessageProvider().send(sender, invalidEntityMessage);
+                api.getMessageProvider().sendMessage(sender, invalidEntityMessage);
                 return true;
             }
         }
@@ -214,7 +214,7 @@ public class FlagCommand extends Command {
                     "&aSuccessfully set &e%flag% &afor &e%region% &aand the type &e%type% &ato &e%state%&a!"
             );
 
-            api.getMessageProvider().send(
+            api.getMessageProvider().sendMessage(
                     sender, successMessage,
                     "%region%", regionName,
                     "%flag%", flag.name().toLowerCase(),
@@ -244,7 +244,7 @@ public class FlagCommand extends Command {
             try {
                 final RegionEnums.Flags flag = RegionEnums.Flags.valueOf(args[1].toUpperCase());
 
-                if (flag.isExcludable()) {
+                if (flag.isSpecifiable()) {
 
                     if (flag == RegionEnums.Flags.FLOW) {
                         return List.of("lava", "water");

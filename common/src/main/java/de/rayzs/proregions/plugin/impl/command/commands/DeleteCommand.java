@@ -36,7 +36,7 @@ public class DeleteCommand extends Command {
                     "&cThere's no region with that name!"
             );
 
-            api.getMessageProvider().send(
+            api.getMessageProvider().sendMessage(
                     sender,
                     doesNotExistMessage
             );
@@ -49,7 +49,7 @@ public class DeleteCommand extends Command {
                 "&aSuccessfully deleted the region %region%!"
         );
 
-        api.getMessageProvider().send(
+        api.getMessageProvider().sendMessage(
                 sender, successMessage,
                 "%region%", regionName
         );
