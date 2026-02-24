@@ -41,6 +41,7 @@ public class RegionEnums {
         PVP                      (FlagTargetType.ENTITY, FlagState.DENY, false),
         PVE                      (FlagTargetType.ENTITY, FlagState.DENY, true),
         INTERACT_ENTITY          (FlagTargetType.ENTITY, FlagState.DENY, true),
+        FISHING                  (FlagTargetType.ENTITY, FlagState.DENY, true),
 
         DROP                     (FlagTargetType.ITEM, FlagState.DENY, true),
         PICKUP                   (FlagTargetType.ITEM, FlagState.DENY, true),
