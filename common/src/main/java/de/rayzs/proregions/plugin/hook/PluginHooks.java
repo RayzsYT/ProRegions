@@ -1,19 +1,21 @@
 package de.rayzs.proregions.plugin.hook;
 
 import de.rayzs.proregions.api.ProRegion;
-import de.rayzs.proregions.plugin.hook.hooks.PlaceholderAPIHook;
 import org.bukkit.Bukkit;
 
 import java.util.function.Consumer;
 
 public enum PluginHooks {
 
-    PLACEHOLDERAPI("PlaceholderAPI", PlaceholderAPIHook.class);
+    PLACEHOLDERAPI(
+            "PlaceholderAPI",
+            "de.rayzs.proregions.plugin.hook.hooks.PlaceholderAPIHook"
+    );
 
     private final boolean enabled;
     private Hook hookObj;
 
-    PluginHooks(final String pluginName, final Class<? extends Hook> hookClass) {
+    PluginHooks(final String pluginName, final String hookClassPath) {
         enabled = Bukkit.getPluginManager().isPluginEnabled(pluginName);
 
         if (!enabled) {
@@ -22,6 +24,7 @@ public enum PluginHooks {
         }
 
         try {
+            final Class<? extends Hook> hookClass = Class.forName(hookClassPath).asSubclass(Hook.class);
             this.hookObj = hookClass.newInstance();
             this.hookObj.start();
 
