@@ -465,6 +465,7 @@ public class RegionListener implements Listener {
                 player,
                 null, null, null
         )) {
+            hook.remove();
             event.setCancelled(true);
         }
     }
