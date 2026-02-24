@@ -392,17 +392,26 @@ public class RegionListener implements Listener {
         final Projectile projectile = event.getEntity();
 
         if (projectile.getShooter() instanceof Player player) {
-            if (player.hasPermission("proregions.bypass")) {
-                return;
+            if (!provider.isAllowed(
+                    Contexts.PLAYER_PROJECTILE,
+                    projectile.getLocation(),
+                    RegionEnums.Flags.PROJECTILE,
+                    player, projectile,
+                    null, null
+            )) {
+                event.setCancelled(true);
+                event.getEntity().remove();
             }
+
+            return;
         }
 
         if (!provider.isAllowed(
-                Contexts.ENTITY,
+                Contexts.PROJECTILE,
                 projectile.getLocation(),
                 RegionEnums.Flags.PROJECTILE,
-                projectile,
-                null, null, null
+                projectile.getShooter(), projectile,
+                null, null
         )) {
             event.setCancelled(true);
             event.getEntity().remove();
@@ -416,16 +425,44 @@ public class RegionListener implements Listener {
         final Projectile projectile = event.getEntity();
 
         if (projectile.getShooter() instanceof Player player) {
-            if (player.hasPermission("proregions.bypass")) {
-                return;
+            if (!provider.isAllowed(
+                    Contexts.PLAYER_PROJECTILE,
+                    projectile.getLocation(),
+                    RegionEnums.Flags.PROJECTILE,
+                    player, projectile,
+                    null, null
+            )) {
+                event.setCancelled(true);
+                event.getEntity().remove();
             }
+
+            return;
         }
 
         if (!provider.isAllowed(
-                Contexts.ENTITY,
+                Contexts.PROJECTILE,
                 projectile.getLocation(),
                 RegionEnums.Flags.PROJECTILE,
-                projectile,
+                projectile.getShooter(), projectile,
+                null, null
+        )) {
+            event.setCancelled(true);
+            event.getEntity().remove();
+        }
+    }
+
+    @EventHandler(
+            priority = EventPriority.LOWEST
+    )
+    public void onPlayerFish(final PlayerFishEvent event) {
+        final Player player = event.getPlayer();
+        final FishHook hook = event.getHook();
+
+        if (!provider.isAllowed(
+                Contexts.PLAYER,
+                hook.getLocation(),
+                RegionEnums.Flags.FISHING,
+                player,
                 null, null, null
         )) {
             event.setCancelled(true);
