@@ -29,9 +29,9 @@ public class RegionEnums {
         INTERACT_BLOCK           (FlagTargetType.BLOCK, FlagState.DENY, true),
         TRAMPLE_CROPS            (FlagTargetType.BLOCK, FlagState.DENY, false),
 
-        FLOW                     (FlagTargetType.LIQUID, FlagState.DENY, true),
+        FLOW                     (FlagTargetType.LIQUID, FlagState.ALLOW, true),
 
-        PROJECTILE               (FlagTargetType.PROJECTILE, FlagState.DENY, true),
+        PROJECTILE               (FlagTargetType.PROJECTILE, FlagState.ALLOW, true),
 
         BUCKET_FILL              (FlagTargetType.BLOCK, FlagState.DENY, false),
         BUCKET_EMPTY             (FlagTargetType.BLOCK, FlagState.DENY, false),
@@ -40,7 +40,8 @@ public class RegionEnums {
         HUNGER                   (FlagTargetType.ENTITY, FlagState.DENY, false),
         PVP                      (FlagTargetType.ENTITY, FlagState.DENY, false),
         PVE                      (FlagTargetType.ENTITY, FlagState.DENY, true),
-        INTERACT_ENTITY          (FlagTargetType.ENTITY, FlagState.DENY, true),
+        INTERACT_ENTITY          (FlagTargetType.ENTITY, FlagState.ALLOW, true),
+        INTERACT_ITEM            (FlagTargetType.ITEM, FlagState.ALLOW, true),
         FISHING                  (FlagTargetType.ENTITY, FlagState.DENY, true),
 
         DROP                     (FlagTargetType.ITEM, FlagState.DENY, true),
