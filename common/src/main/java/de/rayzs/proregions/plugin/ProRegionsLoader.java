@@ -2,7 +2,7 @@ package de.rayzs.proregions.plugin;
 
 import de.rayzs.proregions.api.ProRegion;
 import de.rayzs.proregions.api.utils.VersionHelper;
-import de.rayzs.proregions.plugin.commands.ProRegionCommand;
+import de.rayzs.proregions.plugin.command.ProRegionCommand;
 import de.rayzs.proregions.plugin.hook.PluginHooks;
 import de.rayzs.proregions.plugin.impl.ProRegionImpl;
 import de.rayzs.proregions.plugin.impl.region.RegionImpl;

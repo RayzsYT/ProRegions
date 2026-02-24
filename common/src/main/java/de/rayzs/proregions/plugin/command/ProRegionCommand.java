@@ -1,4 +1,4 @@
-package de.rayzs.proregions.plugin.commands;
+package de.rayzs.proregions.plugin.command;
 
 import de.rayzs.proregions.api.ProRegionAPI;
 import org.bukkit.command.Command;
