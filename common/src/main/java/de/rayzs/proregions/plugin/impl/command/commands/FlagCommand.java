@@ -21,7 +21,7 @@ public class FlagCommand extends Command {
         super(api,
                 "flag",
                 "flag",
-                "<region> <flag> <allow/deny> (type)"
+                "<region> <flag> <allow/deny> (specification)"
         );
     }
 
