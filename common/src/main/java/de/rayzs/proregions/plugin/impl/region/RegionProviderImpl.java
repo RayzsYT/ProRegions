@@ -162,7 +162,7 @@ public class RegionProviderImpl implements RegionProvider {
 
         final Map<RegionEnums.Flags, RegionEnums.FlagState> flags = new HashMap<>();
         for (RegionEnums.Flags value : RegionEnums.Flags.values()) {
-            flags.put(value, RegionEnums.FlagState.DENY);
+            flags.put(value, value.getDefaultState());
         }
 
         final Region region = new RegionImpl(
