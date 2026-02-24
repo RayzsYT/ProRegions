@@ -51,11 +51,11 @@ public class RegionListener implements Listener {
     public void onBlockPlace(final BlockPlaceEvent event) {
 
         if (!provider.isAllowed(
-                Contexts.PLAYER_BLOCK,
+                Contexts.PLAYER_MATERIAL,
                 event.getBlock().getLocation(),
                 RegionEnums.Flags.PLACE,
                 event.getPlayer(),
-                event.getBlock(),
+                event.getBlock().getType(),
                 null, null
         )) {
             event.setCancelled(true);
@@ -67,11 +67,11 @@ public class RegionListener implements Listener {
     )
     public void onBlockBreak(final BlockBreakEvent event) {
         if (!provider.isAllowed(
-                Contexts.PLAYER_BLOCK,
+                Contexts.PLAYER_MATERIAL,
                 event.getBlock().getLocation(),
                 RegionEnums.Flags.BREAK,
                 event.getPlayer(),
-                event.getBlock(),
+                event.getBlock().getType(),
                 null, null
         )) {
             event.setCancelled(true);
@@ -173,11 +173,11 @@ public class RegionListener implements Listener {
 
         if (block.getType().isInteractable()) {
             if (!provider.isAllowed(
-                    Contexts.PLAYER_BLOCK,
+                    Contexts.PLAYER_MATERIAL,
                     block.getLocation(),
                     RegionEnums.Flags.INTERACT_BLOCK,
                     event.getPlayer(),
-                    block,
+                    block.getType(),
                     null, null
             )) {
                 event.setCancelled(true);
@@ -188,11 +188,26 @@ public class RegionListener implements Listener {
 
         if (event.getAction() == Action.PHYSICAL) {
             if (!provider.isAllowed(
-                    Contexts.PLAYER_BLOCK,
+                    Contexts.PLAYER_MATERIAL,
                     block.getLocation(),
                     RegionEnums.Flags.TRAMPLE_CROPS,
                     event.getPlayer(),
-                    block,
+                    block.getType(),
+                    null, null
+            )) {
+                event.setCancelled(true);
+            }
+
+            return;
+        }
+
+        if (event.getItem() != null) {
+            if (!provider.isAllowed(
+                    Contexts.PLAYER_MATERIAL,
+                    block.getLocation(),
+                    RegionEnums.Flags.INTERACT_ITEM,
+                    event.getPlayer(),
+                    event.getItem().getType(),
                     null, null
             )) {
                 event.setCancelled(true);
@@ -392,15 +407,29 @@ public class RegionListener implements Listener {
         final Projectile projectile = event.getEntity();
 
         if (projectile.getShooter() instanceof Player player) {
-            if (!provider.isAllowed(
-                    Contexts.PLAYER_PROJECTILE,
-                    projectile.getLocation(),
-                    RegionEnums.Flags.PROJECTILE,
-                    player, projectile,
-                    null, null
-            )) {
-                event.setCancelled(true);
-                event.getEntity().remove();
+
+            if (projectile.getType() == EntityType.FISHING_BOBBER) {
+                if (!provider.isAllowed(
+                        Contexts.PLAYER,
+                        projectile.getLocation(),
+                        RegionEnums.Flags.FISHING,
+                        player,
+                        null, null, null
+                )) {
+                    projectile.remove();
+                    event.setCancelled(true);
+                }
+            } else {
+                if (!provider.isAllowed(
+                        Contexts.PLAYER_PROJECTILE,
+                        projectile.getLocation(),
+                        RegionEnums.Flags.PROJECTILE,
+                        player, projectile,
+                        null, null
+                )) {
+                    event.setCancelled(true);
+                    event.getEntity().remove();
+                }
             }
 
             return;
@@ -425,15 +454,28 @@ public class RegionListener implements Listener {
         final Projectile projectile = event.getEntity();
 
         if (projectile.getShooter() instanceof Player player) {
-            if (!provider.isAllowed(
-                    Contexts.PLAYER_PROJECTILE,
-                    projectile.getLocation(),
-                    RegionEnums.Flags.PROJECTILE,
-                    player, projectile,
-                    null, null
-            )) {
-                event.setCancelled(true);
-                event.getEntity().remove();
+            if (projectile.getType() == EntityType.FISHING_BOBBER) {
+                if (!provider.isAllowed(
+                        Contexts.PLAYER,
+                        projectile.getLocation(),
+                        RegionEnums.Flags.FISHING,
+                        player,
+                        null, null, null
+                )) {
+                    projectile.remove();
+                    event.setCancelled(true);
+                }
+            } else {
+                if (!provider.isAllowed(
+                        Contexts.PLAYER_PROJECTILE,
+                        projectile.getLocation(),
+                        RegionEnums.Flags.PROJECTILE,
+                        player, projectile,
+                        null, null
+                )) {
+                    event.setCancelled(true);
+                    event.getEntity().remove();
+                }
             }
 
             return;
