@@ -18,8 +18,8 @@ public class RegionEnums {
 
     public enum Flags {
 
-        ENTER                    (FlagTargetType.MOVE, FlagState.ALLOW, false),
-        LEAVE                    (FlagTargetType.MOVE, FlagState.ALLOW, false),
+        //ENTER                    (FlagTargetType.MOVE, FlagState.ALLOW, false),
+        //LEAVE                    (FlagTargetType.MOVE, FlagState.ALLOW, false),
 
         PLACE                    (FlagTargetType.BLOCK, FlagState.DENY, true),
         BREAK                    (FlagTargetType.BLOCK, FlagState.DENY, true),
