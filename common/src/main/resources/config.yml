@@ -11,71 +11,73 @@ messages:
       &finfo &7to view region information.
       &fignore-y
 
-  unknown-command: "&cCommand not found! Please use '/%label%' to receive a list of all available commands."
+  unknown-command: '&cCommand not found! Please use ''/%label%'' to receive a list of all available commands.'
 
-  wrong-usage: "&cWronge usage! /%label% %usage%"
-  missing-permission: "&cMissing permission %permission%!"
+  wrong-usage: '&cWronge usage! /%label% %usage%'
+  missing-permission: '&cMissing permission %permission%!'
 
-  first-position-set: "&aFirst position set!"
-  second-position-set: "&aSecond position set!"
+  first-position-set: '&aFirst position set!'
+  second-position-set: '&aSecond position set!'
 
   create:
-    success: "&aSuccessfully created the region %region%!"
-    already-exists: "&cThere's already a region with that name!"
-    no-clipboard: "&cYou need to select an area first! Use a stone axe to select an area."
+    success: '&aSuccessfully created the region %region%!'
+    already-exists: '&cThere''s already a region with that name!'
+    no-clipboard: '&cYou need to select an area first! Use a stone axe to select an area.'
 
 
   delete:
-    success: "&aSuccessfully deleted the region %region%!"
-    unknown-region: "&cThere's no region with that name!"
+    success: '&aSuccessfully deleted the region %region%!'
+    unknown-region: '&cThere''s no region with that name!'
 
 
   flag:
-    success: "&aSuccessfully set &e%flag% &afor &e%region% &ato &e%state%&a!"
-    unknown-region: "&cThere's no region with that name!"
-    invalid-state: "&cInvalid state! (Example: allow/deny)"
+    success: '&aSuccessfully set &e%flag% &afor &e%region% &ato &e%state%&a!'
+    unknown-region: '&cThere''s no region with that name!'
+    invalid-state: '&cInvalid state! (Example: allow/deny)'
 
     specification:
-      success: "&aSuccessfully set &e%flag% &afor &e%region% &aand the type &e%type% &ato &e%state%&a!"
-      no-specification: "&cThis flag does not contain any specification values!"
+      success: '&aSuccessfully set &e%flag% &afor &e%region% &aand the type &e%type% &ato &e%state%&a!'
+      no-specification: '&cThis flag does not contain any specification values!'
 
-      invalid-liquid: "&cInvalid liquid! (Example: lava/water)"
-      invalid-projectile: "&cInvalid projectile! (Example: arrow)"
-      invalid-item: "&cInvalid item! (Example: lava_bucket)"
+      invalid-liquid: '&cInvalid liquid! (Example: lava/water)'
+      invalid-projectile: '&cInvalid projectile! (Example: arrow)'
+      invalid-item: '&cInvalid item! (Example: lava_bucket)'
 
 
   ignore-y:
-    enabled: "&aRegion &e%region% &awill now ignore the Y-axis for its area."
-    disabled: "&aRegion 6e%region% &awill now include the Y-axis for its area."
+    enabled: '&aRegion &e%region% &awill now ignore the Y-axis for its area.'
+    disabled: '&aRegion 6e%region% &awill now include the Y-axis for its area.'
 
-    unknown-region: "&cThere's no region with that name!"
-    invalid-bool: "&cInvalid value for ignoreY. (possible: true/false)"
+    unknown-region: '&cThere''s no region with that name!'
+    invalid-bool: '&cInvalid value for ignoreY. (possible: true/false)'
 
 
   info:
-    unknown-region: "&cRegion not found!"
-    no-region-here: "&cYou are not in a region!"
+    unknown-region: '&cRegion not found!'
+    no-region-here: '&cYou are not in a region!'
     message: |
       &7Region: &e%region%
       &7World: &e%world%
       &7Allowed flags: &a%allowed%
       &7Denied flags: &c%denied%
-
-
   list:
-    message: "&7Regions: &e%regions%"
-    empty: "&cNo regions!"
+    message: '&7Regions: &e%regions%'
+    empty: '&cNo regions!'
 
 
   response:
-    success: "&aSet %response% for &e%flag% &aof region &e%region%&a."
-    reset: "&aReset %response% response for &e%flag% &aof region &e%region%&a."
+    success: '&aSet %response% for &e%flag% &aof region &e%region%&a.'
+    reset: '&aReset %response% response for &e%flag% &aof region &e%region%&a.'
 
-    unknown-region: "&cThere's no region with that name!"
-    invalid-flag: "&cInvalid flag! (Example: default/break/interact...)"
-    invalid-type: "&cInvalid response type! (Example: chat/title...)"
+    unknown-region: '&cThere''s no region with that name!'
+    invalid-flag: '&cInvalid flag! (Example: default/break/interact...)'
+    invalid-type: '&cInvalid response type! (Example: chat/title...)'
 
     sound:
-      success: "&aSet sound for &e%flag% &aof region &e%region% &awith volume &e%volume% and pitch &e%pitch%&a."
-      invalid-volume: "&cInvalid volume! (0.0 - 10.0)"
-      invalid-pitch: "&cInvalid volume! (0.0 - 2.0)"
+      success: '&aSet sound for &e%flag% &aof region &e%region% &awith volume &e%volume%
+        and pitch &e%pitch%&a.'
+      invalid-volume: '&cInvalid volume! (0.0 - 10.0)'
+      invalid-pitch: '&cInvalid volume! (0.0 - 2.0)'
+  reload:
+    loading: '&eReloading...'
+    completed: '&aReload completed!'
