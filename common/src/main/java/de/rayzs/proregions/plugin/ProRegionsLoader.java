@@ -33,7 +33,7 @@ public class ProRegionsLoader extends JavaPlugin {
 
 
         // Creating default configuration file if there's none.
-        loadDefaultConfig();
+        createDefaultConfig();
 
 
         // Registers serializable class-objects for easier work around.
@@ -74,11 +74,12 @@ public class ProRegionsLoader extends JavaPlugin {
         HandlerList.unregisterAll(this);
     }
 
-    private void loadDefaultConfig() {
+    private void createDefaultConfig() {
         final File configFile = new File(getDataFolder(), "config.yml");
 
         if (!configFile.exists()) {
             saveResource(configFile.getName(), false);
+            getLogger().info("Successfully created default config.yml file!");
         }
     }
 }
