@@ -33,10 +33,10 @@ public class RegionEnums {
 
         PROJECTILE               (FlagTargetType.PROJECTILE, FlagState.ALLOW, true),
 
-        BUCKET_FILL              (FlagTargetType.BLOCK, FlagState.DENY, false),
-        BUCKET_EMPTY             (FlagTargetType.BLOCK, FlagState.DENY, false),
+        BUCKET_FILL              (FlagTargetType.BLOCK, FlagState.DENY, true),
+        BUCKET_EMPTY             (FlagTargetType.BLOCK, FlagState.DENY, true),
 
-        MILK_ENTITY              (FlagTargetType.ENTITY, FlagState.DENY, false),
+        MILK_ENTITY              (FlagTargetType.ENTITY, FlagState.DENY, true),
         HUNGER                   (FlagTargetType.ENTITY, FlagState.DENY, false),
         PVP                      (FlagTargetType.ENTITY, FlagState.DENY, false),
         PVE                      (FlagTargetType.ENTITY, FlagState.DENY, true),
@@ -53,7 +53,7 @@ public class RegionEnums {
         DROWNING_DAMAGE          (FlagTargetType.ENTITY, FlagState.DENY, false),
 
         MONSTER_SPAWN            (FlagTargetType.ENTITY, FlagState.DENY, true),
-        ANIMAL_SPAWN             (FlagTargetType.ENTITY, FlagState.DENY, true),;
+        ANIMAL_SPAWN             (FlagTargetType.ENTITY, FlagState.DENY, true);
 
         private final FlagTargetType targetType;
         private final FlagState defaultState;
