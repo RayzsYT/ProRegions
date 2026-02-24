@@ -10,7 +10,7 @@
 What makes it unique is how it interacts with the player. By default, there are **no** responses which makes it appear clean. 
 <br>
 <br>
-But this can be changed. It's possible to customize responses based on either **all** or **only certain flags** in which you can **send a chat message, an actionbar, title/subtitle, play sounds** all with [**MiniMessage**](https://docs.papermc.io/adventure/minimessage/) and [**PlaceholderAPI**](https://www.spigotmc.org/resources/placeholderapi.6245/) support included.
+But this can be changed. It's possible to customize responses based on either **all** or **only certain flags** in which you can **send chat messages, an actionbar, title/subtitle, or play sounds** all with [**MiniMessage**](https://docs.papermc.io/adventure/minimessage/) and [**PlaceholderAPI**](https://www.spigotmc.org/resources/placeholderapi.6245/) support included.
 <br>
 <br>
 Everything can be done in-game via commands and are **fully tab-completable**, which will certainly help.
