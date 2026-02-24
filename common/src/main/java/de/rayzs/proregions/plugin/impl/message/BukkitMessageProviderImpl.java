@@ -3,17 +3,23 @@ package de.rayzs.proregions.plugin.impl.message;
 import de.rayzs.proregions.api.ProRegionAPI;
 import de.rayzs.proregions.api.configuration.Config;
 import de.rayzs.proregions.api.message.MessageProvider;
+import de.rayzs.proregions.plugin.hook.PluginHooks;
+import de.rayzs.proregions.plugin.hook.hooks.PlaceholderAPIHook;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Set;
 
-public class MessageProviderImpl implements MessageProvider {
+public class BukkitMessageProviderImpl implements MessageProvider {
 
     private final ProRegionAPI api;
     private final Config config;
 
-    public MessageProviderImpl(final ProRegionAPI api, final Config config) {
+    public BukkitMessageProviderImpl(final ProRegionAPI api, final Config config) {
         this.api = api;
         this.config = config;
     }
@@ -57,12 +63,14 @@ public class MessageProviderImpl implements MessageProvider {
     }
 
     @Override
-    public void send(final CommandSender sender, final String message) {
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+    public void sendMessage(final CommandSender sender, final String message) {
+        sender.sendMessage(
+                modify(sender, message)
+        );
     }
 
     @Override
-    public void send(final CommandSender sender, String message, final String... replacements) {
+    public void sendMessage(final CommandSender sender, String message, final String... replacements) {
         String key = null, val;
 
         for (String replacement : replacements) {
@@ -78,6 +86,34 @@ public class MessageProviderImpl implements MessageProvider {
             key = null;
         }
 
-        send(sender, message);
+        sendMessage(sender, message);
+    }
+
+    @Override
+    public void sendActionbar(final Player player, final String message) {
+        player.spigot().sendMessage(
+                ChatMessageType.ACTION_BAR,
+                TextComponent.fromLegacyText(
+                        modify(player, message)
+                )
+        );
+    }
+
+    @Override
+    public void sendTitle(final Player player, final String title, final String subtitle) {
+        player.sendTitle(
+                modify(player, title),
+                modify(player, subtitle)
+        );
+    }
+
+    private String modify(final CommandSender sender, String text) {
+        if (sender instanceof Player player) {
+            text = PluginHooks.PLACEHOLDERAPI.modifyIfExist(text, (PlaceholderAPIHook hook, String input) ->
+                    hook.replacePlaceholders(player, input)
+            );
+        }
+
+        return ChatColor.translateAlternateColorCodes('&', text);
     }
 }
