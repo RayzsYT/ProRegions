@@ -1,6 +1,7 @@
 package de.rayzs.proregions.plugin;
 
 import de.rayzs.proregions.api.ProRegion;
+import de.rayzs.proregions.api.region.RegionEnums;
 import de.rayzs.proregions.api.utils.VersionHelper;
 import de.rayzs.proregions.plugin.command.ProRegionCommand;
 import de.rayzs.proregions.plugin.hook.PluginHooks;
@@ -47,8 +48,9 @@ public class ProRegionsLoader extends JavaPlugin {
         ProRegion.set(api);
 
 
-        // Implements all hooks automatically.
+        // Loads them automatically.
         PluginHooks.values();
+        RegionEnums.FlagTargetType.values();
 
 
         // Registers listeners.
@@ -76,11 +78,14 @@ public class ProRegionsLoader extends JavaPlugin {
         getLogger().info("Loaded " + loadedRegionsInfo + " in " + endTime + "ms.");
     }
 
+
     @Override
     public void onDisable() {
         HandlerList.unregisterAll(this);
     }
 
+
+    // Creates the default config.yml file if it doesn't exist.
     private void createDefaultConfig() {
         final File configFile = new File(getDataFolder(), "config.yml");
 

@@ -26,9 +26,7 @@ public class RegionListener implements Listener {
         this.provider = api.getRegionProvider();
     }
 
-    @EventHandler(
-            priority = org.bukkit.event.EventPriority.LOWEST
-    )
+    @EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
     public void onHunger(final FoodLevelChangeEvent event) {
         if (! (event.getEntity() instanceof Player player)) {
             return;
@@ -45,42 +43,41 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(
-            priority = org.bukkit.event.EventPriority.LOWEST
-    )
+    @EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
     public void onBlockPlace(final BlockPlaceEvent event) {
+        final Player player = event.getPlayer();
+        final Block block = event.getBlock();
 
         if (!provider.isAllowed(
                 Contexts.PLAYER_MATERIAL,
-                event.getBlock().getLocation(),
+                block.getLocation(),
                 RegionEnums.Flags.PLACE,
-                event.getPlayer(),
-                event.getBlock().getType(),
+                player,
+                block.getType(),
                 null, null
         )) {
             event.setCancelled(true);
         }
     }
 
-    @EventHandler(
-            priority = org.bukkit.event.EventPriority.LOWEST
-    )
+    @EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
     public void onBlockBreak(final BlockBreakEvent event) {
+        final Player player = event.getPlayer();
+        final Block block = event.getBlock();
+
         if (!provider.isAllowed(
                 Contexts.PLAYER_MATERIAL,
-                event.getBlock().getLocation(),
+                block.getLocation(),
                 RegionEnums.Flags.BREAK,
-                event.getPlayer(),
-                event.getBlock().getType(),
+                player,
+                block.getType(),
                 null, null
         )) {
             event.setCancelled(true);
         }
     }
 
-    @EventHandler(
-            priority = org.bukkit.event.EventPriority.LOWEST
-    )
+    @EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
     public void onBlockFlow(final BlockFromToEvent event) {
         final Block block = event.getBlock();
         final Block toBlock = event.getToBlock();
@@ -91,7 +88,7 @@ public class RegionListener implements Listener {
 
         if (!provider.isAllowed(
                 Contexts.BLOCK_CHANGE,
-                event.getBlock().getLocation(),
+                block.getLocation(),
                 RegionEnums.Flags.FLOW,
                 block,
                 null, null, null
@@ -102,7 +99,7 @@ public class RegionListener implements Listener {
 
         if (!provider.isAllowed(
                 Contexts.BLOCK_CHANGE,
-                event.getToBlock().getLocation(),
+                toBlock.getLocation(),
                 RegionEnums.Flags.FLOW,
                 toBlock,
                 null, null, null
@@ -111,13 +108,11 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(
-            priority = org.bukkit.event.EventPriority.LOWEST
-    )
+    @EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
     public void onFireSpread(final BlockSpreadEvent event) {
         final Block fireBlock = event.getSource();
 
-        if (event.getBlock().getType() != org.bukkit.Material.FIRE) {
+        if (fireBlock.getType() != org.bukkit.Material.FIRE) {
             return;
         }
 
@@ -125,7 +120,7 @@ public class RegionListener implements Listener {
 
         if (!provider.isAllowed(
                 Contexts.BLOCK_CHANGE,
-                event.getBlock().getLocation(),
+                fireBlock.getLocation(),
                 RegionEnums.Flags.FIRE_SPREAD,
                 blockBelow,
                 null, null, null
@@ -134,11 +129,8 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(
-            priority = org.bukkit.event.EventPriority.LOWEST
-    )
+    @EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
     public void onExplosion(final EntityExplodeEvent event) {
-
         if (!provider.isAllowed(
                 Contexts.BLOCK_CHANGE,
                 event.getLocation(),
@@ -150,55 +142,49 @@ public class RegionListener implements Listener {
             return;
         }
 
-        event.blockList().removeIf(block -> {
-            return !provider.isAllowed(
-                    Contexts.BLOCK_CHANGE,
-                    block.getLocation(),
-                    RegionEnums.Flags.EXPLODE_BLOCKS,
-                    block,
-                    null, null, null
-            );
-        });
+        event.blockList().removeIf(block -> !provider.isAllowed(
+                Contexts.BLOCK_CHANGE,
+                block.getLocation(),
+                RegionEnums.Flags.EXPLODE_BLOCKS,
+                block,
+                null, null, null
+        ));
     }
 
-    @EventHandler(
-            priority = EventPriority.LOWEST
-    )
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerInteract(final PlayerInteractEvent event) {
-        if (event.getClickedBlock() == null) {
-            return;
-        }
-
         final Block block = event.getClickedBlock();
 
-        if (block.getType().isInteractable()) {
-            if (!provider.isAllowed(
-                    Contexts.PLAYER_MATERIAL,
-                    block.getLocation(),
-                    RegionEnums.Flags.INTERACT_BLOCK,
-                    event.getPlayer(),
-                    block.getType(),
-                    null, null
-            )) {
-                event.setCancelled(true);
+        if (block != null) {
+            if (block.getType().isInteractable()) {
+                if (!provider.isAllowed(
+                        Contexts.PLAYER_MATERIAL,
+                        block.getLocation(),
+                        RegionEnums.Flags.INTERACT_BLOCK,
+                        event.getPlayer(),
+                        block.getType(),
+                        null, null
+                )) {
+                    event.setCancelled(true);
+                }
+
+                return;
             }
 
-            return;
-        }
+            if (event.getAction() == Action.PHYSICAL) {
+                if (!provider.isAllowed(
+                        Contexts.PLAYER_MATERIAL,
+                        block.getLocation(),
+                        RegionEnums.Flags.TRAMPLE_CROPS,
+                        event.getPlayer(),
+                        block.getType(),
+                        null, null
+                )) {
+                    event.setCancelled(true);
+                }
 
-        if (event.getAction() == Action.PHYSICAL) {
-            if (!provider.isAllowed(
-                    Contexts.PLAYER_MATERIAL,
-                    block.getLocation(),
-                    RegionEnums.Flags.TRAMPLE_CROPS,
-                    event.getPlayer(),
-                    block.getType(),
-                    null, null
-            )) {
-                event.setCancelled(true);
+                return;
             }
-
-            return;
         }
 
         if (event.getItem() != null) {
@@ -215,9 +201,7 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(
-            priority = EventPriority.LOWEST
-    )
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerBucketEmpty(final PlayerBucketEmptyEvent event) {
         final Material item = event.getBucket();
         if (item != Material.LAVA_BUCKET && item != Material.WATER_BUCKET) {
@@ -255,10 +239,8 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(
-            priority = EventPriority.LOWEST
-    )
-    public void onEntityInteract(final PlayerInteractEntityEvent event) {
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onInteractEntity(final PlayerInteractEntityEvent event) {
         final Player player = event.getPlayer();
         final Entity entity = event.getRightClicked();
 
@@ -290,9 +272,7 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(
-            priority = EventPriority.LOWEST
-    )
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onEntityDamageByEntity(final EntityDamageByEntityEvent event) {
 
         if (event.getDamager() instanceof Player damager) {
@@ -336,9 +316,7 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(
-            priority = EventPriority.LOWEST
-    )
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerDamage(final EntityDamageEvent event) {
         final Entity entity = event.getEntity();
         final Location location = entity.getLocation();
@@ -400,9 +378,7 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(
-            priority = EventPriority.LOWEST
-    )
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onProjectileHit(final ProjectileHitEvent event) {
         final Projectile projectile = event.getEntity();
 
@@ -447,9 +423,7 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(
-            priority = EventPriority.LOWEST
-    )
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onProjectileLaunch(final ProjectileLaunchEvent event) {
         final Projectile projectile = event.getEntity();
 
@@ -493,9 +467,7 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(
-            priority = EventPriority.LOWEST
-    )
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerFish(final PlayerFishEvent event) {
         final Player player = event.getPlayer();
         final FishHook hook = event.getHook();
@@ -512,9 +484,7 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(
-            priority = EventPriority.LOWEST
-    )
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerPickup(final PlayerPickupItemEvent event) {
         final Player player = event.getPlayer();
         final Material material = event.getItem().getItemStack().getType();
@@ -530,9 +500,7 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(
-            priority = EventPriority.LOWEST
-    )
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerPickup(final PlayerPickupArrowEvent event) {
         final Player player = event.getPlayer();
         final Material material = event.getItem().getItemStack().getType();
@@ -548,9 +516,7 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(
-            priority = EventPriority.LOWEST
-    )
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onEntityDrop(final EntityDropItemEvent event) {
         final Entity entity = event.getEntity();
         final Material material = event.getItemDrop().getItemStack().getType();
@@ -566,9 +532,7 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(
-            priority = EventPriority.LOWEST
-    )
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerDrop(final PlayerDropItemEvent event) {
         final Player player = event.getPlayer();
         final Material material = event.getItemDrop().getItemStack().getType();
@@ -584,9 +548,7 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(
-            priority = EventPriority.LOWEST
-    )
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onEntityPickup(final EntityPickupItemEvent event) {
         final Entity entity = event.getEntity();
         final Material material = event.getItem().getItemStack().getType();
@@ -602,9 +564,7 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(
-            priority = EventPriority.LOWEST
-    )
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onPistonExtend(final BlockPistonExtendEvent event) {
         for (Block block : event.getBlocks()) {
 
@@ -633,9 +593,7 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(
-            priority = EventPriority.LOWEST
-    )
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onCreatureSpawn(final CreatureSpawnEvent event) {
         if (event.getSpawnReason() != CreatureSpawnEvent.SpawnReason.NATURAL) {
             return;

@@ -1,5 +1,14 @@
 package de.rayzs.proregions.api.region;
 
+import org.bukkit.Material;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Projectile;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
+
 public class RegionEnums {
 
     private RegionEnums() {}
@@ -10,10 +19,59 @@ public class RegionEnums {
     }
 
     public enum FlagTargetType {
-        LIQUID, BLOCK, ITEM,
-        ENTITY, PROJECTILE,
-        CHAT, MOVE,
-        NONE
+
+        LIQUID                (Arrays.asList("lava", "water")),
+        PLACEABLE_BUCKET      (Arrays.asList("lava", "water", "powder_snow")),
+        BLOCK                 (fetchList(Material.values(), Material::isBlock)),
+        ITEM                  (fetchList(Material.values(), Material::isItem)),
+        ENTITY                (fetchList(EntityType.values(), type -> type.getEntityClass() != null)),
+        PROJECTILE            (fetchList(EntityType.values(), type -> {
+            final Class<? extends Entity> clazz = type.getEntityClass();
+            return clazz != null && Projectile.class.isAssignableFrom(clazz);
+        })),
+
+        CHAT, MOVE, NONE;
+
+        private final List<String> elements;
+        FlagTargetType(final List<String> elements) {
+            this.elements = elements;
+        }
+
+        FlagTargetType() {
+            this.elements = List.of();
+        }
+
+        private static <E extends Enum<E>> List<String> fetchList(final E[] values, final Predicate<E> filter) {
+            return Arrays.stream(values).filter(filter).map(e -> e.name().toLowerCase()).toList();
+        }
+
+        /**
+         * Gets the list of elements associated with this target type.
+         *
+         * @return an unmodifiable list of elements for this target type
+         */
+        public List<String> getElements() {
+            return elements;
+        }
+
+        /**
+         * Checks if the input element exists in the list of elements for this target type.
+         * If it does, it returns the input in lowercase, otherwise null.
+         *
+         * @param element the element to validate
+         * @return the validated element in lowercase if it exists, otherwise null
+         */
+        public String validateIfExist(final String element) {
+            if (this.elements.isEmpty()) {
+                return null;
+            }
+
+            if (this.elements.contains(element.toUpperCase())) {
+                return element.toLowerCase();
+            }
+
+            return null;
+        }
     }
 
     public enum Flags {
@@ -33,8 +91,8 @@ public class RegionEnums {
 
         PROJECTILE               (FlagTargetType.PROJECTILE, FlagState.ALLOW, true),
 
-        BUCKET_FILL              (FlagTargetType.BLOCK, FlagState.DENY, true),
-        BUCKET_EMPTY             (FlagTargetType.BLOCK, FlagState.DENY, true),
+        BUCKET_FILL              (FlagTargetType.PLACEABLE_BUCKET, FlagState.DENY, true),
+        BUCKET_EMPTY             (FlagTargetType.PLACEABLE_BUCKET, FlagState.DENY, true),
 
         MILK_ENTITY              (FlagTargetType.ENTITY, FlagState.DENY, true),
         HUNGER                   (FlagTargetType.ENTITY, FlagState.DENY, false),
