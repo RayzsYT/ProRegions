@@ -29,7 +29,7 @@ public class RegionEnums {
         INTERACT_BLOCK           (FlagTargetType.BLOCK, FlagState.DENY, true),
         TRAMPLE_CROPS            (FlagTargetType.BLOCK, FlagState.DENY, false),
 
-        FLOW                     (FlagTargetType.LIQUID, FlagState.ALLOW, true),
+        FLOW                     (FlagTargetType.LIQUID, FlagState.DENY, true),
 
         PROJECTILE               (FlagTargetType.PROJECTILE, FlagState.ALLOW, true),
 
