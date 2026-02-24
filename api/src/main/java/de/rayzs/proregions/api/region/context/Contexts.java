@@ -5,6 +5,9 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.projectiles.ProjectileSource;
+import org.jspecify.annotations.Nullable;
 
 public class Contexts {
 
@@ -71,6 +74,26 @@ public class Contexts {
         return region.getFlagState(flag, block.getType().name());
     };
 
+    public static ContextEval<Player, Projectile, Object, Object> PLAYER_PROJECTILE = (
+            region, flag,
+            player, projectile,
+            a, b) -> {
+
+        if (hasBypassPermission(player)) {
+            return RegionEnums.FlagState.ALLOW;
+        }
+
+        return region.getFlagState(flag, projectile.getType().name());
+    };
+
+    public static ContextEval<@Nullable ProjectileSource, Projectile, Object, Object> PROJECTILE = (
+            region, flag,
+            player, projectile,
+            a, b) -> {
+
+        return region.getFlagState(flag, projectile.getType().name());
+    };
+
     public static ContextEval<Player, Entity, Object, Object> PLAYER_ENTITY = (
             region, flag,
             player, entity,
@@ -79,14 +102,6 @@ public class Contexts {
         if (hasBypassPermission(player)) {
             return RegionEnums.FlagState.ALLOW;
         }
-
-        return region.getFlagState(flag, entity.getType().name());
-    };
-
-    public static ContextEval<Entity, Player, Object, Object> ENTITY_PLAYER = (
-            region, flag,
-            entity, player,
-            a, b) -> {
 
         return region.getFlagState(flag, entity.getType().name());
     };
