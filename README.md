@@ -61,7 +61,9 @@ The idea is to make it plugin as **easy to use** as possible, without adding too
 > <br>
 > <br>
 > **Example:**
+> <br>
 > `/rg flag test break deny`
+> <br>
 > `/rg flag test break allow grass_block`
 
 <br>
@@ -95,7 +97,7 @@ The idea is to make it plugin as **easy to use** as possible, without adding too
 <br>
 **Default state**: Allowed or disallowed by default when creating a region.
 <br>
-**Specifiable**: Refers to if the flag can be allowed/disallowed on for certain items/materials etc...
+**Specifiable**: If the flag state can be specified for a certain entity/item/block only.
 <br>
 
 | Flag               | Default State | Specifiable |
