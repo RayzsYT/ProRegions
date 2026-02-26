@@ -1,6 +1,6 @@
 package de.rayzs.proregions.plugin.impl.region;
 
-import de.rayzs.proregions.api.ProRegionAPI;
+import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.clipboard.Clipboard;
 import de.rayzs.proregions.api.configuration.Config;
 import de.rayzs.proregions.api.region.*;
@@ -18,10 +18,10 @@ public class RegionProviderImpl implements RegionProvider {
 
     private final List<Map<String, Region>> regions;
 
-    private final ProRegionAPI api;
+    private final ProRegionsAPI api;
     private final Config config;
 
-    public RegionProviderImpl(final ProRegionAPI api, final Config config) {
+    public RegionProviderImpl(final ProRegionsAPI api, final Config config) {
         this.api = api;
         this.config = config;
 
@@ -156,7 +156,7 @@ public class RegionProviderImpl implements RegionProvider {
         final World world = clipboard.getFirstLocation().getWorld();
         final int environmentId = Environment.getEnvironmentByWorld(world).getId();
 
-        if (regions.get(environmentId).containsKey(name)) {
+        if (regions.get(environmentId).containsKey(name) || !clipboard.isAvailable()) {
             return false;
         }
 
@@ -171,7 +171,6 @@ public class RegionProviderImpl implements RegionProvider {
                 ignoreY,
                 new ResponseImpl(),
                 new HashMap<>(),
-                RegionEnums.FlagState.DENY,
                 flags,
                 new HashMap<>(),
                 api.toTinyLocation(clipboard.getFirstLocation()),
