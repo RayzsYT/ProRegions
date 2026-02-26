@@ -23,9 +23,10 @@ public class ProRegions {
     }
 
     /**
-     * Gets the ProRegionsAPI instance.
-     * This method can be called by other plugins or external code to access the API
-     * provided by ProRegions. However, it will throw an IllegalStateException.
+     * Returns the initialized ProRegionsAPI instance.
+     * In case it's not initialized yet, it will throw an IllegalStateException,
+     * indicating that ProRegions is not loaded yet and should only be called once
+     * ProRegions is actually loaded.
      *
      * @return The ProRegionsAPI instance.
      */
