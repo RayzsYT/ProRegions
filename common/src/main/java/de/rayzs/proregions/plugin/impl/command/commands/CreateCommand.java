@@ -1,6 +1,6 @@
 package de.rayzs.proregions.plugin.impl.command.commands;
 
-import de.rayzs.proregions.api.ProRegionAPI;
+import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.clipboard.Clipboard;
 import de.rayzs.proregions.api.command.Command;
 import org.bukkit.command.CommandSender;
@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CreateCommand extends Command {
 
-    public CreateCommand(final ProRegionAPI api) {
+    public CreateCommand(final ProRegionsAPI api) {
         super(api,
                 "create",
                 "create",

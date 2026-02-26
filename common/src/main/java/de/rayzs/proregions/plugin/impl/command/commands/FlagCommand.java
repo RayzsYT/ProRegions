@@ -1,6 +1,6 @@
 package de.rayzs.proregions.plugin.impl.command.commands;
 
-import de.rayzs.proregions.api.ProRegionAPI;
+import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.command.Command;
 import de.rayzs.proregions.api.region.Region;
 import de.rayzs.proregions.api.region.RegionEnums;
@@ -12,7 +12,7 @@ import java.util.List;
 
 public class FlagCommand extends Command {
 
-    public FlagCommand(final ProRegionAPI api) {
+    public FlagCommand(final ProRegionsAPI api) {
         super(api,
                 "flag",
                 "flag",

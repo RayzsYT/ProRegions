@@ -1,20 +1,17 @@
 package de.rayzs.proregions.plugin.impl.command.commands;
 
-import de.rayzs.proregions.api.ProRegionAPI;
-import de.rayzs.proregions.api.clipboard.Clipboard;
+import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.command.Command;
 import de.rayzs.proregions.api.region.Region;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.jspecify.annotations.NonNull;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 public class ListCommand extends Command {
 
-    public ListCommand(final ProRegionAPI api) {
+    public ListCommand(final ProRegionsAPI api) {
         super(api,
                 "list",
                 "list",

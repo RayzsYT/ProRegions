@@ -1,6 +1,6 @@
 package de.rayzs.proregions.plugin.impl.command.commands;
 
-import de.rayzs.proregions.api.ProRegionAPI;
+import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.command.Command;
 import de.rayzs.proregions.api.region.Region;
 import de.rayzs.proregions.api.region.RegionEnums;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class InfoCommand extends Command {
 
-    public InfoCommand(final ProRegionAPI api) {
+    public InfoCommand(final ProRegionsAPI api) {
         super(api,
                 "info",
                 "info",

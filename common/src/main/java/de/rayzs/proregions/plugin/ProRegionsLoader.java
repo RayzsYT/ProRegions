@@ -1,6 +1,6 @@
 package de.rayzs.proregions.plugin;
 
-import de.rayzs.proregions.api.ProRegion;
+import de.rayzs.proregions.api.ProRegions;
 import de.rayzs.proregions.api.region.RegionEnums;
 import de.rayzs.proregions.api.utils.VersionHelper;
 import de.rayzs.proregions.plugin.command.ProRegionCommand;
@@ -45,7 +45,7 @@ public class ProRegionsLoader extends JavaPlugin {
 
         // Sets API implementation.
         final ProRegionImpl api = new ProRegionImpl(this);
-        ProRegion.set(api);
+        ProRegions.set(api);
 
 
         // Loads them automatically.

@@ -1,6 +1,6 @@
 package de.rayzs.proregions.plugin.listeners;
 
-import de.rayzs.proregions.api.ProRegionAPI;
+import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.region.RegionEnums;
 import de.rayzs.proregions.api.region.RegionProvider;
 import de.rayzs.proregions.api.region.context.Contexts;
@@ -18,10 +18,10 @@ import org.bukkit.event.player.*;
 
 public class RegionListener implements Listener {
 
-    private final ProRegionAPI api;
+    private final ProRegionsAPI api;
     private final RegionProvider provider;
 
-    public RegionListener(final ProRegionAPI api) {
+    public RegionListener(final ProRegionsAPI api) {
         this.api = api;
         this.provider = api.getRegionProvider();
     }

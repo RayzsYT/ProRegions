@@ -1,17 +1,15 @@
 package de.rayzs.proregions.plugin.impl.command.commands;
 
-import de.rayzs.proregions.api.ProRegionAPI;
+import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.command.Command;
-import de.rayzs.proregions.api.region.Region;
 import org.bukkit.command.CommandSender;
 import org.jspecify.annotations.NonNull;
 
-import java.util.Iterator;
 import java.util.List;
 
 public class ReloadCommand extends Command {
 
-    public ReloadCommand(final ProRegionAPI api) {
+    public ReloadCommand(final ProRegionsAPI api) {
         super(api,
                 "reload",
                 "reload",

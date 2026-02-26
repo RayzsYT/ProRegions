@@ -1,28 +1,23 @@
 package de.rayzs.proregions.plugin.impl.command.commands;
 
-import de.rayzs.proregions.api.ProRegionAPI;
+import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.command.Command;
 import de.rayzs.proregions.api.region.Region;
 import de.rayzs.proregions.api.region.RegionEnums;
 import de.rayzs.proregions.api.response.Response;
 import de.rayzs.proregions.api.response.ResponseType;
 import de.rayzs.proregions.plugin.impl.region.RegionImpl;
-import de.rayzs.proregions.plugin.impl.response.ResponseImpl;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.EntityType;
-import org.bukkit.util.OldEnum;
 import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ResponseCommand extends Command {
 
-    public ResponseCommand(final ProRegionAPI api) {
+    public ResponseCommand(final ProRegionsAPI api) {
         super(api,
                 "response",
                 "response",

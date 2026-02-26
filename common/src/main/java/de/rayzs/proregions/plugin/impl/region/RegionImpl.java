@@ -37,7 +37,6 @@ public class RegionImpl implements Region {
     private final int minX, minY, minZ;
     private final int maxX, maxY, maxZ;
 
-    private RegionEnums.FlagState defaultFlagState;
     private boolean ignoreY;
 
     public RegionImpl(
@@ -46,7 +45,6 @@ public class RegionImpl implements Region {
             final boolean ignoreY,
             final Response defaultResponse,
             final Map<RegionEnums.Flags, Response> responses,
-            final RegionEnums.FlagState defaultFlagState,
             final Map<RegionEnums.Flags, RegionEnums.FlagState> flags,
             final Map<RegionEnums.Flags, Map<String, RegionEnums.FlagState>> specificFlags,
             final TinyLocation firstLocation,
@@ -58,7 +56,6 @@ public class RegionImpl implements Region {
                 ignoreY,
                 defaultResponse,
                 responses,
-                defaultFlagState,
                 flags,
                 specificFlags,
                 firstLocation,
@@ -73,7 +70,6 @@ public class RegionImpl implements Region {
             final boolean ignoreY,
             final Response defaultResponse,
             final Map<RegionEnums.Flags, Response> responses,
-            final RegionEnums.FlagState defaultFlagState,
             final Map<RegionEnums.Flags, RegionEnums.FlagState> flags,
             final Map<RegionEnums.Flags, Map<String, RegionEnums.FlagState>> specificFlags,
             final TinyLocation firstLocation,
@@ -85,7 +81,6 @@ public class RegionImpl implements Region {
 
         this.ignoreY = ignoreY;
 
-        this.defaultFlagState = defaultFlagState;
         this.flags = flags;
 
         this.defaultResponse = defaultResponse;
@@ -193,29 +188,27 @@ public class RegionImpl implements Region {
     }
 
     @Override
-    public void setFlag(RegionEnums.Flags flag, RegionEnums.FlagState state, String entityType) {
+    public void setFlag(RegionEnums.Flags flag, RegionEnums.FlagState state, String specification) {
         final Map<String, RegionEnums.FlagState> flagStates = specificFlags.getOrDefault(flag, new HashMap<>());
-        flagStates.put(entityType.toUpperCase(), state);
+        flagStates.put(specification.toUpperCase(), state);
 
         specificFlags.put(flag, flagStates);
     }
 
     @Override
-    public void setDefaultFlagState(RegionEnums.FlagState defaultFlagState) {
-        this.defaultFlagState = defaultFlagState;
-    }
-
-    @Override
     public RegionEnums.FlagState getFlagState(RegionEnums.Flags flag) {
-        return this.flags.getOrDefault(flag, this.defaultFlagState);
+        return this.flags.getOrDefault(flag, RegionEnums.FlagState.DENY);
     }
 
     @Override
-    public RegionEnums.FlagState getFlagState(RegionEnums.Flags flag, String typeName) {
+    public RegionEnums.FlagState getFlagState(RegionEnums.Flags flag, String specification) {
         final Map<String, RegionEnums.FlagState> flagStates = specificFlags.get(flag);
 
         if (flagStates != null) {
-            return flagStates.getOrDefault(typeName.toUpperCase(), defaultFlagState);
+            return flagStates.getOrDefault(
+                    specification.toUpperCase(),
+                    RegionEnums.FlagState.DENY
+            );
         }
 
         return getFlagState(flag);
@@ -243,7 +236,6 @@ public class RegionImpl implements Region {
 
         map.put("name", name);
         map.put("environment-id", environment.getId());
-        map.put("default-flag-state", defaultFlagState.name());
         map.put("ignore-y", ignoreY);
 
         map.put("area.world", worldName);
@@ -292,9 +284,6 @@ public class RegionImpl implements Region {
     public static RegionImpl deserialize(Map<String, Object> map) {
         final String name = (String) map.get("name");
         final int environmentId = (int) map.get("environment-id");
-
-        final String defaultFlagStateStr = (String) map.get("default-flag-state");
-        final RegionEnums.FlagState defaultFlagState = RegionEnums.FlagState.valueOf(defaultFlagStateStr);
 
         final boolean ignoreY = (boolean) map.get("ignore-y");
 
@@ -354,7 +343,7 @@ public class RegionImpl implements Region {
         return new RegionImpl(
                 environmentId, name, worldName, ignoreY,
                 defaultResponse, responses,
-                defaultFlagState, flags, specificFlags,
+                flags, specificFlags,
                 new TinyLocationImpl(name, minX, minY, minZ),
                 new TinyLocationImpl(name, maxX, maxY, maxZ)
         );

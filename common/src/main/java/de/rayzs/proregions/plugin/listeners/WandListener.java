@@ -1,6 +1,6 @@
 package de.rayzs.proregions.plugin.listeners;
 
-import de.rayzs.proregions.api.ProRegionAPI;
+import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.clipboard.Clipboard;
 import de.rayzs.proregions.api.utils.ExpireCache;
 import org.bukkit.GameMode;
@@ -14,9 +14,9 @@ import java.util.UUID;
 
 public class WandListener implements Listener {
 
-    private final ProRegionAPI api;
+    private final ProRegionsAPI api;
 
-    public WandListener(final ProRegionAPI api) {
+    public WandListener(final ProRegionsAPI api) {
         this.api = api;
     }
 

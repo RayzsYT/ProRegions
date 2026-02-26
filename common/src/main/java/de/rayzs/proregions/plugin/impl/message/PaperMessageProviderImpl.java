@@ -1,7 +1,6 @@
 package de.rayzs.proregions.plugin.impl.message;
 
-import de.rayzs.proregions.api.ProRegion;
-import de.rayzs.proregions.api.ProRegionAPI;
+import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.configuration.Config;
 import de.rayzs.proregions.api.message.MessageProvider;
 import de.rayzs.proregions.plugin.hook.PluginHooks;
@@ -27,10 +26,10 @@ public class PaperMessageProviderImpl implements MessageProvider {
 
 
     private final MiniMessage miniMessage;
-    private final ProRegionAPI api;
+    private final ProRegionsAPI api;
     private final Config config;
 
-    public PaperMessageProviderImpl(final ProRegionAPI api, final Config config) {
+    public PaperMessageProviderImpl(final ProRegionsAPI api, final Config config) {
         this.api = api;
         this.config = config;
         this.miniMessage = MiniMessage.miniMessage();

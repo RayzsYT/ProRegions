@@ -1,6 +1,6 @@
 package de.rayzs.proregions.plugin.impl;
 
-import de.rayzs.proregions.api.ProRegionAPI;
+import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.clipboard.ClipboardProvider;
 import de.rayzs.proregions.api.command.CommandProvider;
 import de.rayzs.proregions.api.configuration.Config;
@@ -20,7 +20,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
 
-public class ProRegionImpl implements ProRegionAPI {
+public class ProRegionImpl implements ProRegionsAPI {
 
     private final Logger logger;
     private final JavaPlugin plugin;

@@ -1,6 +1,6 @@
 package de.rayzs.proregions.plugin.command;
 
-import de.rayzs.proregions.api.ProRegionAPI;
+import de.rayzs.proregions.api.ProRegionsAPI;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 
 public class ProRegionCommand implements CommandExecutor, TabExecutor {
 
-    private final ProRegionAPI api;
+    private final ProRegionsAPI api;
 
-    public ProRegionCommand(final ProRegionAPI api) {
+    public ProRegionCommand(final ProRegionsAPI api) {
         this.api = api;
     }
 

@@ -48,7 +48,7 @@ public class RegionEnums {
         /**
          * Gets the list of elements associated with this target type.
          *
-         * @return an unmodifiable list of elements for this target type
+         * @return an unmodifiable list of elements for this target type.
          */
         public List<String> getElements() {
             return elements;
@@ -58,8 +58,8 @@ public class RegionEnums {
          * Checks if the input element exists in the list of elements for this target type.
          * If it does, it returns the input in lowercase, otherwise null.
          *
-         * @param element the element to validate
-         * @return the validated element in lowercase if it exists, otherwise null
+         * @param element the element to validate.
+         * @return the validated element in lowercase if it exists, otherwise null.
          */
         public String validateIfExist(final String element) {
             if (this.elements.isEmpty()) {
@@ -123,14 +123,32 @@ public class RegionEnums {
             this.defaultState = defaultState;
         }
 
+        /**
+         * If flag is specifiable or not.
+         * Refers to whether the state of the flag can be applied to only a certain type.
+         * The type is determined by the FlagTargetType from getDefaultState().
+         *
+         * @return true if the flag is specifiable, false otherwise.
+         */
         public boolean isSpecifiable() {
             return this.specifiable;
         }
 
+        /**
+         * The default state of the flag.
+         *
+         * @return the default state of the flag, either ALLOW or DENY
+         */
         public FlagState getDefaultState() {
-            return defaultState;
+            return this.defaultState;
         }
 
+        /**
+         * The target type of the flag. Determines what type
+         * this flag targets and affects
+         *
+         * @return the target type of the flag, such as BLOCK, ENTITY, ITEM, etc.
+         */
         public FlagTargetType getTargetType() {
             return this.targetType;
         }

@@ -1,6 +1,6 @@
 package de.rayzs.proregions.plugin.impl.command;
 
-import de.rayzs.proregions.api.ProRegionAPI;
+import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.command.Command;
 import de.rayzs.proregions.api.command.CommandProvider;
 import de.rayzs.proregions.api.configuration.Config;
@@ -16,12 +16,12 @@ public class CommandProviderImpl implements CommandProvider {
 
     private final Collection<Command> commands;
 
-    private final ProRegionAPI api;
+    private final ProRegionsAPI api;
     private final Config config;
 
     private final MessageProvider messageProvider;
 
-    public CommandProviderImpl(final ProRegionAPI api, final Config config) {
+    public CommandProviderImpl(final ProRegionsAPI api, final Config config) {
         this.api = api;
         this.config = config;
 

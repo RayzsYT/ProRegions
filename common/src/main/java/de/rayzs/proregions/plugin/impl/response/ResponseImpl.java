@@ -1,6 +1,6 @@
 package de.rayzs.proregions.plugin.impl.response;
 
-import de.rayzs.proregions.api.ProRegion;
+import de.rayzs.proregions.api.ProRegions;
 import de.rayzs.proregions.api.response.Response;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -61,15 +61,15 @@ public class ResponseImpl implements Response {
     @Override
     public void send(Player player) {
         if (chatMessage != null) {
-            ProRegion.get().getMessageProvider().sendMessage(player, chatMessage);
+            ProRegions.get().getMessageProvider().sendMessage(player, chatMessage);
         }
 
         if (actionbarMessage != null && !actionbarMessage.isEmpty()) {
-            ProRegion.get().getMessageProvider().sendActionbar(player, actionbarMessage);
+            ProRegions.get().getMessageProvider().sendActionbar(player, actionbarMessage);
         }
 
         if (title != null || subtitle != null) {
-            ProRegion.get().getMessageProvider().sendTitle(player,
+            ProRegions.get().getMessageProvider().sendTitle(player,
                     Objects.requireNonNullElse(title, ""),
                     Objects.requireNonNullElse(subtitle, "")
             );

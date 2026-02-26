@@ -1,6 +1,6 @@
 package de.rayzs.proregions.plugin.impl.message;
 
-import de.rayzs.proregions.api.ProRegionAPI;
+import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.configuration.Config;
 import de.rayzs.proregions.api.message.MessageProvider;
 import de.rayzs.proregions.plugin.hook.PluginHooks;
@@ -16,10 +16,10 @@ import java.util.Set;
 
 public class BukkitMessageProviderImpl implements MessageProvider {
 
-    private final ProRegionAPI api;
+    private final ProRegionsAPI api;
     private final Config config;
 
-    public BukkitMessageProviderImpl(final ProRegionAPI api, final Config config) {
+    public BukkitMessageProviderImpl(final ProRegionsAPI api, final Config config) {
         this.api = api;
         this.config = config;
     }

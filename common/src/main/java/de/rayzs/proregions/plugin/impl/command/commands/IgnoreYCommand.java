@@ -1,6 +1,6 @@
 package de.rayzs.proregions.plugin.impl.command.commands;
 
-import de.rayzs.proregions.api.ProRegionAPI;
+import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.command.Command;
 import de.rayzs.proregions.api.region.Region;
 import org.bukkit.command.CommandSender;
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class IgnoreYCommand extends Command {
 
-    public IgnoreYCommand(final ProRegionAPI api) {
+    public IgnoreYCommand(final ProRegionsAPI api) {
         super(api,
                 "ignore-y",
                 "ignore-y",
