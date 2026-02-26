@@ -167,6 +167,7 @@ public class RegionListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerInteract(final PlayerInteractEvent event) {
+        final Player player = event.getPlayer();
         final Block block = event.getClickedBlock();
 
         if (block != null) {
@@ -204,7 +205,7 @@ public class RegionListener implements Listener {
         if (event.getItem() != null) {
             if (!provider.isAllowed(
                     Contexts.PLAYER_MATERIAL,
-                    block.getLocation(),
+                    player.getLocation(),
                     RegionEnums.Flags.INTERACT_ITEM,
                     event.getPlayer(),
                     event.getItem().getType(),
