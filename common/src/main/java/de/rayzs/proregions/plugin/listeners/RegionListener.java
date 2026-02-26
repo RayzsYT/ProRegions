@@ -49,7 +49,6 @@ public class RegionListener implements Listener {
     @EventHandler (priority = EventPriority.LOWEST)
     public void onMove(final PlayerMoveEvent event) {
         final Player player = event.getPlayer();
-        final UUID uuid = player.getUniqueId();
 
         final Location from = event.getFrom();
         final Location to = event.getTo();
