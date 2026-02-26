@@ -14,8 +14,41 @@ public class Contexts {
     private Contexts() {}
 
 
-    private static boolean hasBypassPermission(final Player player) {
-        return player.hasPermission("proregions.bypass");
+    private static final String BYPASS_PERMISSION = "proregions.bypass";
+    private static final String BYPASS_PERMISSION_FLAG = "proregions.bypass.%s";
+    private static final String BYPASS_PERMISSION_FLAG_SPEC = "proregions.bypass.%s.%s";
+
+
+    private static boolean hasBypassPermission(
+            final Player player,
+            final RegionEnums.Flags flag,
+            final @Nullable String specification
+            ) {
+
+        if (player.hasPermission(BYPASS_PERMISSION)) {
+            return true;
+        }
+
+        final String flagName = flag.name().toLowerCase();
+
+        if (specification != null) {
+            if (player.hasPermission(
+                    String.format(
+                            BYPASS_PERMISSION_FLAG_SPEC,
+                            flagName,
+                            specification.toLowerCase()
+                    )
+            )) {
+                return true;
+            }
+        }
+
+        return player.hasPermission(
+                String.format(
+                        BYPASS_PERMISSION_FLAG,
+                        flagName
+                )
+        );
     }
 
     public static ContextEval<Player, Object, Object, Object> PLAYER = (
@@ -34,7 +67,7 @@ public class Contexts {
         return region.getFlagState(flag, entity.getType().name());
     };
 
-    public static ContextEval<Block, Object, Object, Object> BLOCK_CHANGE = (
+    public static ContextEval<Block, Object, Object, Object> BLOCK = (
             region, flag,
             block,
             a, b, c) -> {
@@ -47,7 +80,7 @@ public class Contexts {
             player, material,
             a, b) -> {
 
-        if (hasBypassPermission(player)) {
+        if (hasBypassPermission(player, flag, material.name())) {
             return RegionEnums.FlagState.ALLOW;
         }
 
@@ -67,7 +100,7 @@ public class Contexts {
             player, material,
             a, b) -> {
 
-        if (hasBypassPermission(player)) {
+        if (hasBypassPermission(player, flag, material.name())) {
             return RegionEnums.FlagState.ALLOW;
         }
 
@@ -79,7 +112,7 @@ public class Contexts {
             player, projectile,
             a, b) -> {
 
-        if (hasBypassPermission(player)) {
+        if (hasBypassPermission(player, flag, projectile.getType().name())) {
             return RegionEnums.FlagState.ALLOW;
         }
 
@@ -99,7 +132,7 @@ public class Contexts {
             player, entity,
             a, b) -> {
 
-        if (hasBypassPermission(player)) {
+        if (hasBypassPermission(player, flag, entity.getType().name())) {
             return RegionEnums.FlagState.ALLOW;
         }
 
@@ -111,35 +144,12 @@ public class Contexts {
             player, entity,
             a, b) -> {
 
-        if (hasBypassPermission(player)) {
+        if (hasBypassPermission(player, flag, entity.getType().name())) {
             return RegionEnums.FlagState.ALLOW;
         }
 
         return region.getFlagState(flag, entity.getType().name());
     };
 
-    public static ContextEval<Player, Material, Object, Object> PLAYER_BUCKET_BLOCK = (
-            region, flag,
-            player, material,
-            a, b) -> {
-
-        if (hasBypassPermission(player)) {
-            return RegionEnums.FlagState.ALLOW;
-        }
-
-        return region.getFlagState(flag, material.name());
-    };
-
-    public static ContextEval<Player, Entity, Object, Object> PLAYER_BUCKET_ENTITY  = (
-            region, flag,
-            player, entity,
-            a, b) -> {
-
-        if (hasBypassPermission(player)) {
-            return RegionEnums.FlagState.ALLOW;
-        }
-
-        return region.getFlagState(flag, entity.getType().name());
-    };
 
 }
