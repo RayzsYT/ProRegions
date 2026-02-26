@@ -55,6 +55,7 @@ messages:
   info:
     unknown-region: '&cRegion not found!'
     no-region-here: '&cYou are not in a region!'
+    multiple-regions: '&7Found multiple regions on your location: %regions%'
     message: |
       &7Region: &e%region%
       &7World: &e%world%
