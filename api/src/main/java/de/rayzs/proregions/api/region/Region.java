@@ -2,14 +2,13 @@ package de.rayzs.proregions.api.region;
 
 import de.rayzs.proregions.api.region.chunk.ChunkKey;
 import de.rayzs.proregions.api.response.Response;
-import de.rayzs.proregions.api.world.Environment;
 import de.rayzs.proregions.api.world.TinyLocation;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 
-import java.util.Set;
+import java.util.List;
 
 public interface Region extends ConfigurationSerializable {
 
@@ -125,9 +124,9 @@ public interface Region extends ConfigurationSerializable {
     /**
      * Returns the chunks that are contained within the region area.
      *
-     * @return set of all chunks.
+     * @return list of all chunks.
      */
-    Set<ChunkKey> getChunkKeys();
+    List<ChunkKey> getChunkKeys();
 
     /**
      * Returns the center of the region.
@@ -146,10 +145,4 @@ public interface Region extends ConfigurationSerializable {
      * @return the world name.
      */
     String getWorldName();
-
-    /**
-     * Returns region world environment.
-     * @return the world environment.
-     */
-    Environment getEnvironment();
 }

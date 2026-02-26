@@ -9,6 +9,14 @@ import java.util.Map;
 
 public record ChunkKey(String worldName, int x, int z) implements ConfigurationSerializable {
 
+    public static ChunkKey from(final String worldName, final int x, final int z) {
+        return new ChunkKey(
+                worldName,
+                x << 4,
+                z << 4
+        );
+    }
+
     public static ChunkKey from(final Location location) {
         return new ChunkKey(
                 location.getWorld().getName(),

@@ -6,6 +6,7 @@ import de.rayzs.proregions.api.region.context.ContextEval;
 import org.bukkit.Location;
 import org.bukkit.World;
 import java.util.Collection;
+import java.util.Map;
 
 public interface RegionProvider {
 
@@ -23,35 +24,21 @@ public interface RegionProvider {
     Region getRegion(final String name);
 
     /**
-     * Get a region based on the location.
+     * Creates and returns a copy of all regions stored with
+     * their name as key and their object as value.
      *
-     * @param location the location to get the region from.
-     * @return the region at the given location, or null if no region is found at that location.
+     * @return map of all regions.
      */
-    Region getRegion(final Location location);
+    Map<String, Region> getRegions();
 
     /**
-     * Creates and returns an immutable copy of all regions.
-     *
-     * @return an immutable collection of all regions.
-     */
-    Collection<Region> getRegions();
-
-    /**
-     * Creates and returns an immutable copy of all regions in the specified world.
-     *
-     * @param world the world to get the regions from.
-     * @return an immutable collection of all regions in the specified world.
-     */
-    Collection<Region> getRegions(World world);
-
-    /**
-     * Creates and returns an immutable copy of all regions at the specified location.
+     * Returns an already created and stored map containing regions with their
+     * name as key and object as value on a certain location.
      *
      * @param location the location to get the regions from.
      * @return an immutable collection of all regions at the specified location.
      */
-    Collection<Region> getRegions(Location location);
+    Map<String, Region> getRegions(Location location);
 
     /**
      * Checks if action is allowed or not.

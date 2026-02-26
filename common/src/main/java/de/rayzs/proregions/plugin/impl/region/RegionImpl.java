@@ -31,9 +31,8 @@ public class RegionImpl implements Region {
     private final Response defaultResponse;
 
     private final TinyLocation centerLocation;
-    private final Environment environment;
 
-    private final Set<ChunkKey> chunkKeys;
+    private final ArrayList<ChunkKey> chunkKeys;
 
     private final int minX, minY, minZ;
     private final int maxX, maxY, maxZ;
@@ -41,7 +40,7 @@ public class RegionImpl implements Region {
     private boolean ignoreY;
 
     public RegionImpl(
-            final Set<ChunkKey> chunkKeys,
+            final ArrayList<ChunkKey> chunkKeys,
             final String name,
             final String worldName,
             final boolean ignoreY,
@@ -52,35 +51,6 @@ public class RegionImpl implements Region {
             final TinyLocation firstLocation,
             final TinyLocation secondLocation
     ) {
-        this(Environment.getEnvironmentByWorld(
-                Bukkit.getWorld(worldName)).getId(),
-                chunkKeys,
-                name,
-                worldName,
-                ignoreY,
-                defaultResponse,
-                responses,
-                flags,
-                specificFlags,
-                firstLocation,
-                secondLocation
-        );
-    }
-
-    public RegionImpl(
-            final int environmentId,
-            final Set<ChunkKey> chunkKeys,
-            final String name,
-            final String worldName,
-            final boolean ignoreY,
-            final Response defaultResponse,
-            final Map<RegionEnums.Flags, Response> responses,
-            final Map<RegionEnums.Flags, RegionEnums.FlagState> flags,
-            final Map<RegionEnums.Flags, Map<String, RegionEnums.FlagState>> specificFlags,
-            final TinyLocation firstLocation,
-            final TinyLocation secondLocation
-    ) {
-        this.environment = Environment.getEnvironmentById(environmentId);
         this.name = name;
         this.worldName = worldName;
 
@@ -101,9 +71,9 @@ public class RegionImpl implements Region {
         this.maxZ = Math.max(firstLocation.z(), secondLocation.z());
 
         if (chunkKeys.isEmpty()) {
-            for (int x = minX; x <= maxX; x += 16) {
-                for (int z = minZ; z <= maxZ; z += 16) {
-                    chunkKeys.add(new ChunkKey(worldName, x, z));
+            for (int x = minX; x < maxX + 1; x++) {
+                for (int z = minZ; z < maxZ + 1; z++) {
+                    chunkKeys.add(ChunkKey.from(worldName, x, z));
                 }
             }
         }
@@ -141,7 +111,7 @@ public class RegionImpl implements Region {
             return false;
         }
 
-        if (!this.environment.isSame(world) || !this.worldName.equalsIgnoreCase(world.getName())) {
+        if (!this.worldName.equalsIgnoreCase(world.getName())) {
             return false;
         }
 
@@ -239,7 +209,7 @@ public class RegionImpl implements Region {
     }
 
     @Override
-    public Set<ChunkKey> getChunkKeys() {
+    public List<ChunkKey> getChunkKeys() {
         return this.chunkKeys;
     }
 
@@ -255,7 +225,6 @@ public class RegionImpl implements Region {
 
         map.put("name", name);
         map.put("chunk-keys", chunkKeys);
-        map.put("environment-id", environment.getId());
         map.put("ignore-y", ignoreY);
 
         map.put("area.world", worldName);
@@ -303,8 +272,7 @@ public class RegionImpl implements Region {
 
     public static RegionImpl deserialize(Map<String, Object> map) {
         final String name = (String) map.get("name");
-        final int environmentId = (int) map.get("environment-id");
-        final HashSet<ChunkKey> key = (HashSet<ChunkKey>) map.get("chunk-keys");
+        final ArrayList<ChunkKey> key = (ArrayList<ChunkKey>) map.get("chunk-keys");
 
         final boolean ignoreY = (boolean) map.get("ignore-y");
 
@@ -362,7 +330,7 @@ public class RegionImpl implements Region {
         }
 
         return new RegionImpl(
-                environmentId, key,
+                key,
                 name, worldName, ignoreY,
                 defaultResponse, responses,
                 flags, specificFlags,
@@ -381,8 +349,4 @@ public class RegionImpl implements Region {
         return this.worldName;
     }
 
-    @Override
-    public Environment getEnvironment() {
-        return this.environment;
-    }
 }

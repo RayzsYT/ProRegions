@@ -73,6 +73,9 @@ public class RegionProviderImpl implements RegionProvider {
     @Override
     public Map<String, Region> getRegions(Location location) {
         final ChunkKey chunkKey = ChunkKey.from(location);
+
+        System.out.println("Check with: " + chunkKey);
+
         return regions.getOrDefault(chunkKey, Map.of());
     }
 
@@ -135,7 +138,7 @@ public class RegionProviderImpl implements RegionProvider {
         }
 
         final Region region = new RegionImpl(
-                new HashSet<>(),
+                new ArrayList<>(),
                 name,
                 world.getName(),
                 ignoreY,
@@ -148,8 +151,7 @@ public class RegionProviderImpl implements RegionProvider {
         );
 
         for (ChunkKey chunkKey : region.getChunkKeys()) {
-            regions
-                    .computeIfAbsent(chunkKey, k -> new HashMap<>())
+            regions.computeIfAbsent(chunkKey, k -> new HashMap<>())
                     .put(name, region);
         }
 
