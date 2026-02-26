@@ -87,7 +87,7 @@ public class RegionListener implements Listener {
         }
 
         if (!provider.isAllowed(
-                Contexts.BLOCK_CHANGE,
+                Contexts.BLOCK,
                 block.getLocation(),
                 RegionEnums.Flags.FLOW,
                 block,
@@ -98,7 +98,7 @@ public class RegionListener implements Listener {
         }
 
         if (!provider.isAllowed(
-                Contexts.BLOCK_CHANGE,
+                Contexts.BLOCK,
                 toBlock.getLocation(),
                 RegionEnums.Flags.FLOW,
                 toBlock,
@@ -119,7 +119,7 @@ public class RegionListener implements Listener {
         final Block blockBelow = fireBlock.getRelative(BlockFace.DOWN);
 
         if (!provider.isAllowed(
-                Contexts.BLOCK_CHANGE,
+                Contexts.BLOCK,
                 fireBlock.getLocation(),
                 RegionEnums.Flags.FIRE_SPREAD,
                 blockBelow,
@@ -132,7 +132,7 @@ public class RegionListener implements Listener {
     @EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
     public void onExplosion(final EntityExplodeEvent event) {
         if (!provider.isAllowed(
-                Contexts.BLOCK_CHANGE,
+                Contexts.BLOCK,
                 event.getLocation(),
                 RegionEnums.Flags.EXPLODE_BLOCKS,
                 event.getLocation().getBlock(),
@@ -143,7 +143,7 @@ public class RegionListener implements Listener {
         }
 
         event.blockList().removeIf(block -> !provider.isAllowed(
-                Contexts.BLOCK_CHANGE,
+                Contexts.BLOCK,
                 block.getLocation(),
                 RegionEnums.Flags.EXPLODE_BLOCKS,
                 block,
@@ -211,7 +211,7 @@ public class RegionListener implements Listener {
         final Material material = item == Material.LAVA_BUCKET ? Material.LAVA : Material.WATER;
 
         if (!provider.isAllowed(
-                Contexts.PLAYER_BUCKET_BLOCK,
+                Contexts.PLAYER_MATERIAL,
                 event.getBlock().getLocation(),
                 RegionEnums.Flags.BUCKET_EMPTY,
                 event.getPlayer(),
@@ -228,7 +228,7 @@ public class RegionListener implements Listener {
     public void onPlayerBucketFill(final PlayerBucketFillEvent event) {
 
         if (!provider.isAllowed(
-                Contexts.PLAYER_BUCKET_BLOCK,
+                Contexts.PLAYER_MATERIAL,
                 event.getBlockClicked().getLocation(),
                 RegionEnums.Flags.BUCKET_FILL,
                 event.getPlayer(),
@@ -248,7 +248,7 @@ public class RegionListener implements Listener {
 
         if (itemInHand == Material.BUCKET && (entity.getType() == EntityType.GOAT || entity.getType() == EntityType.COW)) {
             if (!provider.isAllowed(
-                    Contexts.PLAYER_BUCKET_ENTITY,
+                    Contexts.PLAYER_ENTITY,
                     entity.getLocation(),
                     RegionEnums.Flags.MILK_ENTITY,
                     player, entity,
@@ -569,7 +569,7 @@ public class RegionListener implements Listener {
         for (Block block : event.getBlocks()) {
 
             if (!provider.isAllowed(
-                    Contexts.BLOCK_CHANGE,
+                    Contexts.BLOCK,
                     block.getLocation(),
                     RegionEnums.Flags.PISTON,
                     block,
@@ -582,7 +582,7 @@ public class RegionListener implements Listener {
             final Block nextBlock = block.getRelative(event.getDirection());
 
             if (!provider.isAllowed(
-                    Contexts.BLOCK_CHANGE,
+                    Contexts.BLOCK,
                     nextBlock.getLocation(),
                     RegionEnums.Flags.PISTON,
                     nextBlock,
