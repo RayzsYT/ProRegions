@@ -2,9 +2,11 @@ package de.rayzs.proregions.api.utils;
 
 import org.bukkit.command.CommandSender;
 
+import java.util.Arrays;
+
 public enum Permissions {
 
-    COMMAND                             ("proregions.command.%s"),
+    COMMAND                             ("proregions.command.%"),
 
     BYPASS_PERMISSION                   ("proregions.bypass"),
 
@@ -90,15 +92,18 @@ public enum Permissions {
         for (int i = 0; i < cpy.length; i++) {
             if (argumentIndex == arguments.length) {
                 // Not enough arguments provided.
-                throw new IllegalArgumentException("Arguments are missing for the permission: " + this.permission);
+                throw new IllegalArgumentException("Arguments are missing for the permission! (permission="
+                        + this.permission
+                        + ", provided: "
+                        + Arrays.toString(arguments)
+                        + ")");
             }
 
             // Replaces the placeholder.
             if (cpy[i].equalsIgnoreCase("%")) {
                 cpy[i] = arguments[argumentIndex];
+                argumentIndex++;
             }
-
-            argumentIndex++;
         }
 
         return String.join(".", cpy);
