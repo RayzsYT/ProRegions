@@ -20,7 +20,7 @@ public class ListCommand extends Command {
 
     @Override
     public boolean onExecute(@NonNull CommandSender sender, @NonNull String label, @NonNull String[] args) {
-        final Iterator<Region> iterator = api.getRegionProvider().getRegions().iterator();
+        final Iterator<Region> iterator = api.getRegionProvider().getRegions().values().iterator();
 
         if (!iterator.hasNext()) {
             final String emptyListMessage = api.getMessageProvider().get(

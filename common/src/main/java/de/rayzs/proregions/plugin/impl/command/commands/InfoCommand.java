@@ -8,9 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NonNull;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class InfoCommand extends Command {
 
@@ -29,6 +27,7 @@ public class InfoCommand extends Command {
         }
 
         Region region = null;
+        Map<String, Region> regions = new HashMap<>();
         if (args.length == 1) {
             region = api.getRegionProvider().getRegion(args[0].toLowerCase());
 
@@ -46,7 +45,11 @@ public class InfoCommand extends Command {
                 return true;
             }
         } else if (sender instanceof Player player) {
-            region = api.getRegionProvider().getRegion(player.getLocation());
+            regions = api.getRegionProvider().getRegions(player.getLocation());
+
+            if (regions.size() == 1) {
+                region = regions.values().iterator().next();
+            }
         }
 
         if (region == null) {
@@ -58,6 +61,33 @@ public class InfoCommand extends Command {
             api.getMessageProvider().sendMessage(
                     sender,
                     doesNotExistMessage
+            );
+
+            return true;
+        }
+
+        if (regions.size() > 1) {
+            final String multipleRegionsMessage = api.getMessageProvider().get(
+                    "info.multiple-regions",
+                    "&7Found multiple regions on your location: %regions%"
+            );
+
+            final StringBuilder foundRegionsBuilder = new StringBuilder();
+            final Iterator<Region> iterator = regions.values().iterator();
+
+
+            while (iterator.hasNext()) {
+                final Region foundRegion = iterator.next();
+                foundRegionsBuilder.append(foundRegion.getRegionName());
+
+                if (iterator.hasNext()) {
+                    foundRegionsBuilder.append(", ");
+                }
+            }
+
+            api.getMessageProvider().sendMessage(
+                    sender, multipleRegionsMessage,
+                    "%regions%", foundRegionsBuilder.toString()
             );
 
             return true;
@@ -127,6 +157,6 @@ public class InfoCommand extends Command {
             return List.of();
         }
 
-        return api.getRegionProvider().getRegions().stream().map(Region::getRegionName).toList();
+        return api.getRegionProvider().getRegions().keySet().stream().toList();
     }
 }

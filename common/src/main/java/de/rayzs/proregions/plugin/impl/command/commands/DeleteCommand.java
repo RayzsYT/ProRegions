@@ -59,6 +59,6 @@ public class DeleteCommand extends Command {
             return List.of();
         }
 
-        return api.getRegionProvider().getRegions().stream().map(Region::getRegionName).toList();
+        return api.getRegionProvider().getRegions().keySet().stream().toList();
     }
 }

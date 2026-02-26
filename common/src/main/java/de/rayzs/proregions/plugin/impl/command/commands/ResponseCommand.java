@@ -223,7 +223,7 @@ public class ResponseCommand extends Command {
     @Override
     public List<String> onTabComplete(@NonNull CommandSender sender, @NonNull String[] args) {
         if (args.length == 1) {
-            return api.getRegionProvider().getRegions().stream().map(Region::getRegionName).toList();
+            return api.getRegionProvider().getRegions().keySet().stream().toList();
         }
 
         if (args.length == 2) {
