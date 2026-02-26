@@ -4,20 +4,15 @@ import de.rayzs.proregions.api.region.Region;
 import de.rayzs.proregions.api.region.RegionEnums;
 import de.rayzs.proregions.api.region.chunk.ChunkKey;
 import de.rayzs.proregions.api.response.Response;
-import de.rayzs.proregions.api.world.Environment;
 import de.rayzs.proregions.api.world.TinyLocation;
 import de.rayzs.proregions.plugin.impl.response.ResponseImpl;
 import de.rayzs.proregions.plugin.impl.world.TinyLocationImpl;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class RegionImpl implements Region {
 
