@@ -73,9 +73,6 @@ public class RegionProviderImpl implements RegionProvider {
     @Override
     public Map<String, Region> getRegions(Location location) {
         final ChunkKey chunkKey = ChunkKey.from(location);
-
-        System.out.println("Check with: " + chunkKey);
-
         return regions.getOrDefault(chunkKey, Map.of());
     }
 
