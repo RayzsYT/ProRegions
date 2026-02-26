@@ -52,24 +52,10 @@ public class InfoCommand extends Command {
             }
         }
 
-        if (region == null) {
-            final String doesNotExistMessage = api.getMessageProvider().get(
-                    "info.no-region-here",
-                    "&cYou are not in a region!"
-            );
-
-            api.getMessageProvider().sendMessage(
-                    sender,
-                    doesNotExistMessage
-            );
-
-            return true;
-        }
-
         if (regions.size() > 1) {
             final String multipleRegionsMessage = api.getMessageProvider().get(
                     "info.multiple-regions",
-                    "&7Found multiple regions on your location: %regions%"
+                    "&7Found multiple regions on your location: &e%regions%"
             );
 
             final StringBuilder foundRegionsBuilder = new StringBuilder();
@@ -88,6 +74,20 @@ public class InfoCommand extends Command {
             api.getMessageProvider().sendMessage(
                     sender, multipleRegionsMessage,
                     "%regions%", foundRegionsBuilder.toString()
+            );
+
+            return true;
+        }
+
+        if (region == null) {
+            final String doesNotExistMessage = api.getMessageProvider().get(
+                    "info.no-region-here",
+                    "&cYou are not in a region!"
+            );
+
+            api.getMessageProvider().sendMessage(
+                    sender,
+                    doesNotExistMessage
             );
 
             return true;
