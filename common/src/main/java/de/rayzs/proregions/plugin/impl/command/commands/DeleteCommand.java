@@ -13,7 +13,6 @@ public class DeleteCommand extends Command {
     public DeleteCommand(final ProRegionsAPI api) {
         super(api,
                 "delete",
-                "delete",
                 "<region>"
         );
     }

@@ -12,7 +12,6 @@ public class ReloadCommand extends Command {
     public ReloadCommand(final ProRegionsAPI api) {
         super(api,
                 "reload",
-                "reload",
                 ""
         );
     }

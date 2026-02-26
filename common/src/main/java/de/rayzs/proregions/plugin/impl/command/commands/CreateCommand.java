@@ -14,7 +14,6 @@ public class CreateCommand extends Command {
     public CreateCommand(final ProRegionsAPI api) {
         super(api,
                 "create",
-                "create",
                 "<region>"
         );
     }

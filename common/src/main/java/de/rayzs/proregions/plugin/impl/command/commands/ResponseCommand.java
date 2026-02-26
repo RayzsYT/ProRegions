@@ -20,7 +20,6 @@ public class ResponseCommand extends Command {
     public ResponseCommand(final ProRegionsAPI api) {
         super(api,
                 "response",
-                "response",
                 "<region> <set/unset> <default/flag> <type> <message>"
         );
     }

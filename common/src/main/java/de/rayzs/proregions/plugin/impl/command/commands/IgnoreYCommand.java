@@ -13,7 +13,6 @@ public class IgnoreYCommand extends Command {
     public IgnoreYCommand(final ProRegionsAPI api) {
         super(api,
                 "ignore-y",
-                "ignore-y",
                 "<region> <true/false>"
         );
     }

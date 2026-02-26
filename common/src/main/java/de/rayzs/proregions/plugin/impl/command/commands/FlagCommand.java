@@ -15,7 +15,6 @@ public class FlagCommand extends Command {
     public FlagCommand(final ProRegionsAPI api) {
         super(api,
                 "flag",
-                "flag",
                 "<region> <flag> <allow/deny> (specification)"
         );
     }

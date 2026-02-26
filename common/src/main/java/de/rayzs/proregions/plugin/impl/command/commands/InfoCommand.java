@@ -17,7 +17,6 @@ public class InfoCommand extends Command {
     public InfoCommand(final ProRegionsAPI api) {
         super(api,
                 "info",
-                "info",
                 "<region>"
         );
     }

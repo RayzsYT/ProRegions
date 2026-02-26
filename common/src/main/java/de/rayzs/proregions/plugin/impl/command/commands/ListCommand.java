@@ -14,7 +14,6 @@ public class ListCommand extends Command {
     public ListCommand(final ProRegionsAPI api) {
         super(api,
                 "list",
-                "list",
                 ""
         );
     }
