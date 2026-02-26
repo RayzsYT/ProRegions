@@ -61,13 +61,14 @@ public class RegionEnums {
          * @param element the element to validate.
          * @return the validated element in lowercase if it exists, otherwise null.
          */
-        public String validateIfExist(final String element) {
+        public String validateIfExist(String element) {
             if (this.elements.isEmpty()) {
                 return null;
             }
 
-            if (this.elements.contains(element.toUpperCase())) {
-                return element.toLowerCase();
+            element = element.toLowerCase();
+            if (this.elements.contains(element)) {
+                return element;
             }
 
             return null;
