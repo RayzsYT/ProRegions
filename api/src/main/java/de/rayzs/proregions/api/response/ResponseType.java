@@ -1,5 +1,11 @@
 package de.rayzs.proregions.api.response;
 
 public enum ResponseType {
-    CHAT, ACTIONBAR, TITLE, SUBTITLE, SOUND
+    TITLE, SUBTITLE,
+
+    CHAT,
+
+    SOUND,
+
+    ACTIONBAR
 }

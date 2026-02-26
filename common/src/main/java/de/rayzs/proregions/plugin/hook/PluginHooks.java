@@ -1,6 +1,6 @@
 package de.rayzs.proregions.plugin.hook;
 
-import de.rayzs.proregions.api.ProRegion;
+import de.rayzs.proregions.api.ProRegions;
 import org.bukkit.Bukkit;
 
 import java.util.function.Consumer;
@@ -12,11 +12,12 @@ public enum PluginHooks {
             "de.rayzs.proregions.plugin.hook.hooks.PlaceholderAPIHook"
     );
 
-    private final boolean enabled;
+
+
     private Hook hookObj;
 
     PluginHooks(final String pluginName, final String hookClassPath) {
-        enabled = Bukkit.getPluginManager().isPluginEnabled(pluginName);
+        final boolean enabled = Bukkit.getPluginManager().isPluginEnabled(pluginName);
 
         if (!enabled) {
             this.hookObj = null;
@@ -28,13 +29,23 @@ public enum PluginHooks {
             this.hookObj = hookClass.newInstance();
             this.hookObj.start();
 
-            ProRegion.get().getLogger().info("Successfully hooked into " + pluginName + "! ");
+            ProRegions.get().getLogger().info("Successfully hooked into " + pluginName + "! ");
         } catch (final Exception exception) {
             exception.printStackTrace();
         }
     }
 
+    /**
+     * Takes and execute a consumer if the hook exists. If the hook does not exist, it will do nothing.
+     *
+     * @param consumer the consumer to execute if the hook exists.
+     * @param <T> the type of the hook.
+     */
     public <T extends Hook> void executeIfExist(final Consumer<T> consumer) {
+        if (this.hookObj == null) {
+            return;
+        }
+
         consumer.accept((T) hookObj);
     }
 
