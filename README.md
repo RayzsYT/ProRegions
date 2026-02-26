@@ -128,3 +128,45 @@ The idea is to make it plugin as **easy to use** as possible, without adding too
 | DROWNING_DAMAGE         | denied         | no          |
 | MONSTER_SPAWN           | denied         | yes         |
 | ANIMAL_SPAWN            | denied         | yes         |
+
+<br>
+
+## Permission to bypass regions/flags:
+
+Bypass all regions/flags:
+<br>
+`proregions.bypass`
+
+Bypass all flags for a region:
+<br>
+`proregions.bypass.<region>`
+<br>
+`e.g: proregions.bypass.spawn`
+
+Bypass a certain flag for a region:
+<br>
+`proregions.bypass.<region>.<flag>`
+<br>
+`e.g: proregions.bypass.spawn.place`
+
+Bypass a flag for a certain specification for a region:
+<br>
+`proregions.bypass.<region>.<flag>.<specification>`
+<br>
+`e.g: proregions.bypass.spawn.place.dirt`
+
+<br>
+
+## Permission for commands:
+
+| Command            | Permission                  |
+|--------------------|-----------------------------|
+| **admin commands** | proregions.use              |
+| create             | proregions.command.create   |
+| delete             | proregions.command.delete   |
+| flag               | proregions.command.flag     |
+| ignorey            | proregions.command.ignorey  |
+| info               | proregions.command.info     |
+| list               | proregions.command.list     |
+| reload             | proregions.command.reload   |
+| response           | proregions.command.response |
