@@ -4,6 +4,7 @@ import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.region.RegionEnums;
 import de.rayzs.proregions.api.region.RegionProvider;
 import de.rayzs.proregions.api.region.context.Contexts;
+import de.rayzs.proregions.api.utils.Permissions;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -46,6 +47,12 @@ public class RegionListener implements Listener {
     @EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
     public void onBlockPlace(final BlockPlaceEvent event) {
         final Player player = event.getPlayer();
+
+        if (Permissions.BYPASS_PERMISSION.hasPermission(player)) {
+            return;
+        }
+
+
         final Block block = event.getBlock();
 
         if (!provider.isAllowed(
@@ -63,6 +70,12 @@ public class RegionListener implements Listener {
     @EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
     public void onBlockBreak(final BlockBreakEvent event) {
         final Player player = event.getPlayer();
+
+        if (Permissions.BYPASS_PERMISSION.hasPermission(player)) {
+            return;
+        }
+
+
         final Block block = event.getBlock();
 
         if (!provider.isAllowed(
@@ -115,6 +128,7 @@ public class RegionListener implements Listener {
         if (fireBlock.getType() != org.bukkit.Material.FIRE) {
             return;
         }
+
 
         final Block blockBelow = fireBlock.getRelative(BlockFace.DOWN);
 
@@ -204,9 +218,11 @@ public class RegionListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerBucketEmpty(final PlayerBucketEmptyEvent event) {
         final Material item = event.getBucket();
+
         if (item != Material.LAVA_BUCKET && item != Material.WATER_BUCKET) {
             return;
         }
+
     
         final Material material = item == Material.LAVA_BUCKET ? Material.LAVA : Material.WATER;
 
@@ -242,8 +258,13 @@ public class RegionListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onInteractEntity(final PlayerInteractEntityEvent event) {
         final Player player = event.getPlayer();
-        final Entity entity = event.getRightClicked();
 
+        if (Permissions.BYPASS_PERMISSION.hasPermission(player)) {
+            return;
+        }
+
+
+        final Entity entity = event.getRightClicked();
         final Material itemInHand = player.getInventory().getItemInMainHand().getType();
 
         if (itemInHand == Material.BUCKET && (entity.getType() == EntityType.GOAT || entity.getType() == EntityType.COW)) {
@@ -274,7 +295,6 @@ public class RegionListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onEntityDamageByEntity(final EntityDamageByEntityEvent event) {
-
         if (event.getDamager() instanceof Player damager) {
             final Player player = event.getEntity() instanceof Player p ? p : null;
 
@@ -470,6 +490,12 @@ public class RegionListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerFish(final PlayerFishEvent event) {
         final Player player = event.getPlayer();
+
+        if (Permissions.BYPASS_PERMISSION.hasPermission(player)) {
+            return;
+        }
+
+
         final FishHook hook = event.getHook();
 
         if (!provider.isAllowed(
@@ -487,6 +513,12 @@ public class RegionListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerPickup(final PlayerPickupItemEvent event) {
         final Player player = event.getPlayer();
+
+        if (Permissions.BYPASS_PERMISSION.hasPermission(player)) {
+            return;
+        }
+
+
         final Material material = event.getItem().getItemStack().getType();
 
         if (!provider.isAllowed(
@@ -503,6 +535,12 @@ public class RegionListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerPickup(final PlayerPickupArrowEvent event) {
         final Player player = event.getPlayer();
+
+        if (Permissions.BYPASS_PERMISSION.hasPermission(player)) {
+            return;
+        }
+
+
         final Material material = event.getItem().getItemStack().getType();
 
         if (!provider.isAllowed(
@@ -535,6 +573,12 @@ public class RegionListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerDrop(final PlayerDropItemEvent event) {
         final Player player = event.getPlayer();
+
+        if (Permissions.BYPASS_PERMISSION.hasPermission(player)) {
+            return;
+        }
+
+
         final Material material = event.getItemDrop().getItemStack().getType();
 
         if (!provider.isAllowed(
