@@ -30,7 +30,9 @@ The idea is to make the plugin as **easy to use** as possible, without adding to
 <br>
 
 #### Make a region with no height/dept limit (ignore Y axis)
-> `/rg ignore-y true/false`
+> `/rg ignore-y <region> true/false`
+> <br>
+> **region** = Name of your region
 > <br>
 > **true** = Region area is not a cube anymore, making the **Y axis** for the area infinite.
 > <br>
@@ -45,6 +47,8 @@ The idea is to make the plugin as **easy to use** as possible, without adding to
 > <br>
 > <br>
 > `/rg info <region>`
+> <br>
+> **region** = Name of your region
 > <br>
 > Fetches the information on the specified region.
 
