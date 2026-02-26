@@ -18,6 +18,7 @@ public class RegionProviderImpl implements RegionProvider {
 
     // Regions are stored based on chunk key.
     private final Map<ChunkKey, Map<String, Region>> regions;
+    private final Map<UUID, Set<Region>> playerRegions;
 
     private final ProRegionsAPI api;
     private final Config config;
@@ -25,7 +26,9 @@ public class RegionProviderImpl implements RegionProvider {
     public RegionProviderImpl(final ProRegionsAPI api, final Config config) {
         this.api = api;
         this.config = config;
+
         this.regions = new HashMap<>();
+        this.playerRegions = new HashMap<>();
 
         reload();
     }
@@ -71,9 +74,24 @@ public class RegionProviderImpl implements RegionProvider {
     }
 
     @Override
-    public Map<String, Region> getRegions(Location location) {
+    public Map<String, Region> getRegions(final Location location) {
         final ChunkKey chunkKey = ChunkKey.from(location);
         return regions.getOrDefault(chunkKey, Map.of());
+    }
+
+    @Override
+    public Set<Region> getCachedPlayerRegions(final Player player) {
+        return playerRegions.getOrDefault(player.getUniqueId(), Set.of());
+    }
+
+    @Override
+    public void updatePlayerRegionsCache(final Player player, final Location location) {
+        final UUID uuid = player.getUniqueId();
+
+        for (Region region : getRegions(location).values()) {
+            playerRegions.computeIfAbsent(uuid, k -> new HashSet<>())
+                    .add(region);
+        }
     }
 
     @Override

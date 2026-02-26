@@ -5,8 +5,11 @@ import de.rayzs.proregions.api.region.chunk.ChunkKey;
 import de.rayzs.proregions.api.region.context.ContextEval;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
+
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 public interface RegionProvider {
 
@@ -38,7 +41,24 @@ public interface RegionProvider {
      * @param location the location to get the regions from.
      * @return an immutable collection of all regions at the specified location.
      */
-    Map<String, Region> getRegions(Location location);
+    Map<String, Region> getRegions(final Location location);
+
+    /**
+     * Returns a set of all regions a player is in.
+     * Requires to be updated manually using {@link de.rayzs.proregions.api.region.RegionProvider#updatePlayerRegions(Player, Location)}
+     *
+     * @param player the player.
+     * @return an immutable collection of all regions the player is on.
+     */
+    Set<Region> getCachedPlayerRegions(final Player player);
+
+    /**
+     * Updates the regions the player is in.
+     *
+     * @param player the player.
+     * @param location player's current or upcoming location.
+     */
+    void updatePlayerRegionsCache(final Player player, final Location location);
 
     /**
      * Checks if action is allowed or not.
