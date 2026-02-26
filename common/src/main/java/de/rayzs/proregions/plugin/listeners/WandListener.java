@@ -2,7 +2,6 @@ package de.rayzs.proregions.plugin.listeners;
 
 import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.clipboard.Clipboard;
-import de.rayzs.proregions.api.utils.ExpireCache;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
