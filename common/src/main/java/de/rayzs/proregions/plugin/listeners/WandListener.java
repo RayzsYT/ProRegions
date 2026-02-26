@@ -36,7 +36,7 @@ public class WandListener implements Listener {
             return;
         }
 
-        final Clipboard clipboard = api.getClipboardProvider().getClipboard(player.getUniqueId());
+        final Clipboard clipboard = api.getClipboardProvider().getClipboard(uuid);
         final Location location = event.getClickedBlock().getLocation();
 
         if (event.getAction().name().contains("LEFT")) {
