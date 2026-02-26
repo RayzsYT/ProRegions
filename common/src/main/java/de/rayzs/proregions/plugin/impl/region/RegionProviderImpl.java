@@ -13,6 +13,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class RegionProviderImpl implements RegionProvider {
 
@@ -85,13 +86,60 @@ public class RegionProviderImpl implements RegionProvider {
     }
 
     @Override
-    public void updatePlayerRegionsCache(final Player player, final Location location) {
+    public void resetPlayerRegionsCache(final Player player) {
+        playerRegions.remove(player.getUniqueId());
+    }
+
+    @Override
+    public void updatePlayerRegionsCache(
+            final Player player,
+            final Location location,
+            final Predicate<Set<Region>> condition
+    ) {
         final UUID uuid = player.getUniqueId();
 
+        final Set<Region> set = new HashSet<>();
         for (Region region : getRegions(location).values()) {
-            playerRegions.computeIfAbsent(uuid, k -> new HashSet<>())
-                    .add(region);
+            if (region.contains(location)) {
+                set.add(region);
+            }
         }
+
+        if (condition.test(set)) {
+            playerRegions.put(uuid, set);
+        }
+    }
+
+    @Override
+    public <A,B,C,D> boolean isAllowed(
+            final Region region,
+            final ContextEval<A,B,C,D> context,
+            final Location location,
+            final RegionEnums.Flags flag,
+            final A a, final B b,
+            final C c, final D d
+    ) {
+        final World world = location.getWorld();
+        if (world == null || !region.contains(location)) {
+            System.out.println("--- Ignored");
+            return true;
+        }
+
+        final RegionEnums.FlagState evaluation = context.evaluate(
+                region, flag,
+                a, b, c, d
+        );
+
+        if (evaluation == RegionEnums.FlagState.DENY) {
+            final Response response = region.getResponse(flag);
+
+            if (a instanceof Player player)
+                response.send(player);
+
+            return false;
+        }
+
+        return true;
     }
 
     @Override

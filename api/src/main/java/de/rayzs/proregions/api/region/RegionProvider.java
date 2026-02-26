@@ -1,15 +1,13 @@
 package de.rayzs.proregions.api.region;
 
 import de.rayzs.proregions.api.clipboard.Clipboard;
-import de.rayzs.proregions.api.region.chunk.ChunkKey;
 import de.rayzs.proregions.api.region.context.ContextEval;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public interface RegionProvider {
 
@@ -45,7 +43,7 @@ public interface RegionProvider {
 
     /**
      * Returns a set of all regions a player is in.
-     * Requires to be updated manually using {@link de.rayzs.proregions.api.region.RegionProvider#updatePlayerRegions(Player, Location)}
+     * Requires to be updated manually using {@link de.rayzs.proregions.api.region.RegionProvider#updatePlayerRegionsCache(Player, Location, Predicate<Set<Region>>)}
      *
      * @param player the player.
      * @return an immutable collection of all regions the player is on.
@@ -57,8 +55,76 @@ public interface RegionProvider {
      *
      * @param player the player.
      * @param location player's current or upcoming location.
+     * @param condition to ensure whether the changes really should be applied or not.
      */
-    void updatePlayerRegionsCache(final Player player, final Location location);
+    void updatePlayerRegionsCache(
+            final Player player,
+            final Location location,
+            final Predicate<Set<Region>> condition
+    );
+
+    /**
+     * Reset a player's regions cache.
+     * This is going to be called once the player leaves
+     * the server. No need for no-one else to call this. (So please don't)
+     *
+     * @param player the player.
+     */
+    void resetPlayerRegionsCache(
+            final Player player
+    );
+
+    /**
+     * Checks if action is allowed or not in that region.
+     *
+     * @param region the region to check.
+     * @param context the context to check. See {@link de.rayzs.proregions.api.region.context.Contexts} for predefined contexts.
+     * @param location the location where the action is performed.
+     * @param flag the flag to check.
+     * @param a first context parameter.
+     * @param b second context parameter.
+     * @param c third context parameter.
+     * @param d fourth context parameter.
+     * @return true if the action is allowed, false otherwise.
+     * @param <A> the type of the first context parameter.
+     * @param <B> the type of the second context parameter.
+     * @param <C> the type of the third context parameter.
+     * @param <D> the type of the fourth context parameter.
+     *
+     * <pre>
+     * {@code
+     *  // Example use case:
+     *
+     *  final Entity entity = ...;
+     *  final Material itemMaterial = ...;
+     *
+     *  if (!provider.isAllowed(
+     *      region,                     // The region to check.
+     *      Contexts.ENTITY_ITEM,       // Context which fills the type parameters.
+     *      entity.getLocation(),       // Location
+     *      RegionEnums.Flags.PICKUP,   // Flag
+     *      entity,                     // Entity picking up the item.
+     *      itemMaterial,               // Material of the item being picked up.
+     *      null,                       // Not required in in provided context.
+     *      null                        // Not required in in provided context.
+     *  )) {
+     *      // Blocked
+     *  } else {
+     *      // Not blocked
+     *  }
+     * }
+     * </pre>
+     */
+    <A,B,C,D> boolean isAllowed(
+            final Region region,
+            final ContextEval<A,B,C,D> context,
+            final Location location,
+            final RegionEnums.Flags flag,
+            final A a,
+            final B b,
+            final C c,
+            final D d
+    );
 
     /**
      * Checks if action is allowed or not.

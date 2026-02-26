@@ -1,6 +1,7 @@
 package de.rayzs.proregions.plugin.listeners;
 
 import de.rayzs.proregions.api.ProRegionsAPI;
+import de.rayzs.proregions.api.region.Region;
 import de.rayzs.proregions.api.region.RegionEnums;
 import de.rayzs.proregions.api.region.RegionProvider;
 import de.rayzs.proregions.api.region.context.Contexts;
@@ -17,6 +18,8 @@ import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 
+import java.util.*;
+
 public class RegionListener implements Listener {
 
     private final ProRegionsAPI api;
@@ -27,7 +30,87 @@ public class RegionListener implements Listener {
         this.provider = api.getRegionProvider();
     }
 
-    @EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
+    @EventHandler (priority = EventPriority.LOWEST)
+    public void onPlayerJoin(final PlayerJoinEvent event) {
+        final Player player = event.getPlayer();
+        api.getRegionProvider().updatePlayerRegionsCache(
+                player,
+                player.getLocation(),
+                regions -> true
+        );
+    }
+
+    @EventHandler (priority = EventPriority.LOWEST)
+    public void onPlayerQuit(final PlayerQuitEvent event) {
+        final Player player = event.getPlayer();
+        api.getRegionProvider().resetPlayerRegionsCache(player);
+    }
+
+    @EventHandler (priority = EventPriority.LOWEST)
+    public void onMove(final PlayerMoveEvent event) {
+        final Player player = event.getPlayer();
+        final UUID uuid = player.getUniqueId();
+
+        final Location from = event.getFrom();
+        final Location to = event.getTo();
+
+        // Ignore, since player did not move a block further.
+        if (from.getBlockX() == to.getBlockX()
+                && from.getBlockZ() == to.getBlockZ()
+                && from.getBlockY() == to.getBlockY()) {
+            return;
+        }
+
+        final boolean bypassPermission = Permissions.BYPASS_PERMISSION.hasPermission(player);
+
+
+        // Checking if player can actually enter or leave a region.
+        // YES I KNOW that this entire implementation might not be the best way,
+        // but I'm honestly not sure what would be the best approach atm. :c
+        final Set<Region> currentCached = api.getRegionProvider().getCachedPlayerRegions(player);
+
+        if (!bypassPermission) {
+            // Player is registered inside a region but is attempting to leave it.
+            for (final Region region : currentCached) {
+                if (!region.contains(to) && !provider.isAllowed(
+                        region,
+                        Contexts.PLAYER,
+                        from,
+                        RegionEnums.Flags.LEAVE,
+                        player,
+                        null, null, null
+                )) {
+                    player.teleport(from);
+                    return;
+                }
+            }
+        }
+
+        api.getRegionProvider().updatePlayerRegionsCache(player, to, currentRegions -> {
+            if (bypassPermission) {
+                return true;
+            }
+
+            for (final Region region : currentRegions) {
+                // Player trying to enter a new region.
+                if (!currentCached.contains(region) && !provider.isAllowed(
+                        region,
+                        Contexts.PLAYER,
+                        to,
+                        RegionEnums.Flags.ENTER,
+                        player,
+                        null, null, null
+                )) {
+                    player.teleport(from);
+                    return false;
+                }
+            }
+
+            return true;
+        });
+    }
+
+    @EventHandler (priority = EventPriority.LOWEST)
     public void onHunger(final FoodLevelChangeEvent event) {
         if (! (event.getEntity() instanceof Player player)) {
             return;
@@ -44,7 +127,7 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
+    @EventHandler (priority = EventPriority.LOWEST)
     public void onBlockPlace(final BlockPlaceEvent event) {
         final Player player = event.getPlayer();
 
@@ -67,7 +150,7 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
+    @EventHandler (priority = EventPriority.LOWEST)
     public void onBlockBreak(final BlockBreakEvent event) {
         final Player player = event.getPlayer();
 
@@ -90,7 +173,7 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
+    @EventHandler (priority = EventPriority.LOWEST)
     public void onBlockFlow(final BlockFromToEvent event) {
         final Block block = event.getBlock();
         final Block toBlock = event.getToBlock();
@@ -121,7 +204,7 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
+    @EventHandler (priority = EventPriority.LOWEST)
     public void onFireSpread(final BlockSpreadEvent event) {
         final Block fireBlock = event.getSource();
 
@@ -143,7 +226,7 @@ public class RegionListener implements Listener {
         }
     }
 
-    @EventHandler(priority = org.bukkit.event.EventPriority.LOWEST)
+    @EventHandler (priority = EventPriority.LOWEST)
     public void onExplosion(final EntityExplodeEvent event) {
         if (!provider.isAllowed(
                 Contexts.BLOCK,
