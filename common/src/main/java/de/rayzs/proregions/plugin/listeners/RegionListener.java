@@ -79,6 +79,9 @@ public class RegionListener implements Listener {
                         player,
                         null, null, null
                 )) {
+                    from.setYaw(to.getYaw());
+                    from.setPitch(to.getPitch());
+
                     player.teleport(from);
                     return;
                 }
@@ -100,6 +103,9 @@ public class RegionListener implements Listener {
                         player,
                         null, null, null
                 )) {
+                    from.setYaw(to.getYaw());
+                    from.setPitch(to.getPitch());
+
                     player.teleport(from);
                     return false;
                 }
@@ -107,6 +113,55 @@ public class RegionListener implements Listener {
 
             return true;
         });
+    }
+
+    @EventHandler (priority = EventPriority.LOWEST)
+    public void onPlayerTeleport(final PlayerTeleportEvent event) {
+        final Player player = event.getPlayer();
+
+        final Location from = event.getFrom();
+        final Location to = event.getTo();
+
+        switch (event.getCause().name()) {
+            case "EXIT_BED": case "CONSUMABLE_EFFECT": case "ENDER_PEARL":
+                break;
+            default: return;
+        }
+
+        if (Permissions.BYPASS_PERMISSION.hasPermission(player)) {
+            return;
+        }
+
+
+        final Set<Region> currentCached = api.getRegionProvider().getCachedPlayerRegions(player);
+
+        // When player tries to teleport to another location which is not
+        // the region the player is already in.
+        for (final Region region : currentCached) {
+            if (!region.contains(to) && !provider.isAllowed(
+                    region,
+                    Contexts.PLAYER,
+                    from,
+                    RegionEnums.Flags.LEAVE,
+                    player,
+                    null, null, null
+            )) {
+                event.setCancelled(true);
+                return;
+            }
+        }
+
+
+        if (!provider.isAllowed(
+                Contexts.PLAYER,
+                to,
+                RegionEnums.Flags.ENTER,
+                player,
+                null, null, null
+        )) {
+            event.setCancelled(true);
+            return;
+        }
     }
 
     @EventHandler (priority = EventPriority.LOWEST)

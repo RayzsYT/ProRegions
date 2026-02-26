@@ -37,7 +37,7 @@ messages:
 
     specification:
       success: '&aSuccessfully set &e%flag% &afor &e%region% &aand the type &e%type% &ato &e%state%&a!'
-      no-specification: '&cThis flag does not contain any specification values!'
+      no-specification: '&cThis flag does not have any specification values!'
 
       invalid-liquid: '&cInvalid liquid! (Example: lava/water)'
       invalid-projectile: '&cInvalid projectile! (Example: arrow)'

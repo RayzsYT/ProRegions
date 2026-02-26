@@ -91,7 +91,7 @@ public class FlagCommand extends Command {
 
         final String doesNotHaveSpecificationMessage = api.getMessageProvider().get(
                 "flag.specification.no-specification",
-                "&cThis flag does not contain any specification values!"
+                "&cThis flag does not have any specification values!"
         );
 
         if (!flag.isSpecifiable()) {
