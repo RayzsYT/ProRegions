@@ -19,7 +19,7 @@ Everything can be done in-game via commands and are **fully tab-completable**, w
 Additionally, this plugin relies on **no additional plugin or library** in order to work. Simply take a **stone axe**, enter **creative mode** and select the area you wish to protect, nothing more.
 <br>
 <br>
-The idea is to make it plugin as **easy to use** as possible, without adding too many things.
+The idea is to make the plugin as **easy to use** as possible, without adding too many things.
 
 <br>
 
