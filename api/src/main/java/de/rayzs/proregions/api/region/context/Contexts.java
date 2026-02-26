@@ -1,6 +1,8 @@
 package de.rayzs.proregions.api.region.context;
 
+import de.rayzs.proregions.api.region.Region;
 import de.rayzs.proregions.api.region.RegionEnums;
+import de.rayzs.proregions.api.utils.Permissions;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -14,40 +16,45 @@ public class Contexts {
     private Contexts() {}
 
 
-    private static final String BYPASS_PERMISSION = "proregions.bypass";
-    private static final String BYPASS_PERMISSION_FLAG = "proregions.bypass.%s";
-    private static final String BYPASS_PERMISSION_FLAG_SPEC = "proregions.bypass.%s.%s";
-
-
     private static boolean hasBypassPermission(
             final Player player,
+            final Region region,
             final RegionEnums.Flags flag,
             final @Nullable String specification
             ) {
 
-        if (player.hasPermission(BYPASS_PERMISSION)) {
+        final String regionName = region.getRegionName().toLowerCase();
+
+        if (Permissions.BYPASS_PERMISSION.hasPermission(player)) {
             return true;
         }
 
+
         final String flagName = flag.name().toLowerCase();
 
+        if (Permissions.BYPASS_PERMISSION_REGION.hasPermission(
+                player,
+                regionName
+        )) {
+            return true;
+        }
+
+
         if (specification != null) {
-            if (player.hasPermission(
-                    String.format(
-                            BYPASS_PERMISSION_FLAG_SPEC,
-                            flagName,
-                            specification.toLowerCase()
-                    )
+            if (Permissions.BYPASS_PERMISSION_REGION_FLAG_SPEC.hasPermission(
+                    player,
+                    regionName,
+                    flagName,
+                    specification.toLowerCase()
             )) {
                 return true;
             }
         }
 
-        return player.hasPermission(
-                String.format(
-                        BYPASS_PERMISSION_FLAG,
-                        flagName
-                )
+        return Permissions.BYPASS_PERMISSION_REGION_FLAG.hasPermission(
+                player,
+                regionName,
+                flagName
         );
     }
 
@@ -80,7 +87,7 @@ public class Contexts {
             player, material,
             a, b) -> {
 
-        if (hasBypassPermission(player, flag, material.name())) {
+        if (hasBypassPermission(player, region, flag, material.name())) {
             return RegionEnums.FlagState.ALLOW;
         }
 
@@ -100,7 +107,7 @@ public class Contexts {
             player, material,
             a, b) -> {
 
-        if (hasBypassPermission(player, flag, material.name())) {
+        if (hasBypassPermission(player, region, flag, material.name())) {
             return RegionEnums.FlagState.ALLOW;
         }
 
@@ -112,7 +119,7 @@ public class Contexts {
             player, projectile,
             a, b) -> {
 
-        if (hasBypassPermission(player, flag, projectile.getType().name())) {
+        if (hasBypassPermission(player, region, flag, projectile.getType().name())) {
             return RegionEnums.FlagState.ALLOW;
         }
 
@@ -132,7 +139,7 @@ public class Contexts {
             player, entity,
             a, b) -> {
 
-        if (hasBypassPermission(player, flag, entity.getType().name())) {
+        if (hasBypassPermission(player, region, flag, entity.getType().name())) {
             return RegionEnums.FlagState.ALLOW;
         }
 
@@ -144,7 +151,7 @@ public class Contexts {
             player, entity,
             a, b) -> {
 
-        if (hasBypassPermission(player, flag, entity.getType().name())) {
+        if (hasBypassPermission(player, region, flag, entity.getType().name())) {
             return RegionEnums.FlagState.ALLOW;
         }
 

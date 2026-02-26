@@ -1,6 +1,7 @@
 package de.rayzs.proregions.api.command;
 
 import de.rayzs.proregions.api.ProRegionsAPI;
+import de.rayzs.proregions.api.utils.Permissions;
 import org.bukkit.command.CommandSender;
 import org.jspecify.annotations.NonNull;
 
@@ -17,12 +18,11 @@ public abstract class Command {
     public Command(
             final ProRegionsAPI api,
             final String command,
-            final String permission,
             final String usage
     ) {
         this.api = api;
         this.command = command;
-        this.permission = "proregions.command." + permission;
+        this.permission = Permissions.COMMAND.getPermission(command);
         this.usage = usage;
     }
 
