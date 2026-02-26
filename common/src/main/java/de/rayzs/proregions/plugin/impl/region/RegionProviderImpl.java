@@ -4,6 +4,7 @@ import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.clipboard.Clipboard;
 import de.rayzs.proregions.api.configuration.Config;
 import de.rayzs.proregions.api.region.*;
+import de.rayzs.proregions.api.region.chunk.ChunkKey;
 import de.rayzs.proregions.api.region.context.ContextEval;
 import de.rayzs.proregions.api.response.Response;
 import de.rayzs.proregions.api.world.Environment;
@@ -16,7 +17,11 @@ import java.util.*;
 
 public class RegionProviderImpl implements RegionProvider {
 
-    private final List<Map<String, Region>> regions;
+    // Regions are stored based on environment as index.
+    private final List<Map<String, Region>> dimensionsRegions;
+
+    // Regions are stored based on chunk key.
+    private final Map<ChunkKey, Map<String, Region>> chunkRegionCache = new HashMap<>();
 
     private final ProRegionsAPI api;
     private final Config config;
@@ -35,14 +40,14 @@ public class RegionProviderImpl implements RegionProvider {
             list.add(new HashMap<>());
         }
 
-        this.regions = Collections.unmodifiableList(list);
+        this.dimensionsRegions = Collections.unmodifiableList(list);
 
         reload();
     }
 
     @Override
     public void reload() {
-        for (final Map<String, Region> map : regions) {
+        for (final Map<String, Region> map : dimensionsRegions) {
             map.clear();
         }
 
@@ -53,13 +58,13 @@ public class RegionProviderImpl implements RegionProvider {
             }
 
             final int environmentId = region.getEnvironment().getId();
-            regions.get(environmentId).put(regionName, region);
+            dimensionsRegions.get(environmentId).put(regionName, region);
         }
     }
 
     @Override
     public Region getRegion(final String name) {
-        for (Map<String, Region> map : regions) {
+        for (Map<String, Region> map : dimensionsRegions) {
             final Region region = map.get(name);
 
             if (region != null) {
@@ -72,7 +77,7 @@ public class RegionProviderImpl implements RegionProvider {
 
     @Override
     public Collection<Region> getRegions() {
-        return regions.stream()
+        return dimensionsRegions.stream()
                 .flatMap(map -> map.values().stream())
                 .toList();
     }
@@ -80,13 +85,19 @@ public class RegionProviderImpl implements RegionProvider {
     @Override
     public Collection<Region> getRegions(final World world) {
         final Environment environment = Environment.getEnvironmentByWorld(world);
-        final Map<String, Region> map = this.regions.get(environment.getId());
+        final Map<String, Region> map = dimensionsRegions.get(environment.getId());
 
         if (map == null) {
             return Set.of();
         }
 
         return map.values();
+    }
+
+    @Override
+    public Collection<Region> getRegions(Location location) {
+        final ChunkKey chunkKey = ChunkKey.from(location);
+        return chunkRegionCache.getOrDefault(chunkKey, Map.of()).values();
     }
 
     @Override
@@ -156,7 +167,7 @@ public class RegionProviderImpl implements RegionProvider {
         final World world = clipboard.getFirstLocation().getWorld();
         final int environmentId = Environment.getEnvironmentByWorld(world).getId();
 
-        if (regions.get(environmentId).containsKey(name) || !clipboard.isAvailable()) {
+        if (dimensionsRegions.get(environmentId).containsKey(name) || !clipboard.isAvailable()) {
             return false;
         }
 
@@ -166,6 +177,7 @@ public class RegionProviderImpl implements RegionProvider {
         }
 
         final Region region = new RegionImpl(
+                new HashSet<>(),
                 name,
                 world.getName(),
                 ignoreY,
@@ -177,14 +189,21 @@ public class RegionProviderImpl implements RegionProvider {
                 api.toTinyLocation(clipboard.getSecondLocation())
         );
 
-        regions.get(environmentId).put(name, region);
+        dimensionsRegions.get(environmentId).put(name, region);
+
+        for (ChunkKey chunkKey : region.getChunkKeys()) {
+            chunkRegionCache
+                    .computeIfAbsent(chunkKey, k -> new HashMap<>())
+                    .put(name, region);
+        }
+
         saveRegion(region);
         return true;
     }
 
     @Override
     public void saveAllRegions() {
-        for (Map<String, Region> map : regions) {
+        for (Map<String, Region> map : dimensionsRegions) {
             for (Region region : map.values()) {
                 saveRegion(region);
             }
@@ -193,7 +212,7 @@ public class RegionProviderImpl implements RegionProvider {
 
     @Override
     public boolean deleteRegion(String name) {
-        for (Map<String, Region> map : regions) {
+        for (Map<String, Region> map : dimensionsRegions) {
             if (map.remove(name) != null) {
                 config.setAndSave(name, null);
                 return true;

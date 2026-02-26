@@ -1,5 +1,6 @@
 package de.rayzs.proregions.api.region;
 
+import de.rayzs.proregions.api.region.chunk.ChunkKey;
 import de.rayzs.proregions.api.response.Response;
 import de.rayzs.proregions.api.world.Environment;
 import de.rayzs.proregions.api.world.TinyLocation;
@@ -7,6 +8,8 @@ import org.bukkit.block.Block;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
+
+import java.util.Set;
 
 public interface Region extends ConfigurationSerializable {
 
@@ -118,6 +121,13 @@ public interface Region extends ConfigurationSerializable {
      * @return true if the region ignores the Y coordinate, false otherwise.
      */
     boolean doesIgnoreY();
+
+    /**
+     * Returns the chunks that are contained within the region area.
+     *
+     * @return set of all chunks.
+     */
+    Set<ChunkKey> getChunkKeys();
 
     /**
      * Returns the center of the region.

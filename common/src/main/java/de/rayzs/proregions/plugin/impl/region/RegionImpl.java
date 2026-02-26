@@ -2,6 +2,7 @@ package de.rayzs.proregions.plugin.impl.region;
 
 import de.rayzs.proregions.api.region.Region;
 import de.rayzs.proregions.api.region.RegionEnums;
+import de.rayzs.proregions.api.region.chunk.ChunkKey;
 import de.rayzs.proregions.api.response.Response;
 import de.rayzs.proregions.api.world.Environment;
 import de.rayzs.proregions.api.world.TinyLocation;
@@ -15,9 +16,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class RegionImpl implements Region {
@@ -34,12 +33,15 @@ public class RegionImpl implements Region {
     private final TinyLocation centerLocation;
     private final Environment environment;
 
+    private final Set<ChunkKey> chunkKeys;
+
     private final int minX, minY, minZ;
     private final int maxX, maxY, maxZ;
 
     private boolean ignoreY;
 
     public RegionImpl(
+            final Set<ChunkKey> chunkKeys,
             final String name,
             final String worldName,
             final boolean ignoreY,
@@ -50,7 +52,9 @@ public class RegionImpl implements Region {
             final TinyLocation firstLocation,
             final TinyLocation secondLocation
     ) {
-        this(Environment.getEnvironmentByWorld(Bukkit.getWorld(worldName)).getId(),
+        this(Environment.getEnvironmentByWorld(
+                Bukkit.getWorld(worldName)).getId(),
+                chunkKeys,
                 name,
                 worldName,
                 ignoreY,
@@ -65,6 +69,7 @@ public class RegionImpl implements Region {
 
     public RegionImpl(
             final int environmentId,
+            final Set<ChunkKey> chunkKeys,
             final String name,
             final String worldName,
             final boolean ignoreY,
@@ -95,6 +100,15 @@ public class RegionImpl implements Region {
         this.maxY = Math.max(firstLocation.y(), secondLocation.y());
         this.maxZ = Math.max(firstLocation.z(), secondLocation.z());
 
+        if (chunkKeys.isEmpty()) {
+            for (int x = minX; x <= maxX; x += 16) {
+                for (int z = minZ; z <= maxZ; z += 16) {
+                    chunkKeys.add(new ChunkKey(worldName, x, z));
+                }
+            }
+        }
+
+        this.chunkKeys = chunkKeys;
 
         final int halfX = (maxX - minX) / 2;
         final int halfY = (maxY - minY) / 2;
@@ -225,6 +239,11 @@ public class RegionImpl implements Region {
     }
 
     @Override
+    public Set<ChunkKey> getChunkKeys() {
+        return this.chunkKeys;
+    }
+
+    @Override
     public TinyLocation getCenter() {
         return this.centerLocation;
     }
@@ -235,6 +254,7 @@ public class RegionImpl implements Region {
         final Map<String, Object> map = new HashMap<>();
 
         map.put("name", name);
+        map.put("chunk-keys", chunkKeys);
         map.put("environment-id", environment.getId());
         map.put("ignore-y", ignoreY);
 
@@ -284,6 +304,7 @@ public class RegionImpl implements Region {
     public static RegionImpl deserialize(Map<String, Object> map) {
         final String name = (String) map.get("name");
         final int environmentId = (int) map.get("environment-id");
+        final HashSet<ChunkKey> key = (HashSet<ChunkKey>) map.get("chunk-keys");
 
         final boolean ignoreY = (boolean) map.get("ignore-y");
 
@@ -341,7 +362,8 @@ public class RegionImpl implements Region {
         }
 
         return new RegionImpl(
-                environmentId, name, worldName, ignoreY,
+                environmentId, key,
+                name, worldName, ignoreY,
                 defaultResponse, responses,
                 flags, specificFlags,
                 new TinyLocationImpl(name, minX, minY, minZ),

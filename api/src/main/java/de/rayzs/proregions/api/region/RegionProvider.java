@@ -1,6 +1,7 @@
 package de.rayzs.proregions.api.region;
 
 import de.rayzs.proregions.api.clipboard.Clipboard;
+import de.rayzs.proregions.api.region.chunk.ChunkKey;
 import de.rayzs.proregions.api.region.context.ContextEval;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -43,6 +44,14 @@ public interface RegionProvider {
      * @return an immutable collection of all regions in the specified world.
      */
     Collection<Region> getRegions(World world);
+
+    /**
+     * Creates and returns an immutable copy of all regions at the specified location.
+     *
+     * @param location the location to get the regions from.
+     * @return an immutable collection of all regions at the specified location.
+     */
+    Collection<Region> getRegions(Location location);
 
     /**
      * Checks if action is allowed or not.
