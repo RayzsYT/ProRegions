@@ -271,15 +271,19 @@ public class RegionProviderImpl implements RegionProvider {
                 context, region, flag, evaluation, a, b, c, d
         );
 
-        if (event != null && event.isCancelled() || evaluation == RegionEnums.FlagState.DENY) {
+        final boolean denied = event != null
+                ? event.isCancelled()
+                : evaluation == RegionEnums.FlagState.DENY;
+
+        if (denied) {
             if (event == null || event.canSendResponse()) {
                 final Response response = region.getResponse(flag);
 
                 if (a instanceof Player player)
                     response.send(player);
-
-                return false;
             }
+
+            return false;
         }
 
         return true;
