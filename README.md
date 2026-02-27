@@ -222,7 +222,7 @@ public class Example extends JavaPlugin implements Listener {
         de.rayzs.proregions.api.region.Region region = event.getRegion();
 
         // To cancel/disallow the event.
-        event.setCancelled(false);
+        event.setCancelled(true);
 
         // To disable the response.
         event.setSendResponse(false);
@@ -236,7 +236,7 @@ public class Example extends JavaPlugin implements Listener {
         Region region = event.getRegion();
 
         // To cancel/disallow the event.
-        event.setCancelled(false);
+        event.setCancelled(true);
 
         // To disable the response.
         event.setSendResponse(false);
