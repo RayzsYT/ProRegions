@@ -1,6 +1,5 @@
 package de.rayzs.proregions.api.region;
 
-import de.rayzs.proregions.api.region.chunk.ChunkKey;
 import de.rayzs.proregions.api.response.Response;
 import de.rayzs.proregions.api.world.TinyLocation;
 import org.bukkit.block.Block;
@@ -126,7 +125,7 @@ public interface Region extends ConfigurationSerializable {
      *
      * @return list of all chunks.
      */
-    List<ChunkKey> getChunkKeys();
+    List<Long> getChunkKeys();
 
     /**
      * Returns the center of the region.

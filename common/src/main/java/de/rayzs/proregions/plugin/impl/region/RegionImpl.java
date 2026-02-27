@@ -2,11 +2,12 @@ package de.rayzs.proregions.plugin.impl.region;
 
 import de.rayzs.proregions.api.region.Region;
 import de.rayzs.proregions.api.region.RegionEnums;
-import de.rayzs.proregions.api.region.chunk.ChunkKey;
 import de.rayzs.proregions.api.response.Response;
 import de.rayzs.proregions.api.world.TinyLocation;
 import de.rayzs.proregions.plugin.impl.response.ResponseImpl;
 import de.rayzs.proregions.plugin.impl.world.TinyLocationImpl;
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -27,7 +28,7 @@ public class RegionImpl implements Region {
 
     private final TinyLocation centerLocation;
 
-    private final ArrayList<ChunkKey> chunkKeys;
+    private final ArrayList<Long> chunkKeys;
 
     private final int minX, minY, minZ;
     private final int maxX, maxY, maxZ;
@@ -35,7 +36,7 @@ public class RegionImpl implements Region {
     private boolean ignoreY;
 
     public RegionImpl(
-            final ArrayList<ChunkKey> chunkKeys,
+            final ArrayList<Long> chunkKeys,
             final String name,
             final String worldName,
             final boolean ignoreY,
@@ -66,9 +67,21 @@ public class RegionImpl implements Region {
         this.maxZ = Math.max(firstLocation.z(), secondLocation.z());
 
         if (chunkKeys.isEmpty()) {
+            final World world = Bukkit.getWorld(worldName);
+            final HashSet<Chunk> chunks = new HashSet<>();
+
             for (int x = minX; x < maxX + 1; x++) {
                 for (int z = minZ; z < maxZ + 1; z++) {
-                    chunkKeys.add(ChunkKey.from(worldName, x, z));
+                    final Chunk chunk = world.getChunkAt(x >> 4, z >> 4);
+
+                    if (chunks.contains(chunk)) {
+                        continue;
+                    }
+
+                    System.out.println("Chunk at: " + x + ", " + z + " | " + chunk.getX() + " | " + chunk.getZ());
+
+                    chunkKeys.add(chunk.getChunkKey());
+                    chunks.add(chunk);
                 }
             }
         }
@@ -204,7 +217,7 @@ public class RegionImpl implements Region {
     }
 
     @Override
-    public List<ChunkKey> getChunkKeys() {
+    public List<Long> getChunkKeys() {
         return this.chunkKeys;
     }
 
@@ -267,7 +280,7 @@ public class RegionImpl implements Region {
 
     public static RegionImpl deserialize(Map<String, Object> map) {
         final String name = (String) map.get("name");
-        final ArrayList<ChunkKey> key = (ArrayList<ChunkKey>) map.get("chunk-keys");
+        final ArrayList<Long> key = (ArrayList<Long>) map.get("chunk-keys");
 
         final boolean ignoreY = (boolean) map.get("ignore-y");
 
