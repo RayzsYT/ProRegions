@@ -308,7 +308,7 @@ public class RegionListener implements Listener {
         final Block block = event.getClickedBlock();
 
         if (block != null) {
-            if (block.getType().isInteractable()) {
+            if (block.getType().isInteractable() && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                 if (!provider.isAllowed(
                         Contexts.PLAYER_MATERIAL,
                         block.getLocation(),
