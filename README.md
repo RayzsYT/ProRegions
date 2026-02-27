@@ -174,3 +174,73 @@ Bypass a flag for a certain specification for a region:
 | list               | proregions.command.list     |
 | reload             | proregions.command.reload   |
 | response           | proregions.command.response |
+
+<br>
+
+# Developer API
+
+I'll just show it with a simple example code.
+
+```java
+// Bukkit imports
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.entity.Player;
+
+// ProRegions imports
+import de.rayzs.proregions.api.ProRegions;
+import de.rayzs.proregions.api.ProRegionsAPI;
+
+import de.rayzs.proregions.api.events.PlayerEnterRegionEvent;
+import de.rayzs.proregions.api.events.PlayerLeaveRegionEvent;
+
+import de.rayzs.proregions.api.region.Region;
+
+public class Example extends JavaPlugin implements Listener {
+
+    @Override
+    public void onEnable() {
+        // Get API instance.
+        ProRegionsAPI api = ProRegions.get();
+
+        // Get region provider to manage/create/save regions.
+        api.getRegionProvider();
+
+        // get message provider to get messages
+        // or send chat messages/titles and actionbar messages.
+        api.getMessageProvider();
+
+        getServer().getPluginManager().registerEvents(this, this);
+    }
+
+    @EventHandler
+    public void onPlayerEnterRegion(PlayerEnterRegionEvent event) {
+        Player player = event.getPlayer();
+        de.rayzs.proregions.api.region.Region region = event.getRegion();
+
+        // To cancel/disallow the event.
+        event.setCancelled(false);
+
+        // To disable the response.
+        event.setSendResponse(false);
+
+        player.sendMessage("You entered the region: " + region.getRegionName());
+    }
+
+    @EventHandler
+    public void onPlayerLeaveRegion(PlayerLeaveRegionEvent event) {
+        Player player = event.getPlayer();
+        Region region = event.getRegion();
+
+        // To cancel/disallow the event.
+        event.setCancelled(false);
+
+        // To disable the response.
+        event.setSendResponse(false);
+
+        player.sendMessage("You left the region: " + region.getRegionName());
+    }
+}
+
+```
