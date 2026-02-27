@@ -218,11 +218,13 @@ Implement the API to your project:
     </repository>
 </repositories>
 
+
 <dependencies>
+    <!-- LATEST VERSION: https://github.com/RayzsYT/ProRegions/packages/2878076 -->
     <dependency>
-        <groupId>de.rayzs</groupId>
+        <groupId>de.rayzs.proregions</groupId>
         <artifactId>proregions-api</artifactId>
-        <version>1.0.6</version>
+        <version>LATEST-API-VERSION</version>
         <scope>provided</scope>
     </dependency>
 </dependencies>
