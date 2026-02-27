@@ -13,6 +13,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
 public class RegionProviderImpl implements RegionProvider {
@@ -238,9 +239,19 @@ public class RegionProviderImpl implements RegionProvider {
 
     @Override
     public boolean deleteRegion(String name) {
-        regions.entrySet().removeIf(entry -> entry.getValue().containsKey(name));
+        final AtomicBoolean result = new AtomicBoolean(false);
+
+        regions.entrySet().removeIf(entry -> {
+            if (entry.getValue().containsKey(name)) {
+                result.set(true);
+                return true;
+            }
+
+            return false;
+        });
+
         config.setAndSave(name, null);
 
-        return false;
+        return result.get();
     }
 }
