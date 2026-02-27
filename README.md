@@ -179,7 +179,54 @@ Bypass a flag for a certain specification for a region:
 
 <br>
 
+# PlaceholderAPI placeholders
+
+List of all regions:
+> IN: `%proregions_regions%`
+> <br>
+> OUT: `region1, region2, region3, region4`
+
+<br>
+
+List of all regions a player is in:
+> IN: `%proregions_player_regions%`
+> <br>
+> OUT: `region1, region3`
+
+<br>
+
+If a placeholder is inside a region:
+> IN: `%proregions_inside_<region>_<true>_<false>%`
+> <br>
+> <br>
+> e.g: `%proregions_inside_spawn_Inside spawn_No`
+> <br>
+> OUT: `You are in spawn`
+> <br>
+> OUT: `No`
+
+<br>
+
 # Developer API
+
+Implement the API to your project:
+```xml
+<repositories>
+    <repository>
+        <id>github</id>
+        <url>https://maven.pkg.github.com/rayzsyt/proregions</url>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>de.rayzs</groupId>
+        <artifactId>proregions-api</artifactId>
+        <version>1.0.6</version>
+        <scope>provided</scope>
+    </dependency>
+</dependencies>
+```
 
 I'll just show it with a simple example code.
 
