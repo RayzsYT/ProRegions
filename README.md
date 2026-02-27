@@ -201,7 +201,7 @@ Placeholder if a player is inside a region:
 > <br>
 > e.g: `%proregions_inside_spawn_Inside spawn_No`
 > <br>
-> OUT: `You are in spawn`
+> OUT: `Inside spawn`
 > <br>
 > OUT: `No`
 
