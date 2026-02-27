@@ -5,14 +5,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class RegionEnterEvent extends ProRegionsEvent {
+public class PlayerEnterRegionEvent extends ProRegionsEvent {
 
     private static final HandlerList handlers = new HandlerList();
 
     private final Player player;
     private final Region region;
 
-    public RegionEnterEvent(
+    public PlayerEnterRegionEvent(
             final Player player,
             final Region region,
             boolean cancelled
