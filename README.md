@@ -219,7 +219,7 @@ public class Example extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerEnterRegion(PlayerEnterRegionEvent event) {
         Player player = event.getPlayer();
-        de.rayzs.proregions.api.region.Region region = event.getRegion();
+        Region region = event.getRegion();
 
         // To cancel/disallow the event.
         event.setCancelled(true);
