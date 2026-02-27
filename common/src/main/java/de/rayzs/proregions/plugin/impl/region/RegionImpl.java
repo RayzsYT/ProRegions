@@ -190,10 +190,13 @@ public class RegionImpl implements Region {
         final Map<String, RegionEnums.FlagState> flagStates = specificFlags.get(flag);
 
         if (flagStates != null) {
-            return flagStates.getOrDefault(
-                    specification.toUpperCase(),
-                    RegionEnums.FlagState.DENY
+            final RegionEnums.FlagState specificState = flagStates.get(
+                    specification.toUpperCase()
             );
+
+            if (specificState != null) {
+                return specificState;
+            }
         }
 
         return getFlagState(flag);
