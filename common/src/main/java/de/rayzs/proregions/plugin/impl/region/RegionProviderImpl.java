@@ -4,10 +4,10 @@ import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.clipboard.Clipboard;
 import de.rayzs.proregions.api.configuration.Config;
 import de.rayzs.proregions.api.region.*;
+import de.rayzs.proregions.api.region.chunk.ChunkKeyGenerator;
 import de.rayzs.proregions.api.region.context.ContextEval;
 import de.rayzs.proregions.api.response.Response;
 import de.rayzs.proregions.plugin.impl.response.ResponseImpl;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -77,10 +77,21 @@ public class RegionProviderImpl implements RegionProvider {
 
     @Override
     public Map<String, Region> getRegions(final Location location) {
-        return regions.getOrDefault(
-                Chunk.getChunkKey(location.getBlockX(), location.getBlockZ()),
-                Map.of()
+        final Map<String, Region> result = new HashMap<>(getRegionsOnChunk(location));
+
+        result.entrySet().removeIf(e -> !e.getValue().contains(location));
+
+        return result;
+    }
+
+    @Override
+    public Map<String, Region> getRegionsOnChunk(final Location location) {
+        final long key = ChunkKeyGenerator.getChunkKey(
+                location.getBlockX(),
+                location.getBlockZ()
         );
+
+        return regions.getOrDefault(key, Map.of());
     }
 
     @Override
@@ -102,7 +113,7 @@ public class RegionProviderImpl implements RegionProvider {
         final UUID uuid = player.getUniqueId();
 
         final Set<Region> set = new HashSet<>();
-        for (Region region : getRegions(location).values()) {
+        for (Region region : getRegionsOnChunk(location).values()) {
             if (region.contains(location)) {
                 set.add(region);
             }
@@ -157,7 +168,11 @@ public class RegionProviderImpl implements RegionProvider {
             return true;
         }
 
-        for (final Region region : getRegions(location).values()) {
+        // I could also use getRegions(location) instead, but since I don't want
+        // to create an inner copy of the map, I've decided to instead fetch all
+        // regions around the chunk, which are already stored, to narrow them down
+        // internally, to avoid memory leaks in the future.
+        for (final Region region : getRegionsOnChunk(location).values()) {
             if (!region.contains(location)) {
                 continue;
             }
