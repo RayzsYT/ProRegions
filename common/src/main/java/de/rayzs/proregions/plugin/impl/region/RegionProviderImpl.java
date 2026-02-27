@@ -4,10 +4,10 @@ import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.clipboard.Clipboard;
 import de.rayzs.proregions.api.configuration.Config;
 import de.rayzs.proregions.api.region.*;
-import de.rayzs.proregions.api.region.chunk.ChunkKey;
 import de.rayzs.proregions.api.region.context.ContextEval;
 import de.rayzs.proregions.api.response.Response;
 import de.rayzs.proregions.plugin.impl.response.ResponseImpl;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -18,7 +18,7 @@ import java.util.function.Predicate;
 public class RegionProviderImpl implements RegionProvider {
 
     // Regions are stored based on chunk key.
-    private final Map<ChunkKey, Map<String, Region>> regions;
+    private final Map<Long, Map<String, Region>> regions;
     private final Map<UUID, Set<Region>> playerRegions;
 
     private final ProRegionsAPI api;
@@ -44,7 +44,7 @@ public class RegionProviderImpl implements RegionProvider {
                 continue;
             }
 
-            for (ChunkKey chunkKey : region.getChunkKeys()) {
+            for (long chunkKey : region.getChunkKeys()) {
                 regions.computeIfAbsent(chunkKey, k -> new HashMap<>())
                         .put(regionName, region);
             }
@@ -76,8 +76,10 @@ public class RegionProviderImpl implements RegionProvider {
 
     @Override
     public Map<String, Region> getRegions(final Location location) {
-        final ChunkKey chunkKey = ChunkKey.from(location);
-        return regions.getOrDefault(chunkKey, Map.of());
+        return regions.getOrDefault(
+                Chunk.getChunkKey(location.getBlockX(), location.getBlockZ()),
+                Map.of()
+        );
     }
 
     @Override
@@ -121,7 +123,6 @@ public class RegionProviderImpl implements RegionProvider {
     ) {
         final World world = location.getWorld();
         if (world == null || !region.contains(location)) {
-            System.out.println("--- Ignored");
             return true;
         }
 
@@ -195,6 +196,12 @@ public class RegionProviderImpl implements RegionProvider {
             return false;
         }
 
+        for (Map<String, Region> maps : regions.values()) {
+            if (maps.containsKey(name)) {
+                return false;
+            }
+        }
+
         final Map<RegionEnums.Flags, RegionEnums.FlagState> flags = new HashMap<>();
         for (RegionEnums.Flags value : RegionEnums.Flags.values()) {
             flags.put(value, value.getDefaultState());
@@ -213,7 +220,7 @@ public class RegionProviderImpl implements RegionProvider {
                 api.toTinyLocation(clipboard.getSecondLocation())
         );
 
-        for (ChunkKey chunkKey : region.getChunkKeys()) {
+        for (long chunkKey : region.getChunkKeys()) {
             regions.computeIfAbsent(chunkKey, k -> new HashMap<>())
                     .put(name, region);
         }
