@@ -63,6 +63,10 @@ public class Contexts {
             player,
             a, b, c) -> {
 
+        if (hasBypassPermission(player, region, flag, null)) {
+            return RegionEnums.FlagState.ALLOW;
+        }
+
         return region.getFlagState(flag);
     };
 
@@ -128,8 +132,14 @@ public class Contexts {
 
     public static ContextEval<@Nullable ProjectileSource, Projectile, Object, Object> PROJECTILE = (
             region, flag,
-            player, projectile,
+            source, projectile,
             a, b) -> {
+
+        if (source instanceof Player player) {
+            if (hasBypassPermission(player, region, flag, projectile.getType().name())) {
+                return RegionEnums.FlagState.ALLOW;
+            }
+        }
 
         return region.getFlagState(flag, projectile.getType().name());
     };
