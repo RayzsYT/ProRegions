@@ -2,7 +2,6 @@ package de.rayzs.proregions.plugin;
 
 import de.rayzs.proregions.api.ProRegions;
 import de.rayzs.proregions.api.region.RegionEnums;
-import de.rayzs.proregions.api.region.chunk.ChunkKey;
 import de.rayzs.proregions.api.utils.VersionHelper;
 import de.rayzs.proregions.plugin.command.ProRegionCommand;
 import de.rayzs.proregions.plugin.hook.PluginHooks;
@@ -13,7 +12,6 @@ import de.rayzs.proregions.plugin.impl.world.TinyLocationImpl;
 import de.rayzs.proregions.plugin.listeners.RegionListener;
 import de.rayzs.proregions.plugin.listeners.WandListener;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
@@ -40,7 +38,6 @@ public class ProRegionsLoader extends JavaPlugin {
 
 
         // Registers serializable class-objects for easier work around.
-        ConfigurationSerialization.registerClass(ChunkKey.class);
         ConfigurationSerialization.registerClass(TinyLocationImpl.class);
         ConfigurationSerialization.registerClass(RegionImpl.class);
         ConfigurationSerialization.registerClass(ResponseImpl.class);
