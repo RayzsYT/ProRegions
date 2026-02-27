@@ -17,4 +17,7 @@ public class ChunkKeyGenerator {
     public static long getChunkKey(final int x, final int z) {
         return (z >> 4) ^ ((long) (x >> 4) << 32);
     }
+
+
+    private ChunkKeyGenerator() {}
 }
