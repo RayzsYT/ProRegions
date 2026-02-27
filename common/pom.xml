@@ -61,7 +61,7 @@
                             </artifactSet>
 
                             <createDependencyReducedPom>true</createDependencyReducedPom>
-                            <finalName>ProRegion</finalName>
+                            <finalName>ProRegions-${project.version}</finalName>
 
                         </configuration>
                     </execution>
