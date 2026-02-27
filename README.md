@@ -104,34 +104,36 @@ The idea is to make the plugin as **easy to use** as possible, without adding to
 **Specifiable**: If the flag state can be specified for a certain entity/item/block only.
 <br>
 
-| Flag               | Default State | Specifiable |
-|-------------------------|--------------|-------------|
-| PLACE                   | denied         | yes         |
-| BREAK                   | denied         | yes         |
-| PISTON                  | denied         | yes         |
-| EXPLODE_BLOCKS          | denied         | yes         |
-| FIRE_SPREAD             | denied         | no          |
-| INTERACT_BLOCK          | denied         | yes         |
-| TRAMPLE_CROPS           | denied         | no          |
-| FLOW                    | denied         | yes         |
-| PROJECTILE              | allowed        | yes         |
-| BUCKET_FILL             | denied         | yes         |
-| BUCKET_EMPTY            | denied         | yes         |
-| MILK_ENTITY             | denied         | yes         |
-| HUNGER                  | denied         | no          |
-| PVP                     | denied         | no          |
-| PVE                     | denied         | yes         |
-| INTERACT_ENTITY         | allowed        | yes         |
-| INTERACT_ITEM           | allowed        | yes         |
-| FISHING                 | denied         | yes         |
-| DROP                    | denied         | yes         |
-| PICKUP                  | denied         | yes         |
-| FALLING_BLOCK_DAMAGE    | denied         | no          |
-| FALL_DAMAGE             | denied         | no          |
-| BURN_DAMAGE             | denied         | no          |
-| DROWNING_DAMAGE         | denied         | no          |
-| MONSTER_SPAWN           | denied         | yes         |
-| ANIMAL_SPAWN            | denied         | yes         |
+| Flag                 | Default State | Specifiable |
+|----------------------|---------------|-------------|
+| ENTER                | allowed       | yes         |
+| LEAVE                | allowed       | yes         |
+| PLACE                | denied        | yes         |
+| BREAK                | denied        | yes         |
+| PISTON               | denied        | yes         |
+| EXPLODE_BLOCKS       | denied        | yes         |
+| FIRE_SPREAD          | denied        | no          |
+| INTERACT_BLOCK       | denied        | yes         |
+| TRAMPLE_CROPS        | denied        | no          |
+| FLOW                 | denied        | yes         |
+| PROJECTILE           | allowed       | yes         |
+| BUCKET_FILL          | denied        | yes         |
+| BUCKET_EMPTY         | denied        | yes         |
+| MILK_ENTITY          | denied        | yes         |
+| HUNGER               | denied        | no          |
+| PVP                  | denied        | no          |
+| PVE                  | denied        | yes         |
+| INTERACT_ENTITY      | allowed       | yes         |
+| INTERACT_ITEM        | allowed       | yes         |
+| FISHING              | denied        | yes         |
+| DROP                 | denied        | yes         |
+| PICKUP               | denied        | yes         |
+| FALLING_BLOCK_DAMAGE | denied        | no          |
+| FALL_DAMAGE          | denied        | no          |
+| BURN_DAMAGE          | denied        | no          |
+| DROWNING_DAMAGE      | denied        | no          |
+| MONSTER_SPAWN        | denied        | yes         |
+| ANIMAL_SPAWN         | denied        | yes         |
 
 <br>
 
