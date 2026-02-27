@@ -33,8 +33,23 @@ public interface RegionProvider {
     Map<String, Region> getRegions();
 
     /**
-     * Returns an already created and stored map containing regions with their
-     * name as key and object as value on a certain location.
+     * Warning! This is not an accurate way to receive a list of all regions
+     * on a location. It is mainly for receiving the regions based on the chunk
+     * of the provided location! The region might not be exactly on the area
+     * and is only on the same chunk as the region. This is intentional since
+     * ProRegions stores regions in chunks to decrease the amount of iterated
+     * regions in case a player is way too far away anyway.
+     *
+     * @param location the location.
+     * @return an immutable collection of all regions on the specified location's chunk.
+     */
+    Map<String, Region> getRegionsOnChunk(final Location location);
+
+    /**
+     * This method takes a narrowed list of regions based on it's chunk using
+     * {@link de.rayzs.proregions.api.region.RegionProvider#getRegionsOnChunk(Location)} first,
+     * creates a copy of it and then returns a map of all the regions which are within the area
+     * of this location.
      *
      * @param location the location to get the regions from.
      * @return an immutable collection of all regions at the specified location.

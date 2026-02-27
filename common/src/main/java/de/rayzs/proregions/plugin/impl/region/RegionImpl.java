@@ -2,12 +2,11 @@ package de.rayzs.proregions.plugin.impl.region;
 
 import de.rayzs.proregions.api.region.Region;
 import de.rayzs.proregions.api.region.RegionEnums;
+import de.rayzs.proregions.api.region.chunk.ChunkKeyGenerator;
 import de.rayzs.proregions.api.response.Response;
 import de.rayzs.proregions.api.world.TinyLocation;
 import de.rayzs.proregions.plugin.impl.response.ResponseImpl;
 import de.rayzs.proregions.plugin.impl.world.TinyLocationImpl;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -67,21 +66,15 @@ public class RegionImpl implements Region {
         this.maxZ = Math.max(firstLocation.z(), secondLocation.z());
 
         if (chunkKeys.isEmpty()) {
-            final World world = Bukkit.getWorld(worldName);
-            final HashSet<Chunk> chunks = new HashSet<>();
-
             for (int x = minX; x < maxX + 1; x++) {
                 for (int z = minZ; z < maxZ + 1; z++) {
-                    final Chunk chunk = world.getChunkAt(x >> 4, z >> 4);
+                    final long key = ChunkKeyGenerator.getChunkKey(x, z);
 
-                    if (chunks.contains(chunk)) {
+                    if (chunkKeys.contains(key)) {
                         continue;
                     }
 
-                    System.out.println("Chunk at: " + x + ", " + z + " | " + chunk.getX() + " | " + chunk.getZ());
-
-                    chunkKeys.add(chunk.getChunkKey());
-                    chunks.add(chunk);
+                    chunkKeys.add(key);
                 }
             }
         }
