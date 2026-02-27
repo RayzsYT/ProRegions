@@ -195,7 +195,7 @@ List of all regions a player is in:
 
 <br>
 
-If a placeholder is inside a region:
+Placeholder if a player is inside a region:
 > IN: `%proregions_inside_<region>_<true>_<false>%`
 > <br>
 > <br>
