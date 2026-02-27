@@ -3,11 +3,15 @@ package de.rayzs.proregions.plugin.impl.region;
 import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.clipboard.Clipboard;
 import de.rayzs.proregions.api.configuration.Config;
+import de.rayzs.proregions.api.events.ProRegionsEvent;
+import de.rayzs.proregions.api.events.RegionEnterEvent;
+import de.rayzs.proregions.api.events.RegionLeaveEvent;
 import de.rayzs.proregions.api.region.*;
 import de.rayzs.proregions.api.region.chunk.ChunkKeyGenerator;
 import de.rayzs.proregions.api.region.context.ContextEval;
 import de.rayzs.proregions.api.response.Response;
 import de.rayzs.proregions.plugin.impl.response.ResponseImpl;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -138,21 +142,10 @@ public class RegionProviderImpl implements RegionProvider {
             return true;
         }
 
-        final RegionEnums.FlagState evaluation = context.evaluate(
-                region, flag,
-                a, b, c, d
+        return isFlagAllowedForRegion(
+                context, location, region,
+                flag, a, b, c, d
         );
-
-        if (evaluation == RegionEnums.FlagState.DENY) {
-            final Response response = region.getResponse(flag);
-
-            if (a instanceof Player player)
-                response.send(player);
-
-            return false;
-        }
-
-        return true;
     }
 
     @Override
@@ -177,19 +170,10 @@ public class RegionProviderImpl implements RegionProvider {
                 continue;
             }
 
-            final RegionEnums.FlagState evaluation = context.evaluate(
-                    region, flag,
-                    a, b, c, d
-            );
-
-            if (evaluation == RegionEnums.FlagState.DENY) {
-                final Response response = region.getResponse(flag);
-
-                if (a instanceof Player player)
-                    response.send(player);
-
-                return false;
-            }
+            if (!isFlagAllowedForRegion(
+                    context, location, region,
+                    flag, a, b, c, d
+            )) return false;
         }
 
         return true;
@@ -268,5 +252,84 @@ public class RegionProviderImpl implements RegionProvider {
         config.setAndSave(name, null);
 
         return result.get();
+    }
+
+    private <A,B,C,D> boolean isFlagAllowedForRegion(
+            final ContextEval<A,B,C,D> context,
+            final Location location,
+            final Region region,
+            final RegionEnums.Flags flag,
+            final A a, final B b,
+            final C c, final D d
+    ) {
+        final RegionEnums.FlagState evaluation = context.evaluate(
+                region, flag,
+                a, b, c, d
+        );
+
+        final ProRegionsEvent event = handleEvent(
+                context, region, flag, evaluation, a, b, c, d
+        );
+
+        if (event != null && event.isCancelled() || evaluation == RegionEnums.FlagState.DENY) {
+            if (event == null || event.canSendResponse()) {
+                final Response response = region.getResponse(flag);
+
+                if (a instanceof Player player)
+                    response.send(player);
+
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private <A,B,C,D> ProRegionsEvent handleEvent(
+            final ContextEval<A,B,C,D> context,
+            final Region region,
+            final RegionEnums.Flags flag,
+            final RegionEnums.FlagState state,
+            final A a, final B b,
+            final C c, final D d
+    ) {
+
+        final Player player = a instanceof Player p ? p : null;
+
+        if (player == null) {
+            // Tbh, I only plan to use events for player
+            // related actions only anyway. So if there's no
+            // player involved, I'll simply ignore the whole thing.
+            // Maybe I'll change this in the future, so I'll keep the player
+            // field just in case.
+            return null;
+        }
+
+        switch (flag) {
+            case ENTER -> {
+                final RegionEnterEvent event = new RegionEnterEvent(
+                        player,
+                        region,
+                        state == RegionEnums.FlagState.DENY
+                );
+
+                Bukkit.getPluginManager().callEvent(event);
+                return event;
+            }
+
+            case LEAVE -> {
+                final RegionLeaveEvent event = new RegionLeaveEvent(
+                        player,
+                        region,
+                        state == RegionEnums.FlagState.DENY
+                );
+
+                Bukkit.getPluginManager().callEvent(event);
+                return event;
+            }
+            default -> {}
+        }
+
+        return null;
     }
 }
