@@ -4,7 +4,7 @@ author: Rayzs_YT
 
 main: de.rayzs.proregions.plugin.ProRegionsLoader
 
-version: 1.0.5
+version: 1.0.6
 api-version: 1.13
 
 softdepend: ["PlaceholderAPI"]
