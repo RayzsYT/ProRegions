@@ -10,7 +10,7 @@ public class ProRegionsEvent extends Event implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
 
     protected boolean cancelled = false;
-    protected boolean response = false;
+    protected boolean response = true;
 
     public void setSendResponse(boolean response) {
         this.response = response;
