@@ -4,8 +4,8 @@ import de.rayzs.proregions.api.ProRegionsAPI;
 import de.rayzs.proregions.api.clipboard.Clipboard;
 import de.rayzs.proregions.api.configuration.Config;
 import de.rayzs.proregions.api.events.ProRegionsEvent;
-import de.rayzs.proregions.api.events.PlayerEnterRegionEvent;
-import de.rayzs.proregions.api.events.PlayerLeaveRegionEvent;
+import de.rayzs.proregions.api.events.player.PlayerEnterRegionEvent;
+import de.rayzs.proregions.api.events.player.PlayerLeaveRegionEvent;
 import de.rayzs.proregions.api.region.*;
 import de.rayzs.proregions.api.region.chunk.ChunkKeyGenerator;
 import de.rayzs.proregions.api.region.context.ContextEval;
@@ -312,9 +312,10 @@ public class RegionProviderImpl implements RegionProvider {
         switch (flag) {
             case ENTER -> {
                 final PlayerEnterRegionEvent event = new PlayerEnterRegionEvent(
-                        player,
                         region,
-                        state == RegionEnums.FlagState.DENY
+                        flag,
+                        state,
+                        player
                 );
 
                 Bukkit.getPluginManager().callEvent(event);
@@ -323,9 +324,10 @@ public class RegionProviderImpl implements RegionProvider {
 
             case LEAVE -> {
                 final PlayerLeaveRegionEvent event = new PlayerLeaveRegionEvent(
-                        player,
                         region,
-                        state == RegionEnums.FlagState.DENY
+                        flag,
+                        state,
+                        player
                 );
 
                 Bukkit.getPluginManager().callEvent(event);
