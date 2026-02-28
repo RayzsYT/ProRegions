@@ -231,15 +231,15 @@ public class RegionImpl implements Region {
         map.put("chunk-keys", chunkKeys);
         map.put("ignore-y", ignoreY);
 
-        map.put("area.world", worldName);
+        map.put("area-world", worldName);
 
-        map.put("area.min.x", minX);
-        map.put("area.min.y", minY);
-        map.put("area.min.z", minZ);
+        map.put("area-min-x", minX);
+        map.put("area-min-y", minY);
+        map.put("area-min-z", minZ);
 
-        map.put("area.max.x", maxX);
-        map.put("area.max.y", maxY);
-        map.put("area.max.z", maxZ);
+        map.put("area-max-x", maxX);
+        map.put("area-max-y", maxY);
+        map.put("area-max-z", maxZ);
 
         map.put("flags", flags.entrySet().stream().collect(
                 java.util.stream.Collectors.toMap(
@@ -280,14 +280,14 @@ public class RegionImpl implements Region {
 
         final boolean ignoreY = (boolean) map.get("ignore-y");
 
-        final String worldName = (String) map.get("area.world");
-        final int minX = (int) map.get("area.min.x");
-        final int minY = (int) map.get("area.min.y");
-        final int minZ = (int) map.get("area.min.z");
+        final String worldName = (String) map.get("area-world");
+        final int minX = (int) map.get("area-min-x");
+        final int minY = (int) map.get("area-min-y");
+        final int minZ = (int) map.get("area-min-z");
         
-        final int maxX = (int) map.get("area.max.x");
-        final int maxY = (int) map.get("area.max.y");
-        final int maxZ = (int) map.get("area.max.z");
+        final int maxX = (int) map.get("area-max-x");
+        final int maxY = (int) map.get("area-max-y");
+        final int maxZ = (int) map.get("area-max-z");
 
         final Map<RegionEnums.Flags, RegionEnums.FlagState> flags = new HashMap<>();
         final Map<String, String> flagsMap = (Map<String, String>) map.get("flags");
