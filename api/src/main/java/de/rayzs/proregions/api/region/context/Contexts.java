@@ -86,19 +86,7 @@ public class Contexts {
         return region.getFlagState(flag, block.getType().name());
     };
 
-    public static ContextEval<Player, Material, Object, Object> PLAYER_ITEM = (
-            region, flag,
-            player, material,
-            a, b) -> {
-
-        if (hasBypassPermission(player, region, flag, material.name())) {
-            return RegionEnums.FlagState.ALLOW;
-        }
-
-        return region.getFlagState(flag, material.name());
-    };
-
-    public static ContextEval<Entity, Material, Object, Object> ENTITY_ITEM = (
+    public static ContextEval<Entity, Material, Object, Object> ENTITY_MATERIAL = (
             region, flag,
             entity, material,
             a, b) -> {

@@ -660,7 +660,7 @@ public class RegionListener implements Listener {
         final Material material = event.getItem().getItemStack().getType();
 
         if (!provider.isAllowed(
-                Contexts.PLAYER_ITEM,
+                Contexts.PLAYER_MATERIAL,
                 player.getLocation(),
                 RegionEnums.Flags.PICKUP,
                 player, material,
@@ -682,7 +682,7 @@ public class RegionListener implements Listener {
         final Material material = event.getItem().getItemStack().getType();
 
         if (!provider.isAllowed(
-                Contexts.PLAYER_ITEM,
+                Contexts.PLAYER_MATERIAL,
                 player.getLocation(),
                 RegionEnums.Flags.PICKUP,
                 player, material,
@@ -698,7 +698,7 @@ public class RegionListener implements Listener {
         final Material material = event.getItemDrop().getItemStack().getType();
 
         if (!provider.isAllowed(
-                Contexts.ENTITY_ITEM,
+                Contexts.ENTITY_MATERIAL,
                 entity.getLocation(),
                 RegionEnums.Flags.DROP,
                 entity, material,
@@ -720,7 +720,7 @@ public class RegionListener implements Listener {
         final Material material = event.getItemDrop().getItemStack().getType();
 
         if (!provider.isAllowed(
-                Contexts.PLAYER_ITEM,
+                Contexts.PLAYER_MATERIAL,
                 player.getLocation(),
                 RegionEnums.Flags.DROP,
                 player, material,
@@ -736,7 +736,7 @@ public class RegionListener implements Listener {
         final Material material = event.getItem().getItemStack().getType();
 
         if (!provider.isAllowed(
-                Contexts.ENTITY_ITEM,
+                Contexts.ENTITY_MATERIAL,
                 entity.getLocation(),
                 RegionEnums.Flags.PICKUP,
                 entity, material,
