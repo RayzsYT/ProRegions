@@ -1,33 +1,23 @@
-package de.rayzs.proregions.api.events;
+package de.rayzs.proregions.api.events.player;
 
+import de.rayzs.proregions.api.events.ProRegionsPlayerEvent;
 import de.rayzs.proregions.api.region.Region;
+import de.rayzs.proregions.api.region.RegionEnums;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class PlayerEnterRegionEvent extends ProRegionsEvent {
+public class PlayerEnterRegionEvent extends ProRegionsPlayerEvent {
 
     private static final HandlerList handlers = new HandlerList();
 
-    private final Player player;
-    private final Region region;
-
     public PlayerEnterRegionEvent(
-            final Player player,
             final Region region,
-            boolean cancelled
+            final RegionEnums.Flags flag,
+            final RegionEnums.FlagState state,
+            final Player player
     ) {
-        this.player = player;
-        this.region = region;
-        this.cancelled = cancelled;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public Region getRegion() {
-        return region;
+        super(region, flag, state, player);
     }
 
     @Override

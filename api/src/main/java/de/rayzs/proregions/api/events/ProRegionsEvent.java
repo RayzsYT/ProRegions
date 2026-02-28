@@ -1,16 +1,27 @@
 package de.rayzs.proregions.api.events;
 
+import de.rayzs.proregions.api.region.Region;
+import de.rayzs.proregions.api.region.RegionEnums;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.NotNull;
 
-public class ProRegionsEvent extends Event implements Cancellable {
+public abstract class ProRegionsEvent extends Event implements Cancellable {
 
-    private static final HandlerList handlers = new HandlerList();
-
-    protected boolean cancelled = false;
     protected boolean response = true;
+    protected boolean cancelled;
+
+    protected final Region region;
+    protected final RegionEnums.Flags flag;
+
+    public ProRegionsEvent(
+            final Region region,
+            final RegionEnums.Flags flag,
+            final RegionEnums.FlagState state
+    ) {
+        this.region = region;
+        this.flag = flag;
+        this.cancelled = state == RegionEnums.FlagState.DENY;
+    }
 
     public void setSendResponse(boolean response) {
         this.response = response;
@@ -30,12 +41,11 @@ public class ProRegionsEvent extends Event implements Cancellable {
         this.cancelled = bool;
     }
 
-    @Override
-    public @NotNull HandlerList getHandlers() {
-        return handlers;
+    public Region getRegion() {
+        return region;
     }
 
-    public static HandlerList getHandlerList() {
-        return handlers;
+    public RegionEnums.Flags getFlag() {
+        return flag;
     }
 }
