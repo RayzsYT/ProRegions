@@ -1,0 +1,42 @@
+
+package de.rayzs.proregions.api.events.player;
+
+import de.rayzs.proregions.api.events.ProRegionsPlayerEvent;
+import de.rayzs.proregions.api.region.Region;
+import de.rayzs.proregions.api.region.RegionEnums;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
+
+public class PlayerInteractEntityEvent extends ProRegionsPlayerEvent {
+
+    private static final HandlerList handlers = new HandlerList();
+
+    private final Entity clickedEntity;
+
+    public PlayerInteractEntityEvent(
+            final Region region,
+            final RegionEnums.Flags flag,
+            final RegionEnums.FlagState state,
+            final Player player,
+            final Entity clickedEntity
+    ) {
+        super(region, flag, state, player);
+
+        this.clickedEntity = clickedEntity;
+    }
+
+    public Entity getClickedEntity() {
+        return clickedEntity;
+    }
+
+    @Override
+    public @NotNull HandlerList getHandlers() {
+        return handlers;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+}

@@ -2,24 +2,25 @@ package de.rayzs.proregions.api.events;
 
 import de.rayzs.proregions.api.region.Region;
 import de.rayzs.proregions.api.region.RegionEnums;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-public abstract class ProRegionsPlayerEvent extends ProRegionsEvent {
+public abstract class ProRegionsEntityEvent extends ProRegionsEvent {
 
-    protected final Player player;
+    protected final Entity entity;
 
-    public ProRegionsPlayerEvent(
+    public ProRegionsEntityEvent(
             final Region region,
             final RegionEnums.Flags flag,
             final RegionEnums.FlagState state,
-            final Player player
+            final Entity entity
     ) {
         super(region, flag, state);
 
-        this.player = player;
+        this.entity = entity;
     }
 
-    public Player getPlayer() {
-        return this.player;
+    public Entity getEntity() {
+        return this.entity;
     }
 }
